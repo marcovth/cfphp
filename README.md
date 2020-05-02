@@ -23,14 +23,9 @@ I know about Smarty temples. I have been playing with it for some months, but I 
 
 I have 20 years experience with CFML, and about 6 months with PHP. If you can find improvements for my PHP coding, please make sure you teach me :) 
 
-#################################
-Add .cfm, .cfml, .cfc types to the Apache setup file so that these extensions are recognized as php templates.
-	
-	AddType application/x-httpd-php .cfm
-	
-	AddType application/x-httpd-php .cfml
-	
-	AddType application/x-httpd-php .cfc
+The .htaccess file will add .cfm, .cfml, .cfc as PHP template types.
+And, 
+
 
 
 
