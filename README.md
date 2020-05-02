@@ -22,3 +22,19 @@ Will see if this project sinks. I think many cfml coders who (are forced to) swi
 I know about Smarty temples. I have been playing with it for some months, but I realy mis cfml. On the other hand, I hope that php coders will start to appreciate cftags coding, and use this project to make their own.
 
 I have 20 years experience with CFML, and about 6 months with PHP. If you can find improvements for my PHP coding, please make sure you teach me :) 
+
+#################################
+Add .cfm, .cfml, .cfc types to the Apache setup file so that these extensions are recognized as php templates.
+<IfModule mime_module> 
+    TypesConfig "{APACHEPATH}/conf/mime.types"    
+    AddType application/x-compress .Z
+    AddType application/x-gzip .gz .tgz
+	AddType application/x-httpd-php .php
+	AddType application/x-httpd-php .php5
+	AddType application/x-httpd-php-source .phps
+  AddType application/x-httpd-php .cfm
+	AddType application/x-httpd-php .cfml
+  AddType application/x-httpd-php .cfc
+</IfModule>
+
+
