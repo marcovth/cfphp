@@ -27,5 +27,5 @@ The .htaccess file will add .cfm, .cfml, .cfc as PHP template types.
 And, php_value auto_prepend_file "./Application.php" will load the Application.php page before every other php, cfm, cfml and cfc template.
 
 
-
+ 
 
