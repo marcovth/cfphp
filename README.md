@@ -25,10 +25,12 @@ I have 20 years experience with CFML, and about 6 months with PHP. If you can fi
 
 #################################
 Add .cfm, .cfml, .cfc types to the Apache setup file so that these extensions are recognized as php templates.
-<IfModule mime_module>
+	
 	AddType application/x-httpd-php .cfm
+	
 	AddType application/x-httpd-php .cfml
+	
 	AddType application/x-httpd-php .cfc
-</IfModule>
+
 
 
