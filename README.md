@@ -27,6 +27,10 @@ The .htaccess file will add .cfm, .cfml, .cfc as PHP template types.
 
 And, php_value auto_prepend_file "./Application.php" will load the Application.php page before every other php, cfm, cfml and cfc template.
 
+This project is making use of the CodeMirror online code editor to debug CFML->PHP code before saving the final PHP file. Please edit the CodeMirror path in Application.php
+
+https://github.com/codemirror/codemirror
+
 
  
 
