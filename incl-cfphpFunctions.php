@@ -26,10 +26,15 @@ function ListFirst($string,$delimiter){
 
 function ListLast($string,$delimiter){
 	// ListGetAt(list, position [, delimiters,  includeEmptyFields])
+	//echo "ListLast";
 	if($delimiter==="") $delimiter=",";
 	$words=explode($delimiter,$string);
-	if (array_key_exists(ArrayLen($words), $words)) return $words[ArrayLen($words)];
-	else return "";
+	return $words[ArrayLen($words)-1];
+}
+
+function Replace($string,$substring,$replaceString,$scope=NULL){
+	//Replace(string, substring1, obj [, scope ])
+	return str_replace($substring,$replaceString,$string);
 }
 
 

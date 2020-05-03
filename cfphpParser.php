@@ -3,8 +3,8 @@
 //ini_set("display_errors", "1"); 
 
 ini_set('xdebug.max_nesting_level', 500);
-require './incl-cfphpParseTags.php';
-require './incl-cfphpFunctions.php';
+//require './incl-cfphpParseTags.php';
+//require './incl-cfphpFunctions.php';
 
 $DebugLevel=1; // 1, 2 or 3
 
