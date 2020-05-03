@@ -2,14 +2,15 @@
 //error_reporting(-1); // reports all errors
 //ini_set("display_errors", "1"); 
 
-ini_set('xdebug.max_nesting_level', 500);
+//ini_set('xdebug.max_nesting_level', 500);
 //require './incl-cfphpParseTags.php';
 //require './incl-cfphpFunctions.php';
+function cfphpParser($cp_CFfile){
 
-$DebugLevel=1; // 1, 2 or 3
+	$DebugLevel=1; // 1, 2 or 3
 
 	$output=""; $InCFscript=false;
-	$file = fopen("./test.cfm", "r");
+	$file = fopen($cp_CFfile,"r") or die;
 	if ($file) {
 		while (($line = fgets($file)) !== false) {
 			
@@ -165,8 +166,8 @@ $DebugLevel=1; // 1, 2 or 3
 		// error opening the file.
 	} 
 	
-	if($DebugLevel>=1) echo $output
-	
+	return $output;
+}	
 
 ?>
 
