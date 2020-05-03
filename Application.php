@@ -15,14 +15,21 @@ $cp_dir=__DIR__ ."/" ;
 $cp_debugMode=true;
 $cp_UserIpAddress=getUserIpAddress(); //::1
 $cp_DebuggerRemoteIpAddress="YourRemoteIP";
+$cp_CodeMirrorPath="./codemirror/"; // path to "codemirror.js" https://github.com/codemirror/codemirror
 
 
 if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)==="CFC"){
 	$cp_CFfile="$dir$cffileName.$cffileExt";
 	$cp_PHPfile="$dir$cffileName.$cffileExt";
-	// echo "$cp_CFfile";
-	//$cp_PHPcode=cfphpParser($cp_CFfile); echo $cp_PHPcode;
-	die();
+	if($cp_debugMode and ($cp_UserIpAddress==="::1" or $cp_UserIpAddress==="127.0.0.1" or $cp_UserIpAddress===$cp_DebuggerRemoteIpAddress) ){
+		$cp_PHPcode=cfphpParser($cp_CFfile); // echo $cp_PHPcode;
+		$cp_CFcode=ReadFileTXT($cp_CFfile);
+		
+		
+		
+		
+	}
+	die(); // To avoid displaying the CFML code
 }
 
 ?>
