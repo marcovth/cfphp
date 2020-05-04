@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Editor</title>
+
   <style type="text/css" media="screen">
 	.ace_editor {
 		border: 1px solid lightgray;
@@ -16,19 +11,28 @@
         text-align: center;
 	}
     </style>
-</head>
-<body>
-<table width="100%"><tr>
-<td id="editor1" width="50%">function foo(items) {
+
+<form>
+<table width="100%">
+	
+	<tr>
+		
+		<td id="editor1" width="50%"><textarea name="x1">function foo(items) {
     var i;
     for (i = 0; i &lt; items.length; i++) {
         alert("Ace Rocks " + items[i]);
     }
-}</td>
-<td id="editor2" width="50%">
+}</textarea></td>
+<td id="editor2" width="50%"><textarea name="x2">
 	Hello World
-</td>
-</tr></table>
+</textarea></td>
+		
+	</tr>
+
+</table>
+</form>
+
+
 <script src="AceEditor/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
 	
@@ -50,5 +54,3 @@
 	
 </script>
 
-</body>
-</html>
