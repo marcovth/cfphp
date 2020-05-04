@@ -68,11 +68,13 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 		echo "	editor2.setAutoScrollEditorIntoView(true);\n";
 		echo "	//editor2.setOption(\"maxLines\", 100);\n";
 		echo "	document.getElementById('editor2').style.fontSize='16px';\n";
-		
-		//echo "	editor1.ScrollBar.setScrollTop(150);\n";
-		//echo "	var pos1 = editor1.saveScrollPosition();\n";
-		//echo "	editor2.restoreScrollPosition(pos1);\n";
-		echo "	editor1.session.on(\"changeScrollTop\",editor2.session.restoreScrollPosition(editor1.session.saveScrollPosition()));\n";
+
+
+		echo "	editor1.renderer.on(\"afterRender\", function(e) {\n";
+		echo "		if (editor2.session.getScrollTop() != editor1.session.getScrollTop()) {\n";
+		echo "			editor2.session.setScrollTop(editor1.session.getScrollTop());\n";
+		echo "		 }\n";
+		echo "	})\n";
 	
 		echo "</script>\n";
 		
