@@ -27,7 +27,7 @@ The .htaccess file will add .cfm, .cfml, .cfc as PHP template types.
 
 And, php_value auto_prepend_file "./Application.php" will load the Application.php page before every other php, cfm, cfml and cfc template.
 
-This project is making use of the Ace online code editor to debug CFML->PHP code before saving the final PHP file. Please copy src folder to you cfphp folder as a subdirectory, and rename "src" folder to "AceEditor".
+This project is making use of the Ace online code editor to debug CFML->PHP code before saving the final PHP file. Please copy the Ace src folder to your cfphp folder as a subdirectory, and rename the "src" folder to "AceEditor".
 
 https://ace.c9.io/  and https://github.com/ajaxorg/ace-builds/tree/2ea299a2bee97fdf58fc90cb76eec6c45535a63f
 
