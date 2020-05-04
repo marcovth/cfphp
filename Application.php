@@ -20,10 +20,14 @@ $cp_CodeMirrorPath="./codemirror/"; // path to "codemirror.js" https://github.co
 
 if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)==="CFC"){
 	$cp_CFfile="$dir$cffileName.$cffileExt";
-	$cp_PHPfile="$dir$cffileName.php";
+	$cp_PHPfile_t="$dir$cffileName.tmp.php";
+	$cp_PHPfile_f="$dir$cffileName.php";
 	if($cp_debugMode and ($cp_UserIpAddress==="::1" or $cp_UserIpAddress==="127.0.0.1" or $cp_UserIpAddress===$cp_DebuggerRemoteIpAddress) ){
 		$cp_PHPcode=cfphpParser($cp_CFfile); // echo $cp_PHPcode;
 		$cp_CFcode=ReadFileTXT($cp_CFfile);
+		
+		$exportFile = fopen($cp_PHPfile_t, "w") or die("Unable to open PHP temp file!");
+		fwrite($exportFile,$cp_PHPcode); fclose($exportFile);
 		
 		echo "	<style type=\"text/css\" media=\"screen\"> \n";
 		echo "	.ace_editor { \n";
@@ -43,7 +47,7 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 		echo "	<tr><td align=center><input type=button value=\"Translate: (overwrites)CFM => (overwrites)PHP_temp\"> <input type=button value=\"Save (overwrite) PHP_temp to PHP_final page\"></td></tr>\n";
 		echo "	<tr><td valign=\"top\" id=\"editor1\" width=\"50%\"><textarea rows=20 name=\"CFMcode\">".$cp_CFcode."</textarea></td></tr>\n";//$cp_CFcode.
 		echo "	<tr><td valign=\"top\" id=\"editor2\" width=\"50%\"><textarea rows=20 name=\"PHPcode\">".$cp_PHPcode."</textarea></td></tr>\n";//$cp_PHPcode.</tr>\n";
-		echo "	<tr><td valign=\"top\" id=\"PHPpage\" width=\"100%\"><iframe width=\"100%\" height=\"600\"  src=\"./$cffileName.php\"></iframe></td></tr>\n";
+		echo "	<tr><td valign=\"top\" id=\"PHPpage\" width=\"100%\"><iframe width=\"100%\" height=\"600\"  src=\"./$cffileName.tmp.php\"></iframe></td></tr>\n";
 		echo "</table>\n";
 		echo "</form>\n";
 		
