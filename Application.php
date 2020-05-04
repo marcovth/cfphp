@@ -15,14 +15,26 @@ $cp_dir=__DIR__ ."/" ;
 $cp_debugMode=true;
 $cp_UserIpAddress=getUserIpAddress(); //::1
 $cp_DebuggerRemoteIpAddress="YourRemoteIP";
-$cp_CodeMirrorPath="./codemirror/"; // path to "codemirror.js" https://github.com/codemirror/codemirror
 
 
 if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)==="CFC"){
+
 	$cp_CFfile="$dir$cffileName.$cffileExt";
 	$cp_PHPfile_t="$dir$cffileName.tmp.php";
 	$cp_PHPfile_f="$dir$cffileName.php";
 	if($cp_debugMode and ($cp_UserIpAddress==="::1" or $cp_UserIpAddress==="127.0.0.1" or $cp_UserIpAddress===$cp_DebuggerRemoteIpAddress) ){
+		
+		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==1 ){
+			// echo $_POST["SaveWhat"]; 
+			
+			if( isset($_POST["CFMcode"]) and trim($_POST["CFMcode"])!==""){
+				$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
+				fwrite($exportFile,trim($_POST["CFMcode"])); fclose($exportFile);
+			}
+			
+		}
+		
+		
 		$cp_PHPcode=cfphpParser($cp_CFfile); // echo $cp_PHPcode;
 		$cp_CFcode=ReadFileTXT($cp_CFfile);
 		
@@ -42,11 +54,13 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 		echo "	} \n";
 		echo "	</style> \n";
 		
-		echo "<form>\n";
+		echo "<form name=\"SaveFiles\" action=\"./$cffileName.$cffileExt\"  method=\"post\">\n";
 		echo "<table width=\"100%\">\n";
-		echo "	<tr><td align=center><input type=button value=\"Translate: (overwrites)CFM => (overwrites)PHP_temp\"> <input type=button value=\"Save (overwrite) PHP_temp to PHP_final page\"></td></tr>\n";
-		echo "	<tr><td valign=\"top\" id=\"editor1\" width=\"50%\"><textarea rows=20 name=\"CFMcode\">".$cp_CFcode."</textarea></td></tr>\n";//$cp_CFcode.
-		echo "	<tr><td valign=\"top\" id=\"editor2\" width=\"50%\"><textarea rows=20 name=\"PHPcode\">".$cp_PHPcode."</textarea></td></tr>\n";//$cp_PHPcode.</tr>\n";
+		echo "	<tr><td align=center><input type=button value=\"Translate: (overwrites)CFM => (overwrites)PHP_temp\" onclick=\"document.getElementById('SaveWhat').value=1;submit();\"> \n";
+		echo "		<input type=button value=\"Save (overwrite) PHP_temp to PHP_final page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\"></td></tr>\n";
+		echo "		<input type=hidden name=SaveWhat id=SaveWhat value=0>\n";
+		echo "	<tr><td valign=\"top\" id=\"editor1\" width=\"50%\"><textarea rows=20 id=\"CFMcode\" name=\"CFMcode\">".$cp_CFcode."</textarea></td></tr>\n";//$cp_CFcode.
+		echo "	<tr><td valign=\"top\" id=\"editor2\" width=\"50%\"><textarea rows=20 id=\"PHPcode\" name=\"PHPcode\">".$cp_PHPcode."</textarea></td></tr>\n";//$cp_PHPcode.</tr>\n";
 		echo "	<tr><td valign=\"top\" id=\"PHPpage\" width=\"100%\"><iframe width=\"100%\" height=\"600\"  src=\"./$cffileName.tmp.php\"></iframe></td></tr>\n";
 		echo "</table>\n";
 		echo "</form>\n";
