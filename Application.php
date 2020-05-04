@@ -25,26 +25,16 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 		$cp_PHPcode=cfphpParser($cp_CFfile); // echo $cp_PHPcode;
 		$cp_CFcode=ReadFileTXT($cp_CFfile);
 		
-		echo "<link rel=\"stylesheet\" href=\"".$cp_CodeMirrorPath."codemirror.css\">";
-		echo "<script src=\"".$cp_CodeMirrorPath."codemirror.js\"></script>";
-		echo "<script src=\"".$cp_CodeMirrorPath."matchbrackets.js\"></script>";
-		echo "<script src=\"".$cp_CodeMirrorPath."htmlmixed.js\"></script>";
-		echo "<script src=\"".$cp_CodeMirrorPath."xml.js\"></script>";
-		echo "<script src=\"".$cp_CodeMirrorPath."javascript.js\"></script>";
-		echo "<script src=\"".$cp_CodeMirrorPath."css.js\"></script>";
-		echo "<script src=\"".$cp_CodeMirrorPath."clike.js\"></script>";
-		echo "<script src=\"".$cp_CodeMirrorPath."php.js\"></script>";
-		
-		// textarea { width:100%; } style=\"width:100%;\"
-		
-		echo "<style type='text/css'>";
-		echo "	textarea {";
-		echo "		width:100%;";
-		echo "		white-space: nowrap;";
-		echo "		overflow:    scroll;";
-		echo "		overflow-y:  scroll;";
-		echo "		overflow-x:  scroll;";
-		echo "		overflow:    -moz-scrollbars-horizontal;";
+		echo "<style type=\"text/css\" media=\"screen\">";
+		echo "	.ace_editor ";
+		echo "		border: 1px solid lightgray;";
+		echo "		margin: auto;";
+		echo "		height: 600px;";
+		echo "		width: 50%;";
+		echo "	}";
+		echo "	.scrollmargin {";
+		echo "		height: 80px;";
+		echo "		text-align: center;";
 		echo "	}";
 		echo "</style>";
 		
@@ -52,14 +42,34 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 		echo "<table width=\"100%\">";
 		echo "	<tr><td align=center colspan=2><input type=button value=\"Save CFML code\"> <input type=button value=\"CFM->PHP\"> <input type=button value=\"Save PHP code\"></td></tr>";
 		echo "	<tr>";
-		echo "		<td valign=\"top\" id=\"CFMcode\" width=\"50%\"><textarea id=\"code1\" rows=40 name=\"code1\">".$cp_CFcode."</textarea></td>";
-		echo "		<td valign=\"top\" id=\"PHPcode\" width=\"50%\"><textarea id=\"code2\" rows=40 name=\"code2\">".$cp_PHPcode."</textarea></td>";
+		echo "		<td valign=\"top\" id=\"CFMcode\" width=\"50%\"><textarea id=\"editor1\" rows=40 name=\"editor1\">".$cp_CFcode."</textarea></td>";
+		echo "		<td valign=\"top\" id=\"PHPcode\" width=\"50%\"><textarea id=\"editor2\" rows=40 name=\"editor2\">".$cp_PHPcode."</textarea></td>";
 		echo "	</tr>";
 		echo "	<tr>";
 		echo "		<td valign=\"top\" id=\"PHPpage\" width=\"100%\" colspan=2><iframe width=\"100%\" height=\"100%\"  src=\"./$cffileName.php\"></iframe></td>";
 		echo "	</tr>";
 		echo "</table>";
 		echo "</form>";
+		
+		echo "<script src=\"AceEditor/ace.js\" type=\"text/javascript\" charset=\"utf-8\"></script>";
+		echo "<script>";
+			
+		echo "	var editor1 = ace.edit(\"editor1\");";
+		echo "	editor1.setTheme(\"ace/theme/tomorrow\");";
+		echo "	editor1.session.setMode(\"ace/mode/html\");";
+		echo "	editor1.setAutoScrollEditorIntoView(true);";
+		echo "	//editor1.setOption(\"maxLines\", 100);";
+		echo "	document.getElementById('editor1').style.fontSize='16px';";
+
+			
+		echo "	var editor2 = ace.edit(\"editor2\");";
+		echo "	editor2.setTheme(\"ace/theme/tomorrow\");";
+		echo "	editor2.session.setMode(\"ace/mode/php\");";
+		echo "	editor2.setAutoScrollEditorIntoView(true);";
+		echo "	//editor2.setOption(\"maxLines\", 100);";
+		echo "	document.getElementById('editor2').style.fontSize='16px';";
+	
+		echo "</script>";
 		
 		
 	} else {

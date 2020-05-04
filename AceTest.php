@@ -5,24 +5,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Editor</title>
   <style type="text/css" media="screen">
-	#editor1 {
-        margin: 0;
-        //position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
-
-    #editor2 {
-        margin: 0;
-        //position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
-  </style>
+	.ace_editor {
+		border: 1px solid lightgray;
+		margin: auto;
+		height: 600px;
+		width: 50%;
+	}
+	.scrollmargin {
+		height: 80px;
+        text-align: center;
+	}
+    </style>
 </head>
 <body>
 <table width="100%"><tr>
@@ -34,17 +27,27 @@
 }</td>
 <td id="editor2" width="50%">
 	Hello World
-}</td>
+</td>
 </table>
 <script src="AceEditor/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    var editor1 = ace.edit("editor1");
-    editor1.setTheme("ace/theme/twilight");
-    editor1.session.setMode("ace/mode/javascript");
+	
+	var editor1 = ace.edit("editor1");
+    editor1.setTheme("ace/theme/tomorrow");
+    editor1.session.setMode("ace/mode/html");
+    editor1.setAutoScrollEditorIntoView(true);
+    //editor1.setOption("maxLines", 100);
+	document.getElementById('editor1').style.fontSize='16px';
+
 	
 	var editor2 = ace.edit("editor2");
-    editor2.setTheme("ace/theme/twilight");
-    editor2.session.setMode("ace/mode/javascript");
+    editor2.setTheme("ace/theme/tomorrow");
+    editor2.session.setMode("ace/mode/php");
+    editor2.setAutoScrollEditorIntoView(true);
+    //editor2.setOption("maxLines", 100);
+	document.getElementById('editor2').style.fontSize='16px';
+
+	
 </script>
 
 </body>
