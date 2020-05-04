@@ -93,7 +93,7 @@ function ParseCFparam($AttributeLine,&$output){
 	//echo "{$name}";
 	
 	$AttributeArr=ParseAttributeLine($AttributeLine);
-	cfdump($AttributeArr);
+	//cfdump($AttributeArr);
 	//echo ArrayLen($AttributeArr);
 	$out="[CFPARAM ";
 	for ($nAtt=0; $nAtt<=ArrayLen($AttributeArr); $nAtt++){

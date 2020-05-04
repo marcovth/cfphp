@@ -25,16 +25,41 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 		$cp_PHPcode=cfphpParser($cp_CFfile); // echo $cp_PHPcode;
 		$cp_CFcode=ReadFileTXT($cp_CFfile);
 		
-		echo '<table width="100%">\n';
-		echo '	<tr>\n';
-		echo '		<td valign="top" id="CFMcode" width="50%">$cp_CFcode</td>\n';
-		echo '		<td valign="top" id="PHPcode" width="50%">$cp_PHPcode</td>\n';
-		echo '	</tr>\n';
-		echo '	<tr>\n';
-		echo '		<td valign="top" id="PHPpage" width="100%" colspan=2><iframe width="100%" height="100%"  src="./$cffileName.php"></iframe></td>\n';
-		echo '	</tr>\n';
-		echo '</table>\n';
+		echo "<link rel=\"stylesheet\" href=\"".$cp_CodeMirrorPath."codemirror.css\">";
+		echo "<script src=\"".$cp_CodeMirrorPath."codemirror.js\"></script>";
+		echo "<script src=\"".$cp_CodeMirrorPath."matchbrackets.js\"></script>";
+		echo "<script src=\"".$cp_CodeMirrorPath."htmlmixed.js\"></script>";
+		echo "<script src=\"".$cp_CodeMirrorPath."xml.js\"></script>";
+		echo "<script src=\"".$cp_CodeMirrorPath."javascript.js\"></script>";
+		echo "<script src=\"".$cp_CodeMirrorPath."css.js\"></script>";
+		echo "<script src=\"".$cp_CodeMirrorPath."clike.js\"></script>";
+		echo "<script src=\"".$cp_CodeMirrorPath."php.js\"></script>";
 		
+		// textarea { width:100%; } style=\"width:100%;\"
+		
+		echo "<style type='text/css'>";
+		echo "	textarea {";
+		echo "		width:100%;";
+		echo "		white-space: nowrap;";
+		echo "		overflow:    scroll;";
+		echo "		overflow-y:  scroll;";
+		echo "		overflow-x:  scroll;";
+		echo "		overflow:    -moz-scrollbars-horizontal;";
+		echo "	}";
+		echo "</style>";
+		
+		echo "<form>";
+		echo "<table width=\"100%\">";
+		echo "	<tr><td align=center colspan=2><input type=button value=\"Save CFML code\"> <input type=button value=\"CFM->PHP\"> <input type=button value=\"Save PHP code\"></td></tr>";
+		echo "	<tr>";
+		echo "		<td valign=\"top\" id=\"CFMcode\" width=\"50%\"><textarea id=\"code1\" rows=40 name=\"code1\">".$cp_CFcode."</textarea></td>";
+		echo "		<td valign=\"top\" id=\"PHPcode\" width=\"50%\"><textarea id=\"code2\" rows=40 name=\"code2\">".$cp_PHPcode."</textarea></td>";
+		echo "	</tr>";
+		echo "	<tr>";
+		echo "		<td valign=\"top\" id=\"PHPpage\" width=\"100%\" colspan=2><iframe width=\"100%\" height=\"100%\"  src=\"./$cffileName.php\"></iframe></td>";
+		echo "	</tr>";
+		echo "</table>";
+		echo "</form>";
 		
 		
 	} else {
