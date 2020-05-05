@@ -9,7 +9,7 @@ function cfphpParser($cp_CFfile){
 
 	$DebugLevel=1; // 1, 2 or 3
 
-	$output=""; $InCFscript=false;
+	$output=""; $InCFscript=false; $InsideInnerHTML=false; $InnerHTML=""; $InnerHTMLTagAttributeLine="";
 	$file = fopen($cp_CFfile,"r") or die;
 	if ($file) {
 		while (($line = fgets($file)) !== false) {
@@ -19,6 +19,9 @@ function cfphpParser($cp_CFfile){
 			if($InCFscript){
 				// Line inside cfscript block ... copy over, don't even check ...
 				$output.="$line";
+			} else if($InsideInnerHTML){
+				// Line inside InnerHTML block ... copy over, don't even check ...
+				$InnerHTML.="$line";
 			} else if(preg_match('/(\<cf)/', $line) or preg_match('/(\<\/cf)/', $line) ) {
 				// Line with a CF tag ...
 				$InCFtag=false; $InTagName=false; $tagName=""; $InAttributeS=false; $InAttributeName=false; $AttributeName=""; $InAttributeVal=false; $AttributeVal="";
@@ -53,8 +56,10 @@ function cfphpParser($cp_CFfile){
 							else if($tagName==="cfargument")	ParseCFargument($AttributeLine,$output);
 							else if($tagName==="cfreturn") 		ParseCFreturn($AttributeLine,$output);
 							else if($tagName==="cfscript"){		ParseCFscript($AttributeLine,$output); $InCFscript=true; }
-							else if($tagName==="cfquery") 		ParseCFquery($AttributeLine,$output);
-							else if($tagName==="cfdirectory") 	ParseCFdirectory($AttributeLine,$output);
+							else if($tagName==="cfquery"){
+								//ParseCFquery($AttributeLine,$output);
+								$InsideInnerHTML=true; $InnerHTML=""; $InnerHTMLTagAttributeLine=$AttributeLine;
+							} else if($tagName==="cfdirectory") ParseCFdirectory($AttributeLine,$output);
 							else if($tagName==="cffile") 		ParseCFfile($AttributeLine,$output);
 							else if($tagName==="cfinclude") 	ParseCFinclude($AttributeLine,$output);
 							else if($tagName==="cffunction") 	ParseCFfunction($AttributeLine,$output);
@@ -135,6 +140,12 @@ function cfphpParser($cp_CFfile){
 					}
 					if($line[$i]===">" and $InCFEndtag){
 						if($EndTagName==="cfscript"){ $InCFscript=false; }
+						
+						if($EndTagName==="cfquery"){ 
+							ParseCFquery($InnerHTMLTagAttributeLine,$InnerHTML,$output);
+							$InsideInnerHTML=false; $InnerHTML=""; $InnerHTMLTagAttributeLine="";
+						}
+						
 						$output.="<?php }//$EndTagName ?>";
 						$InCFEndtag=false; $EndTagName="";
 						//$i++;

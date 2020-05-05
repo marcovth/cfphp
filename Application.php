@@ -1,9 +1,9 @@
 <?php 
 
 //echo "Application.php";
-require './incl-cfphpParseTags.php';
-require './incl-cfphpFunctions.php';
-require "./cfphpParser.php";
+require './cfphpbin/incl-cfphpParseTags.php';
+require './cfphpbin/incl-cfphpFunctions.php';
+require "./cfphpbin/cfphpParser.php";
 
 $cffileName=basename($_SERVER['PHP_SELF']);
 $cffileExt=ListLast($cffileName,".");
@@ -49,10 +49,9 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 			// Add a new CFML page to the server ...
 			if( isset($_POST["NewCFMLpage"]) and trim($_POST["NewCFMLpage"])!==""){
 				
-				echo "[".$_POST["NewCFMLpage"]."]";
+				//echo "[".$_POST["NewCFMLpage"]."]";
 				$cffileName=$_POST["NewCFMLpage"];
 				$cffileName=ListLast($cffileName,"/"); $cffileName=ListLast($cffileName,"\\"); // Making sure a new file is not stored in another directory
-				//echo "$cffileName";
 				$cffileExt=ListLast($cffileName,".");
 				$cffileName=Replace($cffileName,".$cffileExt","");
 				
