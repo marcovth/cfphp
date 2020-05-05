@@ -22,7 +22,22 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 	$cp_CFfile="$dir$cffileName.$cffileExt";
 	$cp_PHPfile_t="$dir$cffileName.tmp.php";
 	$cp_PHPfile_f="$dir$cffileName.php";
-	if($cp_debugMode and ($cp_UserIpAddress==="::1" or $cp_UserIpAddress==="127.0.0.1" or $cp_UserIpAddress===$cp_DebuggerRemoteIpAddress) ){
+	if($cp_debugMode==false and file_exists($cp_PHPfile_f)){
+
+		if($cp_debugMode and ($cp_UserIpAddress==="::1" or $cp_UserIpAddress==="127.0.0.1" or $cp_UserIpAddress===$cp_DebuggerRemoteIpAddress) ){
+			echo "<form name=\"SaveFiles\" action=\"./$cffileName.$cffileExt\"  method=\"post\">\n";
+			echo "	<input type=button value=\"Edit page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\"> \n";
+			echo "	<input type=hidden name=SaveWhat id=SaveWhat value=0>\n";
+			echo "</form>\n";
+		}
+		try {
+			include "./$cffileName.php"; // <<<<<<< Final execution of PHP file
+		} catch (Exception $e) {
+			echo 'PHP error: ',  $e->getMessage(), "\n";
+		}
+		die();
+		
+	} else if($cp_debugMode and ($cp_UserIpAddress==="::1" or $cp_UserIpAddress==="127.0.0.1" or $cp_UserIpAddress===$cp_DebuggerRemoteIpAddress) ){
 		// Can "::1" or 127.0.0.1 be spoofed? ... https://security.stackexchange.com/questions/124184/is-it-possible-to-send-http-packet-via-spoofed-ip
 		// It's probably safe like this? Will need more expert opinion.
 		
@@ -47,6 +62,32 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 				//echo "$cp_CFfile";
 				$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
 				fwrite($exportFile,trim($_POST["CFMcode"])); fclose($exportFile);
+				$cp_CFcode=$_POST["CFMcode"];
+			}
+			if( isset($_POST["PHPcode"]) and trim($_POST["PHPcode"])!==""){
+				//echo "$cp_CFfile";
+				$exportFile = fopen($cp_PHPfile_t, "w") or die("Unable to write to CFML file!");
+				fwrite($exportFile,trim($_POST["PHPcode"])); fclose($exportFile);
+				//$exportFile = fopen($cp_PHPfile_f, "w") or die("Unable to write to CFML file!");
+				//fwrite($exportFile,trim($_POST["PHPcode"])); fclose($exportFile);
+				$cp_PHPcode=$_POST["PHPcode"];
+			}
+			
+			if( !isset($_POST["CFMcode"]) or trim($_POST["CFMcode"])===""){
+				$cp_CFcode=ReadFileTXT($cp_CFfile);
+			}
+			
+			if( !isset($_POST["PHPcode"]) or trim($_POST["PHPcode"])===""){
+				$cp_PHPcode=cfphpParser($cp_CFfile);
+			}
+			
+		}
+		
+		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==3 ){ // Final PHP page ...
+			if( isset($_POST["CFMcode"]) and trim($_POST["CFMcode"])!==""){
+				//echo "$cp_CFfile";
+				$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
+				fwrite($exportFile,trim($_POST["CFMcode"])); fclose($exportFile);
 			}
 			if( isset($_POST["PHPcode"]) and trim($_POST["PHPcode"])!==""){
 				//echo "$cp_CFfile";
@@ -55,8 +96,16 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 				$exportFile = fopen($cp_PHPfile_f, "w") or die("Unable to write to CFML file!");
 				fwrite($exportFile,trim($_POST["PHPcode"])); fclose($exportFile);
 			}
-			$cp_PHPcode=$_POST["PHPcode"];
-			$cp_CFcode=$_POST["CFMcode"];
+			//$cp_PHPcode=$_POST["PHPcode"];
+			//$cp_CFcode=$_POST["CFMcode"];
+			
+			echo "<form name=\"SaveFiles\" action=\"./$cffileName.$cffileExt\"  method=\"post\">\n";
+			echo "	<input type=button value=\"Edit page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\"> \n";
+			echo "	<input type=hidden name=SaveWhat id=SaveWhat value=0>\n";
+			echo "</form>\n";
+			
+			include "./$cffileName.php"; // <<<<<<< Final execution of PHP file
+			die(); // To avoid the exucution of the CFML template
 		}
 		
 		if( !isset($_POST["SaveWhat"]) or (isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==0) ){
@@ -83,8 +132,10 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 		
 		echo "<form name=\"SaveFiles\" action=\"./$cffileName.$cffileExt\"  method=\"post\">\n";
 		echo "<table width=\"100%\">\n";
-		echo "	<tr><td align=center><input type=button value=\"Translate: (overwrites)CFM => (overwrites)PHP_temp\" onclick=\"document.getElementById('SaveWhat').value=1;submit();\"> \n";
-		echo "		<input type=button value=\"Save (overwrite) PHP_temp to PHP_final page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\"></td></tr>\n";
+		echo "	<tr><td align=center>\n";
+		echo "		<input type=button value=\"Translate: CFML => PHP_edit page\" onclick=\"document.getElementById('SaveWhat').value=1;submit();\"> \n";
+		echo "		<input type=button value=\"Update PHP_editing page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\">\n";
+		echo "		<input type=button value=\"Save final PHP page for deployment\" onclick=\"document.getElementById('SaveWhat').value=3;submit();\"></td></tr>\n";
 		echo "		<input type=hidden name=SaveWhat id=SaveWhat value=0><input type=hidden  id=\"CFMcode\" name=\"CFMcode\"><input type=hidden id=\"PHPcode\" name=\"PHPcode\">\n";
 		echo "	<tr><td valign=\"top\" id=\"editor1\" width=\"50%\"><textarea rows=20>".$cp_CFcode."</textarea></td></tr>\n";//$cp_CFcode.
 		echo "	<tr><td valign=\"top\" id=\"editor2\" width=\"50%\"><textarea rows=20>".$cp_PHPcode."</textarea></td></tr>\n";//$cp_PHPcode.</tr>\n";
@@ -137,9 +188,8 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 
 		echo "</script>\n";
 		
-		
 	} else {
-		// If PHP translated code excists ... redirect automatically to the PHP page ... OR ... show the PHP page inside an iFrame to keep the .cfml extension.
+		echo "Sorry, you probably ended up here in error. Ask your administrator to process this page.";
 	}
 	die(); // To avoid displaying the initial CFML code
 }
