@@ -49,8 +49,10 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 			// Add a new CFML page to the server ...
 			if( isset($_POST["NewCFMLpage"]) and trim($_POST["NewCFMLpage"])!==""){
 				
+				echo "[".$_POST["NewCFMLpage"]."]";
 				$cffileName=$_POST["NewCFMLpage"];
-				$cffileName=ListLast($cffileName,"/"); $cffileName=ListLast($cffileName,"\"); // Making sure a new file is not stored in another directory
+				$cffileName=ListLast($cffileName,"/"); $cffileName=ListLast($cffileName,"\\"); // Making sure a new file is not stored in another directory
+				//echo "$cffileName";
 				$cffileExt=ListLast($cffileName,".");
 				$cffileName=Replace($cffileName,".$cffileExt","");
 				
