@@ -1,6 +1,22 @@
 <?php
 
 //require './incl-cfphpFunctions.php';
+function DetectVariables($string){
+	$out=""; $InVariable=false;
+	for($i=0; $i<strlen(trim($string)); $i++){
+		if($string[$i]==="#"){
+			if(!$InVariable){
+				$out.="$";
+				$InVariable=true;
+			} else {
+				// Do nothing == remove #
+				$InVariable=false;
+			}
+		} else $out.=$string[$i];
+	}	
+	return $out;
+}
+
 
 function ParseAttributeLine($AttributeLine){
 	//$Attributes=explode(" ",$AttributeLine);
@@ -101,20 +117,50 @@ function ParseCFparam($AttributeLine,&$output){
 			$out.=" ".$AttributeArr['AttributeName'][$nAtt]."=".$AttributeArr['AttributeVal'][$nAtt]." ";
 		}
 	}
-	$out.="]<br>\n";
 	$output.=$out; //"[CFPARAM $AttributeLine]";
 
 }
 
 function ParseCFif($AttributeLine,&$output){
-
-	$output.="[CFIF $AttributeLine]";
+	//$output.="[CFIF $AttributeLine]";
+	
+	//$AttributeArr=ParseAttributeLine($AttributeLine);
+	//cfdump($AttributeArr);
+	//echo ArrayLen($AttributeArr);
+	//$out="[CFIF ";
+	//for ($nAtt=0; $nAtt<=ArrayLen($AttributeArr); $nAtt++){
+	//	if($AttributeArr['AttributeName'][$nAtt] !== ""){
+	//		$out.=" ".$AttributeArr['AttributeName'][$nAtt]."=".$AttributeArr['AttributeVal'][$nAtt]." ";
+	//	}
+	//}
+	
+	
+	//$output="[CFPARAM $AttributeLine]\n";
+	
+	$out="<?php if( ";
+	$words=explode(" ",$AttributeLine);
+	foreach($words as &$word) {
+		//if(!empty($word)){
+			if(UCASE($word)==="IS") $out.="==";
+			else if(UCASE($word)==="NOT") $out.="!";
+			else if(UCASE($word)==="AND") $out.="and ";
+			else if(UCASE($word)==="OR") $out.="or ";
+			else if(UCASE($word)==="GT") $out.="> ";
+			else if(UCASE($word)==="GTE") $out.=">= ";
+			else if(UCASE($word)==="LT") $out.="< ";
+			else if(UCASE($word)==="LTE") $out.="<= ";
+			else $out.=DetectVariables($word)." ";
+		//}
+	}
+	unset($word);
+	$output.=$out; $output.="){ ?>";
+	
 
 }
 
 function ParseCFelse($AttributeLine,&$output){
 
-	$output.="[CFELSE $AttributeLine]";
+$output.="<?php } else { ?>";
 
 }
 
