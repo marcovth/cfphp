@@ -46,7 +46,7 @@ function cfphpParser($cp_CFfile){
 						$InCFtag=true; $InTagName=true;
 						$i++;
 					}
-					$SkipGTsign=false;
+					$SkipChar=false;
 					if($line[$i]===">" and $InCFtag and !$InAttributeValDQuote and !$InAttributeValSQuote){ 
 						//if($DebugLevel>=2) echo "%$tagName%";
 						if($tagName !== ''){
@@ -64,7 +64,7 @@ function cfphpParser($cp_CFfile){
 							else if(UCASE($tagName)==="CFSCRIPT"){		ParseCFscript($AttributeLine,$output); $InCFscript=true; }
 							else if(UCASE($tagName)==="CFQUERY"){
 								//ParseCFquery($AttributeLine,$output);
-								$InsideInnerHTML=true; $InnerHTML=""; $InnerHTMLTagAttributeLine=$AttributeLine;
+								$InsideInnerHTML=true; $InnerHTML=""; $InnerHTMLTagAttributeLine=$AttributeLine; $SkipChar=true;
 							} 
 							else if(UCASE($tagName)==="CFDIRECTORY") 	ParseCFdirectory($AttributeLine,$output);
 							else if(UCASE($tagName)==="CFFILE") 		ParseCFfile($AttributeLine,$output);
@@ -82,7 +82,7 @@ function cfphpParser($cp_CFfile){
 						}
 						$InCFtag=false; $InTagName=false; $tagName=""; $InAttributeS=false; $AttributeName=""; $InAttributeVal=false; $AttributeVal="";
 						$InAttributeValDQuote=false; $InAttributeValSQuote=false; $nAtt=0; $AttributeArr=array(); $AttributeLine="";
-						$SkipGTsign=true;
+						$SkipChar=true;
 					}
 					if($InTagName && $line[$i]===" "){ 
 						$InTagName=false; 
@@ -149,7 +149,7 @@ function cfphpParser($cp_CFfile){
 						if(UCASE($EndTagName)==="CFSCRIPT"){ $InCFscript=false; }
 						
 						if(UCASE($EndTagName)==="CFQUERY"){ 
-							echo "ParseCFqueryCall";
+							//echo "ParseCFqueryCall";
 							ParseCFquery($InnerHTMLTagAttributeLine,$InnerHTML,$output);
 							$InsideInnerHTML=false; $InnerHTML=""; $InnerHTMLTagAttributeLine="";
 						}
@@ -158,19 +158,21 @@ function cfphpParser($cp_CFfile){
 						$output.="[/".UCASE($EndTagName)."]";
 						$InCFEndtag=false; $EndTagName="";
 						//$i++;
-						$SkipGTsign=true;
+						$SkipChar=true;
 					}
 					
 					if($InCFEndtag){
 						//echo $line[$i];
-						if(!$SkipGTsign) $EndTagName.=$line[$i]; $SkipGTsign=false;
+						if(!$SkipChar) $EndTagName.=$line[$i]; $SkipChar=false;
 					} else if($InCFtag){
 						//echo $line[$i];
 						if($InTagName) $tagName.=LCASE($line[$i]);
 						if($DebugLevel===3) echo "[$tagName]";
+					} else if($InsideInnerHTML and !$SkipChar){
+						$InnerHTML.=$line[$i];
 					} else {
 						// HTML after tag or inbetween tag and ending-tag ...
-						if(!$SkipGTsign) $output.=$line[$i]; $SkipGTsign=false;
+						if(!$SkipChar) $output.=$line[$i]; $SkipChar=false;
 					}
 					
 					
