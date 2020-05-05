@@ -26,12 +26,14 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 
 		if($cp_debugMode and ($cp_UserIpAddress==="::1" or $cp_UserIpAddress==="127.0.0.1" or $cp_UserIpAddress===$cp_DebuggerRemoteIpAddress) ){
 			echo "<form name=\"SaveFiles\" action=\"./$cffileName.$cffileExt\"  method=\"post\">\n";
-			echo "	<input type=button value=\"Edit page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\"> \n";
+			echo "	<div style='float:left;position:absolute;top:0;left:0;'><input type=button style='font-size:8px;' value=\"Edit page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\"> \n";
+			echo "	<input type=text style='font-size:8px;' name=NewCFMLpage>\n";
+			echo "	<input type=button style='font-size:8px;' value=\"New CFML page\" onclick=\"document.getElementById('SaveWhat').value=10;submit();\"></div> \n";
 			echo "	<input type=hidden name=SaveWhat id=SaveWhat value=0>\n";
 			echo "</form>\n";
 		}
 		try {
-			include "./$cffileName.php"; // <<<<<<< Final execution of PHP file
+			include "./$cffileName.php"; // <<<<<<< Execution of Final PHP file
 		} catch (Exception $e) {
 			echo 'PHP error: ',  $e->getMessage(), "\n";
 		}
@@ -43,7 +45,35 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 		
 		// ToDo ... backup previous cfml and final-php files to an non-web-accessible folder ...
 		
+		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==10 ){
+			// Add a new CFML page to the server ...
+			if( isset($_POST["NewCFMLpage"]) and trim($_POST["NewCFMLpage"])!==""){
+				
+				$cffileName=$_POST["NewCFMLpage"];
+				$cffileName=ListLast($cffileName,"/"); $cffileName=ListLast($cffileName,"\"); // Making sure a new file is not stored in another directory
+				$cffileExt=ListLast($cffileName,".");
+				$cffileName=Replace($cffileName,".$cffileExt","");
+				
+				if( trim($cffileName)!=="" and (UCASE(trim($cffileExt))==="CFM" or UCASE(trim($cffileExt))==="CFML" or UCASE(trim($cffileExt))==="CFC" ) ){
+				
+					$cp_CFfile="$dir$cffileName.$cffileExt";
+					$cp_PHPfile_t="$dir$cffileName.tmp.php";
+					$cp_PHPfile_f="$dir$cffileName.php";
+				
+				
+					$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
+					fwrite($exportFile," "); fclose($exportFile);
+					
+					echo "You are editing a new CFML file called: $cffileName.$cffileExt";
+				}
+			}
+			$cp_PHPcode=" ";
+			$cp_CFcode=" ";
+		}
+		
+		
 		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==1 ){
+			// Translate CFML to PHP_editing file.
 			if( isset($_POST["CFMcode"]) and trim($_POST["CFMcode"])!==""){
 				//echo "$cp_CFfile";
 				$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
@@ -57,7 +87,9 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 			$cp_PHPcode=cfphpParser($cp_CFfile);
 			$cp_CFcode=$_POST["CFMcode"];
 		}
+		
 		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==2 ){
+			// Update PHP_editing file.
 			if( isset($_POST["CFMcode"]) and trim($_POST["CFMcode"])!==""){
 				//echo "$cp_CFfile";
 				$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
@@ -83,7 +115,8 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 			
 		}
 		
-		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==3 ){ // Final PHP page ...
+		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==3 ){ 
+			// Save Final PHP page ...
 			if( isset($_POST["CFMcode"]) and trim($_POST["CFMcode"])!==""){
 				//echo "$cp_CFfile";
 				$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
@@ -100,11 +133,13 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 			//$cp_CFcode=$_POST["CFMcode"];
 			
 			echo "<form name=\"SaveFiles\" action=\"./$cffileName.$cffileExt\"  method=\"post\">\n";
-			echo "	<input type=button value=\"Edit page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\"> \n";
+			echo "	<div style='float:left;position:absolute;top:0;left:0;'><input type=button style='font-size:8px;' value=\"Edit page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\"> \n";
+			echo "	<input type=text style='font-size:8px;' name=NewCFMLpage>\n";
+			echo "	<input type=button style='font-size:8px;' value=\"New CFML page\" onclick=\"document.getElementById('SaveWhat').value=10;submit();\"></div> \n";
 			echo "	<input type=hidden name=SaveWhat id=SaveWhat value=0>\n";
 			echo "</form>\n";
 			
-			include "./$cffileName.php"; // <<<<<<< Final execution of PHP file
+			include "./$cffileName.php"; // <<<<<<< Execution of Final PHP file
 			die(); // To avoid the exucution of the CFML template
 		}
 		
