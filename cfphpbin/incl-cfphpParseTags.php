@@ -156,12 +156,6 @@ function ParseCFscript($AttributeLine,&$output){
 }
 
 
-function ParseCFquery($AttributeLine,&$output){
-
-	$output.="[CFQUERY $AttributeLine]";
-
-}
-
 function ParseCFdirectory($AttributeLine,&$output){
 
 	$output.="[CFDIRECTORY $AttributeLine]";
