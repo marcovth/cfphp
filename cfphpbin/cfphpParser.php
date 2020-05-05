@@ -17,7 +17,10 @@ function cfphpParser($cp_CFfile){
 	if ($file) {
 		while (($line = fgets($file)) !== false) {
 			
-			if(preg_match('/(\/cfscript)/', $line)) $InCFscript=false;
+			//if(preg_match('/(\/cfscript)/', $line)) $InCFscript=false;
+			if(FindNoCase("\/cfscript",$line))  $InCFscript=false;
+			if(FindNoCase("\/CFQUERY",$line))  $InsideInnerHTML=false;
+			
 			
 			if($InCFscript){
 				// Line inside cfscript block ... copy over, don't even check ...
@@ -25,7 +28,7 @@ function cfphpParser($cp_CFfile){
 			} else if($InsideInnerHTML){
 				// Line inside InnerHTML block ... copy over, don't even check ...
 				$InnerHTML.="$line";
-			} else if(preg_match('/(\<cf)/', $line) or preg_match('/(\<\/cf)/', $line) ) {
+			} else if(FindNoCase("\<cf",$line) or FindNoCase("\<\/cf",$line) ){ // preg_match('/(\<cf)/', $line) or preg_match('/(\<\/cf)/', $line) ) {
 				// Line with a CF tag ...
 				$InCFtag=false; $InTagName=false; $tagName=""; $InAttributeS=false; $InAttributeName=false; $AttributeName=""; $InAttributeVal=false; $AttributeVal="";
 				$InAttributeValDQuote=false; $InAttributeValSQuote=false; $nAtt=0; $AttributeArr=array(); $AttributeLine="";
@@ -151,7 +154,8 @@ function cfphpParser($cp_CFfile){
 							$InsideInnerHTML=false; $InnerHTML=""; $InnerHTMLTagAttributeLine="";
 						}
 						
-						$output.="<?php }//$EndTagName ?>";
+						//$output.="< }//$EndTagName >";
+						$output.="[/".UCASE($EndTagName)."]";
 						$InCFEndtag=false; $EndTagName="";
 						//$i++;
 						$SkipGTsign=true;

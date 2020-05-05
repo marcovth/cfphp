@@ -1,5 +1,14 @@
 <?php
 
+function Find($find,$string){
+	return preg_match("/".$find."/",$string);
+}
+
+function FindNoCase($find,$string){
+	//echo "Find";
+	return preg_match("/".$find."/i",$string);
+}
+
 function ArrayLen($array){
 	// if(array_key_exists(0, $array)) return sizeof($array);
 	// Which one is better? ...
