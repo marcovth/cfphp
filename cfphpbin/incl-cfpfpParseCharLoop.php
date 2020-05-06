@@ -115,7 +115,7 @@
 		} else if($InsideInnerHTML and !$SkipChar){
 			$InnerHTML.=$line[$i];
 		} else {
-			// HTML after tag or inbetween tag and ending-tag ...
+			// HTML after (closing) tag ...
 			if(!$SkipChar) $output.=$line[$i]; $SkipChar=false;
 		}
 		

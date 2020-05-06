@@ -36,7 +36,9 @@ function cfphpParser($cp_CFfile){
 				
 			} else {
 				// HTML line ...
-				$output.="$line";
+																				//echo "$line<br>\n"; 
+																				//echo DetectVariables($line)."<br>\n";
+				$output.=DetectVariables($line,"AddPHPtags");
 			}
 			
 		}

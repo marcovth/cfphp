@@ -1,12 +1,35 @@
 <?php
 
-function Find($find,$string){
-	return preg_match("/".$find."/",$string);
+function Find($find,$string,$start=NULL){
+	// return preg_match("/".$find."/",$string);  preg_match is giving me errors once in a while
+	//cfFind(substring, string [, start ])
+	if(NULL===$start) $start=0; else if($start>0) $start=$start-1; // Index PHP 0 == CFML 1 etc; 
+	if($start>strlen($string)-strlen($find))$start=strlen($string)-strlen($find);
+	$found=0;
+	for($i=$start; $i<strlen($string)-strlen($find); $i++){
+		$straw=MID($string,$i,strlen($find));
+		if($straw===$find) $found=$i+1;  // Convert the position back to CFML offset
+		break;
+	}
+	return $found;
+}
+function IsEndingCharVariables($char){
+	//$charSet="[~`!@#$%^&*()_\-+=\[\]{}\|\\:;\"\'<,>.]/"; 
+	return preg_match("/[ \\~`!@#$%^&*()\-+=\[\]{}\|\\:;\"\'<,>]/",$char); // removed "._" added "\\"
+	//return preg_match($charSet,$char);
 }
 
-function FindNoCase($find,$string){
-	//echo "Find";
-	return preg_match("/".$find."/i",$string);
+function FindNoCase($find,$string,$start=NULL){
+	// return preg_match("/".$find."/i",$string);
+	if(NULL===$start) $start=0; else if($start>0) $start=$start-1; // Index PHP 0 == CFML 1 etc; 
+	if($start>strlen($string)-strlen($find))$start=strlen($string)-strlen($find);
+	$found=0;
+	for($i=$start; $i<strlen($string)-strlen($find); $i++){
+		$straw=MID($string,$i,strlen($find));
+		if(UCASE($straw)===UCASE($find)) $found=$i+1;  // Convert the position back to CFML offset
+		break;
+	}
+	return $found;
 }
 
 function ArrayLen($array){
@@ -150,5 +173,38 @@ function ReadFileTXT($FilePath){
 		return "";
 	} 
 }
+
+function StrongPassword($pass){
+	$errors = array();
+	if (strlen($pass) < 8 || strlen($pass) > 16) {
+		$errors[] = "Password should be min 8 characters and max 16 characters";
+	}
+	if (!preg_match("/\d/", $pass)) {
+		$errors[] = "Password should contain at least one digit";
+	}
+	if (!preg_match("/[A-Z]/", $pass)) {
+		$errors[] = "Password should contain at least one Capital Letter";
+	}
+	if (!preg_match("/[a-z]/", $pass)) {
+		$errors[] = "Password should contain at least one small Letter";
+	}
+	if (!preg_match("/\W/", $pass)) {
+		$errors[] = "Password should contain at least one special character";
+	}
+	if (preg_match("/\s/", $pass)) {
+		$errors[] = "Password should not contain any white space";
+	}
+
+	if ($errors) {
+		foreach ($errors as $error) {
+			echo $error . "\n";
+		}
+		die();
+	} else {
+		echo "$pass => MATCH\n";
+	}
+}
+
+
 
 ?>

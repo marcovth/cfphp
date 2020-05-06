@@ -1,19 +1,50 @@
 <?php
 
+
 //require './incl-cfphpFunctions.php';
-function DetectVariables($string){
-	$out=""; $InVariable=false;
-	for($i=0; $i<strlen(trim($string)); $i++){
-		if($string[$i]==="#"){
-			if(!$InVariable){
-				$out.="$";
-				$InVariable=true;
-			} else {
-				// Do nothing == remove #
-				$InVariable=false;
-			}
-		} else $out.=$string[$i];
-	}	
+
+function DetectVariables($string,$Addtags){ 									//echo "$Addtags";
+	//$VariableEndingChars="[~`!@#$%^&*()_\-+=\[\]{}\|\\:;\"\'<,>.]/"; 
+	$out=""; $InVariable=false; $InVariableDollar=false; $Variable="";
+	if($Addtags==="AddPHPtags") $Add=true; else $Add=false;						echo "$Add";
+	//$string=ltrim($string); // trim and ltrim are cutting off strings prematurely !!!
+	for($i=0; $i<strlen($string); $i++){										//echo "$string[$i]";
+		$c=$string[$i];															//echo "$c".IsEndingCharVariables($c)."<br>\n";
+		if(!$Add){ // default, only remove ## and print prepent $	
+			if($string[$i]==="#"){
+				if(!$InVariable){
+					$out.="$";
+					$InVariable=true;
+				} else {
+					// Do nothing == remove #
+					$InVariable=false;
+				}
+			} else $out.=$string[$i];
+			
+		} else { // Add PHP tags to print out variables
+			if($string[$i]==="#"){
+				if(!$InVariable){
+					$Variable.="$";
+					$InVariable=true;
+				} else {
+					// print variable, remove #
+					$out.="<?php echo ".$Variable." ?>";
+					$InVariable=false; $InVariableDollar=false; $Variable="";
+				}
+			} else if($string[$i]==="$"){
+				if(!$InVariableDollar){
+					$Variable.="$";
+					$InVariableDollar=true;
+				}	
+			} else if($InVariableDollar and IsEndingCharVariables($string[$i])){		//echo "$c".IsEndingCharVariables($c); // 
+					// print variable
+					$out.="<?php echo ".$Variable." ?>$c";
+					$InVariableDollar=false; $InVariable=false; $Variable="";
+			} else if($InVariable or $InVariableDollar){ $Variable.=$c;
+			} else $out.=$c;
+		}
+	}																			//echo "<br>\n";
+																				//echo "### $string<br>\n*** $out<br>\n";
 	return $out;
 }
 
@@ -31,7 +62,7 @@ function ParseAttributeLine($AttributeLine){
 			if($AttributeLine[$i]===" "){
 				$AttributeArr['AttributeName'][$nAtt]=$AttributeName;
 				$AttributeArr['AttributeVal'][$nAtt]=$AttributeVal;
-				//echo "$AttributeName+$AttributeVal\n";
+																				//echo "$AttributeName+$AttributeVal\n";
 				$nAtt++;
 			}
 			$InAttributeName=true;
@@ -39,7 +70,7 @@ function ParseAttributeLine($AttributeLine){
 			$AttributeName=""; $AttributeVal="";
 			$InAttributeValDQuote=false; $InAttributeValSQuote=false; 
 			if($AttributeLine[$i]===" ") $i++;
-			//echo "[ ]";
+																				//echo "[ ]";
 		}
 		
 		if($InAttributeName && $AttributeLine[$i]==="="){ 
@@ -47,14 +78,14 @@ function ParseAttributeLine($AttributeLine){
 			$InAttributeName=false;
 			$InAttributeVal=true;
 			$i++;
-			//echo "[=]";
+																				//echo "[=]";
 		}
 		
 		if($InAttributeVal and $AttributeLine[$i]==='"'){
 			if($InAttributeValDQuote) $InAttributeValDQuote=false;
 			else $InAttributeValDQuote=true;
 			//$i++;
-			//echo '["]';
+																				//echo '["]';
 			
 		}
 		
@@ -62,7 +93,7 @@ function ParseAttributeLine($AttributeLine){
 			if($InAttributeValSQuote) $InAttributeValSQuote=false;
 			else $InAttributeValSQuote=true;
 			//$i++;
-			//echo "[']";
+																				//echo "[']";
 		}
 		
 		
@@ -78,7 +109,7 @@ function ParseAttributeLine($AttributeLine){
 	if($AttributeName!==""){
 		$AttributeArr['AttributeName'][$nAtt]=$AttributeName;
 		$AttributeArr['AttributeVal'][$nAtt]=$AttributeVal;
-		//echo "$AttributeName+$AttributeVal\n";
+																				//echo "$AttributeName+$AttributeVal\n";
 	}
 	return $AttributeArr;
 }
@@ -87,12 +118,12 @@ function ParseAttributeLine($AttributeLine){
 
 function ParseCFset($AttributeLine,&$output){
 	//$output.="[CFSET $AttributeLine]";
-	$out="<?php ";
-	$param=ListFirst($AttributeLine,"="); 						//echo "1) $param<br>";
-	$AttributeLine=Replace($AttributeLine,"$param=",""); 		//echo "2) $AttributeLine<br>";
-	$param=DetectVariables($param); 							//echo "3) $param<br>";
-	$AttributeLine=DetectVariables($AttributeLine);				//echo "4) $AttributeLine<br>";
-	echo "[".Mid($param,1,1)."][$param]";
+	$out="<?php "; $AddPHPtags=false;
+	$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";
+	$AttributeLine=Replace($AttributeLine,"$param=",""); 						//echo "2) $AttributeLine<br>";
+	$param=DetectVariables($param,""); 											//echo "3) $param<br>";
+	$AttributeLine=DetectVariables($AttributeLine,"");								//echo "4) $AttributeLine<br>";
+																				//echo "[".Mid($param,1,1)."][$param]";
 	if(Mid($param,1,1)!=="$"){
 		if(Find("\(",$param)>0) $out.=$param." = ".$AttributeLine; // function call
 		else $out.="$".$param." = ".$AttributeLine; 				// parameter
@@ -117,11 +148,11 @@ function ParseCFparam($AttributeLine,&$output){
 	// <cfparam name="name" type="numeric" default="0">
 	//$name=ListFirst(trim($AttributeLine)," ");
 	//$name=ListGetAt(trim($AttributeLine)," ");
-	//echo "{$name}";
+																					//echo "{$name}";
 	
 	$AttributeArr=ParseAttributeLine($AttributeLine);
-	//cfdump($AttributeArr);
-	//echo ArrayLen($AttributeArr);
+																					//cfdump($AttributeArr);
+																					//echo ArrayLen($AttributeArr);
 	$out="[CFPARAM ";
 	for ($nAtt=0; $nAtt<=ArrayLen($AttributeArr); $nAtt++){
 		if($AttributeArr['AttributeName'][$nAtt] !== ""){
@@ -134,7 +165,7 @@ function ParseCFparam($AttributeLine,&$output){
 
 function ParseCFif($AttributeLine,&$output){
 	//$output.="[CFIF $AttributeLine]";
-	
+	$AddPHPtags=false;
 	$out="<?php if( ";
 	$words=explode(" ",$AttributeLine);
 	foreach($words as &$word) {
@@ -147,7 +178,7 @@ function ParseCFif($AttributeLine,&$output){
 			else if(UCASE($word)==="GTE") $out.=">= ";
 			else if(UCASE($word)==="LT") $out.="< ";
 			else if(UCASE($word)==="LTE") $out.="<= ";
-			else $out.=DetectVariables($word)." ";
+			else $out.=DetectVariables($word,"")." ";
 		//}
 	}
 	unset($word);
@@ -163,7 +194,7 @@ $output.="<?php } else { ?>";
 
 function ParseCFelseif($AttributeLine,&$output){
 	//$output.="[CFELSEIF $AttributeLine]";
-	
+	$AddPHPtags=false;
 	$out="<?php } else if( ";
 	$words=explode(" ",$AttributeLine);
 	foreach($words as &$word) {
@@ -176,7 +207,7 @@ function ParseCFelseif($AttributeLine,&$output){
 			else if(UCASE($word)==="GTE") $out.=">= ";
 			else if(UCASE($word)==="LT") $out.="< ";
 			else if(UCASE($word)==="LTE") $out.="<= ";
-			else $out.=DetectVariables($word)." ";
+			else $out.=DetectVariables($word,"")." ";
 		//}
 	}
 	unset($word);
