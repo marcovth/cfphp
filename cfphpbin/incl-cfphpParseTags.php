@@ -18,6 +18,7 @@ function DetectVariables($string){
 }
 
 
+
 function ParseAttributeLine($AttributeLine){
 	//$Attributes=explode(" ",$AttributeLine);
 	$nAtt=0; $AttributeArr=array();
@@ -85,9 +86,16 @@ function ParseAttributeLine($AttributeLine){
 
 
 function ParseCFset($AttributeLine,&$output){
-
-	$output.="[CFSET $AttributeLine]";
-
+	//$output.="[CFSET $AttributeLine]";
+	$out="<?php ";
+	$param=ListFirst($AttributeLine,"="); 						//echo "1) $param<br>";
+	$AttributeLine=Replace($AttributeLine,$param,""); 			//echo "2) $AttributeLine<br>";
+	$param=DetectVariables($param); 							//echo "3) $param<br>";
+	$AttributeLine=DetectVariables($AttributeLine);				//echo "4) $AttributeLine<br>";
+	if(!Mid($param,1,1)=="$")$out.="$".$param.$AttributeLine;	
+	else $out.=$param.$AttributeLine;
+	
+	$output.=$out; $output.=" ?>";
 }
 
 function ParseCFloop($AttributeLine,&$output){
@@ -124,19 +132,6 @@ function ParseCFparam($AttributeLine,&$output){
 function ParseCFif($AttributeLine,&$output){
 	//$output.="[CFIF $AttributeLine]";
 	
-	//$AttributeArr=ParseAttributeLine($AttributeLine);
-	//cfdump($AttributeArr);
-	//echo ArrayLen($AttributeArr);
-	//$out="[CFIF ";
-	//for ($nAtt=0; $nAtt<=ArrayLen($AttributeArr); $nAtt++){
-	//	if($AttributeArr['AttributeName'][$nAtt] !== ""){
-	//		$out.=" ".$AttributeArr['AttributeName'][$nAtt]."=".$AttributeArr['AttributeVal'][$nAtt]." ";
-	//	}
-	//}
-	
-	
-	//$output="[CFPARAM $AttributeLine]\n";
-	
 	$out="<?php if( ";
 	$words=explode(" ",$AttributeLine);
 	foreach($words as &$word) {
@@ -155,7 +150,6 @@ function ParseCFif($AttributeLine,&$output){
 	unset($word);
 	$output.=$out; $output.="){ ?>";
 	
-
 }
 
 function ParseCFelse($AttributeLine,&$output){
@@ -165,8 +159,25 @@ $output.="<?php } else { ?>";
 }
 
 function ParseCFelseif($AttributeLine,&$output){
-
-	$output.="[CFELSEIF $AttributeLine]";
+	//$output.="[CFELSEIF $AttributeLine]";
+	
+	$out="<?php } else if( ";
+	$words=explode(" ",$AttributeLine);
+	foreach($words as &$word) {
+		//if(!empty($word)){
+			if(UCASE($word)==="IS") $out.="==";
+			else if(UCASE($word)==="NOT") $out.="!";
+			else if(UCASE($word)==="AND") $out.="and ";
+			else if(UCASE($word)==="OR") $out.="or ";
+			else if(UCASE($word)==="GT") $out.="> ";
+			else if(UCASE($word)==="GTE") $out.=">= ";
+			else if(UCASE($word)==="LT") $out.="< ";
+			else if(UCASE($word)==="LTE") $out.="<= ";
+			else $out.=DetectVariables($word)." ";
+		//}
+	}
+	unset($word);
+	$output.=$out; $output.="){ ?>";
 
 }
 

@@ -17,6 +17,10 @@ function ArrayLen($array){
 	else return 0;
 }
 
+function Mid($string,$offset,$len){
+	return substr($string,$offset,$len);
+}
+
 function ListGetAt($string,$pos,$delimiter){
 	// ListGetAt(list, position [, delimiters,  includeEmptyFields])
 	if($delimiter==="") $delimiter=",";
@@ -43,9 +47,17 @@ function ListLast($string,$delimiter){
 
 function Replace($string,$substring,$replaceString,$scope=NULL){
 	//Replace(string, substring1, obj [, scope ])
-	return str_replace($substring,$replaceString,$string);
+	if($scope=="ALL") return str_replace($substring,$replaceString,$string);
+	else if(NULL===$scope){ $scope=1; return str_replace($substring,$replaceString,$string,$scope); } // default
+	else return str_replace($substring,$replaceString,$string,$scope);
 }
 
+function ReplaceNoCase($string,$substring,$replaceString,$scope=NULL){
+	//Replace(string, substring1, obj [, scope ])
+	if($scope=="ALL") return str_ireplace($substring,$replaceString,$string);
+	else if(NULL===$scope){ $scope=1; return str_ireplace($substring,$replaceString,$string,$scope); } // default
+	else return str_ireplace($substring,$replaceString,$string,$scope);
+}
 
 function cfdump($var){
 	echo "<pre>".print_r($var)."</pre>";
