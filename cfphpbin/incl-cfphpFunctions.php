@@ -18,7 +18,7 @@ function ArrayLen($array){
 }
 
 function Mid($string,$offset,$len){
-	return substr($string,$offset,$len);
+	return substr($string,$offset-1,$len);
 }
 
 function ListGetAt($string,$pos,$delimiter){
@@ -47,16 +47,38 @@ function ListLast($string,$delimiter){
 
 function Replace($string,$substring,$replaceString,$scope=NULL){
 	//Replace(string, substring1, obj [, scope ])
-	if($scope=="ALL") return str_replace($substring,$replaceString,$string);
-	else if(NULL===$scope){ $scope=1; return str_replace($substring,$replaceString,$string,$scope); } // default
-	else return str_replace($substring,$replaceString,$string,$scope);
+	if($scope=="ALL"){ 
+		$rpl=str_replace($substring,$replaceString,$string);
+		//echo "{Replace$scope | $string | $rpl]";
+		return $rpl; 
+	} else if(NULL===$scope){ // default
+		$scope=1; 
+		$rpl=implode($replaceString, explode($substring, $string, 2)); //str_replace($substring,$replaceString,$string,$scope);
+		//echo "{Replace$scope | $string | $rpl]";
+		return $rpl;
+	} else {
+		$rpl=str_replace($substring,$replaceString,$string,$scope);
+		//echo "{Replace$scope | $string | $rpl]";
+		return $rpl;
+	}
 }
 
 function ReplaceNoCase($string,$substring,$replaceString,$scope=NULL){
 	//Replace(string, substring1, obj [, scope ])
-	if($scope=="ALL") return str_ireplace($substring,$replaceString,$string);
-	else if(NULL===$scope){ $scope=1; return str_ireplace($substring,$replaceString,$string,$scope); } // default
-	else return str_ireplace($substring,$replaceString,$string,$scope);
+	if($scope=="ALL"){ 
+		$rpl=str_ireplace($substring,$replaceString,$string);
+		//echo "{Replace$scope | $string | $rpl]";
+		return $rpl; 
+	} else if(NULL===$scope){ // default
+		$scope=1; 
+		$rpl=implode(UCASE($replaceString), explode($substring,UCASE($string),2)); //str_replace($substring,$replaceString,$string,$scope);
+		//echo "{Replace$scope | $string | $rpl]";
+		return $rpl;
+	} else {
+		$rpl=str_ireplace($substring,$replaceString,$string,$scope);
+		//echo "{Replace$scope | $string | $rpl]";
+		return $rpl;
+	}
 }
 
 function cfdump($var){

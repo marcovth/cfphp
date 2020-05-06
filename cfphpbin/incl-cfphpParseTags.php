@@ -89,11 +89,14 @@ function ParseCFset($AttributeLine,&$output){
 	//$output.="[CFSET $AttributeLine]";
 	$out="<?php ";
 	$param=ListFirst($AttributeLine,"="); 						//echo "1) $param<br>";
-	$AttributeLine=Replace($AttributeLine,$param,""); 			//echo "2) $AttributeLine<br>";
+	$AttributeLine=Replace($AttributeLine,"$param=",""); 		//echo "2) $AttributeLine<br>";
 	$param=DetectVariables($param); 							//echo "3) $param<br>";
 	$AttributeLine=DetectVariables($AttributeLine);				//echo "4) $AttributeLine<br>";
-	if(!Mid($param,1,1)=="$")$out.="$".$param.$AttributeLine;	
-	else $out.=$param.$AttributeLine;
+	echo "[".Mid($param,1,1)."][$param]";
+	if(Mid($param,1,1)!=="$"){
+		if(Find("\(",$param)>0) $out.=$param." = ".$AttributeLine; // function call
+		else $out.="$".$param." = ".$AttributeLine; 				// parameter
+	} else $out.=$param." = ".$AttributeLine;
 	
 	$output.=$out; $output.=" ?>";
 }
