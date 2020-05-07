@@ -7,7 +7,11 @@ This is a first alpha attempt to code a cfml-to-php parser.
 
 When a final php template is stored, every time a cfml (*.cfml, *.cfm, *.cfc) page is called, the final php template (with the same cfml file name) is executed as an include file on top the cfml code in the cfml file, while the cfml code is further ignored by a die() command.
 
-So basically, if you browse to "whatever.cfm" on the server, "whatever_final.php" gets executed instead as an include, but "whatever.cfm" remains the page-address. With this setup, virtually you will have a mixed Coldfusion-PHP server with added posibilites of custom CF and other HTML-style tags.
+So basically, if you browse to "whatever.cfm" on the server, "whatever_final.php" gets executed instead as an include, but "whatever.cfm" remains the page-address. 
+
+When the project is finished, with this setup, virtually you will have a mixed Coldfusion-PHP server, with added posibilites of custom CF and other HTML-style tags.
+
+Unlike the "Smarty" engine, with cfphp you can eventually use functional tags straight inside your PHP code if this project succeeds to that point. No need for seperate tlp templates. If cfphp can translate a CFML file, it should also be able to tanslate a PHP file with tags inside.
 
 The .htaccess file will add .cfm, .cfml, .cfc as PHP template types.
 
@@ -44,9 +48,5 @@ I have 20 years experience with CFML, and about 6 months with PHP. If you want t
 This project is making use of the Ace online code-editor to debug CFML->PHP code before saving the final PHP file. Please copy the Ace src folder to your cfphp folder as a subdirectory, and rename the "src" folder to "AceEditor".
 
 https://ace.c9.io/  and https://github.com/ajaxorg/ace-builds/tree/2ea299a2bee97fdf58fc90cb76eec6c45535a63f
-
-
-
-
  
 
