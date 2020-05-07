@@ -7,7 +7,7 @@ This is a first alpha attempt to code a cfml-to-php parser.
 
 When a final php template is stored, every time a cfml (*.cfml, *.cfm, *.cfc) page is called, the final php template (with the same cfml file name) is executed as an include file on top the cfml code in the cfml file, while the cfml code is further ignored by a die() command.
 
-So basically, if you browse to "whatever.cfm" on the server, "whatever_final.php" gets executed instead as an include, but "whatever.cfm" remains the page-address.
+So basically, if you browse to "whatever.cfm" on the server, "whatever_final.php" gets executed instead as an include, but "whatever.cfm" remains the page-address. With this setup, virtually you will have a mixed Coldfusion-PHP server with added posibilites of custom CF and other HTML-style tags.
 
 The .htaccess file will add .cfm, .cfml, .cfc as PHP template types.
 
