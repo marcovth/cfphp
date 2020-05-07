@@ -20,16 +20,16 @@ function IsEndingCharVariables($char){
 }
 
 function FindNoCase($find,$string,$start=NULL){
-	// return preg_match("/".$find."/i",$string);
-	if(NULL===$start) $start=0; else if($start>0) $start=$start-1; // Index PHP 0 == CFML 1 etc; 
-	if($start>strlen($string)-strlen($find))$start=strlen($string)-strlen($find);
-	$found=0;
-	for($i=$start; $i<strlen($string)-strlen($find); $i++){
-		$straw=MID($string,$i,strlen($find));
-		if(UCASE($straw)===UCASE($find)) $found=$i+1;  // Convert the position back to CFML offset
-		break;
-	}
-	return $found;
+	 return preg_match("/".$find."/i",$string);
+	//if(NULL===$start) $start=0; else if($start>0) $start=$start-1; // Index PHP 0 == CFML 1 etc; 
+	//if($start>strlen($string)-strlen($find))$start=strlen($string)-strlen($find);
+	//$found=0;
+	//for($i=$start; $i<strlen($string)-strlen($find); $i++){
+	//	$straw=MID($string,$i,strlen($find));
+	//	if(UCASE($straw)===UCASE($find)) $found=$i+1;  // Convert the position back to CFML offset
+	//	break;
+	//}
+	//return $found;
 }
 
 function ArrayLen($array){

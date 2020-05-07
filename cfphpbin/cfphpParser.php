@@ -8,7 +8,7 @@
 
 require "./cfphpbin/incl-ParseCFquery.php";
 require "./cfphpbin/incl-cfphpParseNestedTags.php";
-
+include "./cfphpbin/incl-cfphpFunctionNamesAndPHPKeywords.php";
 
 function cfphpParser($cp_CFfile){
 
@@ -38,7 +38,7 @@ function cfphpParser($cp_CFfile){
 				// HTML line ...
 																				//echo "$line<br>\n"; 
 																				//echo DetectVariables($line)."<br>\n";
-				$output.=DetectVariables($line,"AddPHPtags");
+				$output.=DetectVariables($line,"yes");
 			}
 			
 		}

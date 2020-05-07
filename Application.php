@@ -1,8 +1,8 @@
 <?php 
 
 //echo "Application.php";
-require './cfphpbin/incl-cfphpParseTags.php';
 require './cfphpbin/incl-cfphpFunctions.php';
+require './cfphpbin/incl-cfphpParseTags.php';
 require "./cfphpbin/cfphpParser.php";
 
 $cffileName=basename($_SERVER['PHP_SELF']);

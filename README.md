@@ -3,31 +3,45 @@ cfphp - coldfusion cfml to php parser.
 
 This is a first alpha attempt to code a cfml-to-php parser.
 
-The goal is to make an automatic parser, which (when you call a cfm/cfc file on a php server) will translate it into php, and store the translated script into a php file with the same file name for display.  
+(Considering my limited PHP coding skills) The goal of this project is to make an 80% correct cfml->php parser, which should require limited php manual editing before a final php template is exported.
 
-It would be nice if we can make 80% compatible, before debugging and finishing a php template by hand.
+When a final php template is stored, every time a cfml (*.cfml, *.cfm, *.cfc) page is called, the final php template (with the same cfml file name) is executed as an include file on top the cfml code in the cfml file, while the cfml code is further ignored.
 
-Parsing cftags and arguments doesn't seem to be a the greatest problem. However, parsing variables, especially with nested #function(#variable#)# pound-signs will be a big challenge (if indeed possible?). I would therefore advise everybody testing this code to start using php-dollar-$variables in the CFML pages ... instead of pound-#variables# to avoid parsing headaches.
-
-For a strange reason, that I haven't figured out yet, I don't seem to be able to detect "<cf" tags with a capital letter in C or F or both: <CFxxx <Cfxxx <cFxxx or </CFxxx etc. 
-
-For the moment, only use small-letter cf-tags and /cf-endtags to test.
-
-The cfscripts (code blocks) are copied over from CFML to PHP, without altering. Please use php-script inside your <cfscript></cfscript> tags. 
-
-Eventually, most of the cffunctions will be translated with cffunction-names, so you will be able to use cffunctions in your (cfscript) cfml code.
-
-Will see if this project sinks. I think many cfml coders who (are forced to) switch to php will find the cffunctions library very useful.
-
-I know about Smarty temples. I have been playing with it for some months, but I realy mis cfml. On the other hand, I hope that php coders will start to appreciate cftags coding, and use this project to make their own.
-
-I have 20 years experience with CFML, and about 6 months with PHP. If you can find improvements for my PHP coding, please make sure you teach me :) 
+So basically, you call a whatever.cfm file, and whatever_final.php is executed instead, but whatever.cfm remains the page address.
 
 The .htaccess file will add .cfm, .cfml, .cfc as PHP template types.
 
-And, php_value auto_prepend_file "./Application.php" will load the Application.php page before every other php, cfm, cfml and cfc template.
+The big trick of this project is that [php_value auto_prepend_file "./Application.php"] in .htaccess will load the Application.php page before every other php, cfm, cfml and cfc template. And this Application.php contains the selection mechanisme of how to process a cfml file. PHP files are passed through without altering the php code, but you can use Application.php for php files as well.
 
-This project is making use of the Ace online code editor to debug CFML->PHP code before saving the final PHP file. Please copy the Ace src folder to your cfphp folder as a subdirectory, and rename the "src" folder to "AceEditor".
+
+
+Parsing cftags and arguments don't seem to be a the greatest problem. However, seperating function-names from variables, and especially nested #function(#variable#)# pound-signs is a big challenge, and will likely require hand-editing. 
+
+I would therefore advise everybody testing this code to start using php-dollar-$variables in CFML pages ... instead of pound-#variables# to avoid parsing headaches.
+
+For a strange reason I don't seem to be able to detect "<cf" tags with a capital letter in C or F or both: <CFxxx <Cfxxx <cFxxx or </CFxxx etc. 
+
+For the moment, only use small-letter cf-tags and /cf-endtags to test, until this is debugged.
+
+The cfscripts (code blocks) are copied over from CFML to PHP, without altering. Please use or edit to php-script inside your <cfscript></cfscript> tags. 
+
+Eventually, most of the cffunctions will be translated with cffunction-names, and you will be able to use cffunctions in your php code as well.
+
+
+Why this project?
+
+* It will make easier for CFML coders to switch to PHP.
+* PHP hosting is cheaper and easier to obtain than CFML hosting. All current Coldfusion engines seems to require a Java layer.
+* In my experience, PHP servers are faster than (shared) CFML servers. Java based script can get memory issues, requiring server reboots.
+* CFML offers a bit more higher level programming with functionality inside HTML-like CF-tags.
+* Less CFML code than PHP == less debugging. Hopefully better PHP programmers will pick up the project to make it 100% CFML compatible.
+* I know about Smarty temples. It's a great project, I have been playing with it for some months, but I realy mis cfml. 
+--- I hope that php coders will start to appreciate cftags coding, and use this project to make their own tag to extend PHP directly inside PHP code (later on when this project develops).
+* [ It's my personal killing some Corona-time while waiting for new bioinformatics data to come in later this year. ]
+
+I have 20 years experience with CFML, and about 6 months with PHP. If you want to improve my PHP coding, please join and make sure you teach me :) 
+
+This project is making use of the Ace online code-editor to debug CFML->PHP code before saving the final PHP file. Please copy the Ace src folder to your cfphp folder as a subdirectory, and rename the "src" folder to "AceEditor".
 
 https://ace.c9.io/  and https://github.com/ajaxorg/ace-builds/tree/2ea299a2bee97fdf58fc90cb76eec6c45535a63f
 

@@ -1,16 +1,21 @@
 <?php
+//require './cfphpbin/incl-cfphpFunctions.php';
 
+function IsVariable($string){
+	global $cfFunctionNames, $phplanguagekeywords;
+	if(FindNoCase($string,$phplanguagekeywords)>0 or FindNoCase($string,$cfFunctionNames)>0) return 1;
+	else return 0;
+}
 
-//require './incl-cfphpFunctions.php';
 
 function DetectVariables($string,$Addtags){ 									//echo "$Addtags";
 	//$VariableEndingChars="[~`!@#$%^&*()_\-+=\[\]{}\|\\:;\"\'<,>.]/"; 
 	$out=""; $InVariable=false; $InVariableDollar=false; $Variable="";
-	if($Addtags==="AddPHPtags") $Add=true; else $Add=false;						echo "$Add";
+	if($Addtags==="yes") $Add=true; else $Add=false;							//echo "$Add";
 	//$string=ltrim($string); // trim and ltrim are cutting off strings prematurely !!!
 	for($i=0; $i<strlen($string); $i++){										//echo "$string[$i]";
 		$c=$string[$i];															//echo "$c".IsEndingCharVariables($c)."<br>\n";
-		if(!$Add){ // default, only remove ## and print prepent $	
+		if(!$Add){ // default, only remove ## and print pre-pend $	
 			if($string[$i]==="#"){
 				if(!$InVariable){
 					$out.="$";
@@ -28,7 +33,7 @@ function DetectVariables($string,$Addtags){ 									//echo "$Addtags";
 					$InVariable=true;
 				} else {
 					// print variable, remove #
-					$out.="<?php echo ".$Variable." ?>";
+					if(strlen($Variable)>1) $out.="<?php echo ".$Variable."; ?>"; else $out.="#";
 					$InVariable=false; $InVariableDollar=false; $Variable="";
 				}
 			} else if($string[$i]==="$"){
@@ -38,7 +43,7 @@ function DetectVariables($string,$Addtags){ 									//echo "$Addtags";
 				}	
 			} else if($InVariableDollar and IsEndingCharVariables($string[$i])){		//echo "$c".IsEndingCharVariables($c); // 
 					// print variable
-					$out.="<?php echo ".$Variable." ?>$c";
+					if(strlen($Variable)>1) $out.="<?php echo ".$Variable."; ?>$c";
 					$InVariableDollar=false; $InVariable=false; $Variable="";
 			} else if($InVariable or $InVariableDollar){ $Variable.=$c;
 			} else $out.=$c;
@@ -118,11 +123,11 @@ function ParseAttributeLine($AttributeLine){
 
 function ParseCFset($AttributeLine,&$output){
 	//$output.="[CFSET $AttributeLine]";
-	$out="<?php "; $AddPHPtags=false;
+	$out="<?php "; 
 	$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";
 	$AttributeLine=Replace($AttributeLine,"$param=",""); 						//echo "2) $AttributeLine<br>";
-	$param=DetectVariables($param,""); 											//echo "3) $param<br>";
-	$AttributeLine=DetectVariables($AttributeLine,"");								//echo "4) $AttributeLine<br>";
+	$param=DetectVariables($param,"NO"); 										//echo "3) $param<br>";
+	$AttributeLine=DetectVariables($AttributeLine,"NO");						//echo "4) $AttributeLine<br>";
 																				//echo "[".Mid($param,1,1)."][$param]";
 	if(Mid($param,1,1)!=="$"){
 		if(Find("\(",$param)>0) $out.=$param." = ".$AttributeLine; // function call
@@ -165,10 +170,11 @@ function ParseCFparam($AttributeLine,&$output){
 
 function ParseCFif($AttributeLine,&$output){
 	//$output.="[CFIF $AttributeLine]";
-	$AddPHPtags=false;
 	$out="<?php if( ";
 	$words=explode(" ",$AttributeLine);
+	$n=0;
 	foreach($words as &$word) {
+		$n++;
 		//if(!empty($word)){
 			if(UCASE($word)==="IS") $out.="==";
 			else if(UCASE($word)==="NOT") $out.="!";
@@ -178,8 +184,10 @@ function ParseCFif($AttributeLine,&$output){
 			else if(UCASE($word)==="GTE") $out.=">= ";
 			else if(UCASE($word)==="LT") $out.="< ";
 			else if(UCASE($word)==="LTE") $out.="<= ";
-			else $out.=DetectVariables($word,"")." ";
+			else if($n==1 and Mid($word,1,1)!=="$" and !Find("(",$word) and !IsVariable($word) ) $out.="$".$word." ";
+			else $out.=DetectVariables($word,"no")." ";
 		//}
+		
 	}
 	unset($word);
 	$output.=$out; $output.="){ ?>";
@@ -194,7 +202,6 @@ $output.="<?php } else { ?>";
 
 function ParseCFelseif($AttributeLine,&$output){
 	//$output.="[CFELSEIF $AttributeLine]";
-	$AddPHPtags=false;
 	$out="<?php } else if( ";
 	$words=explode(" ",$AttributeLine);
 	foreach($words as &$word) {
@@ -207,7 +214,7 @@ function ParseCFelseif($AttributeLine,&$output){
 			else if(UCASE($word)==="GTE") $out.=">= ";
 			else if(UCASE($word)==="LT") $out.="< ";
 			else if(UCASE($word)==="LTE") $out.="<= ";
-			else $out.=DetectVariables($word,"")." ";
+			else $out.=DetectVariables($word,"no")." ";
 		//}
 	}
 	unset($word);
