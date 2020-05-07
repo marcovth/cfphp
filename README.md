@@ -5,7 +5,7 @@ This is a first alpha attempt to code a cfml-to-php parser.
 
 (Considering my limited PHP coding skills) The goal of this project is to make an 80% correct cfml->php parser, which should require limited php manual editing before a final php template is exported.
 
-When a final php template is stored, every time a cfml (*.cfml, *.cfm, *.cfc) page is called, the final php template (with the same cfml file name) is executed as an include file on top the cfml code in the cfml file, while the cfml code is further ignored.
+When a final php template is stored, every time a cfml (*.cfml, *.cfm, *.cfc) page is called, the final php template (with the same cfml file name) is executed as an include file on top the cfml code in the cfml file, while the cfml code is further ignored by a die() command.
 
 So basically, you call a whatever.cfm file, and whatever_final.php is executed instead, but whatever.cfm remains the page address.
 
