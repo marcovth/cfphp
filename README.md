@@ -35,7 +35,7 @@ Eventually, most of the cffunctions will be translated with cffunction-names, an
 Why this project?
 
 * It will make easier for CFML coders to switch to PHP.
-* PHP hosting is cheaper and easier to obtain than CFML hosting. All current Coldfusion engines seems to require a Java layer.
+* PHP hosting is cheaper and easier to obtain than CFML hosting. All current Coldfusion engines seems to require a Java layer/server.
 * In my experience, PHP servers are faster than (shared) CFML servers. Java based script can get memory issues, requiring server reboots.
 * CFML offers a bit more higher level programming with functionality inside HTML-like CF-tags.
 * Less CFML code than PHP == less debugging. Hopefully better PHP programmers will pick up the project to make it 100% CFML compatible.
