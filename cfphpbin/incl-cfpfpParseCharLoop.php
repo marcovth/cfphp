@@ -18,7 +18,7 @@
 			//if($DebugLevel>=2) echo "%$tagName%";
 			if($tagName !== ''){
 				// cfPHP starting tag selector ...
-				$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); $InBetweenOrAfterCFTagsHTML="";
+				$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); $InBetweenOrAfterCFTagsHTML=""; // In between two CF-tags HTML
 				include "./cfphpbin/incl-cfpfpParseSelectStartingTag.php";
 			}
 			$InCFtag=false; $InTagName=false; $tagName=""; $InAttributeS=false; $AttributeName=""; $InAttributeVal=false; $AttributeVal="";
@@ -95,6 +95,10 @@
 			$i++;$i++;
 		}
 		if($line[$i]===">" and $InCFEndtag){
+			
+			$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); // HTML before ending-CF-tags = mostly whitespace
+			$InBetweenOrAfterCFTagsHTML="";
+			
 			if(UCASE($EndTagName)==="CFSCRIPT"){ $InCFscript=false; }
 			
 			if(UCASE($EndTagName)==="CFQUERY"){ 
@@ -126,6 +130,6 @@
 		
 		
 	}
-	$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes");
+	$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); // After the last CF-tags HTML
 
 ?>
