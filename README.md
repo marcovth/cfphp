@@ -19,7 +19,7 @@ The big trick of this project is that [php_value auto_prepend_file "./Applicatio
 
 
 
-Parsing cftags and arguments don't seem to be a the greatest problem. However, seperating function-names from variables, and especially nested #function(#variable#)# pound-signs is a big challenge, and will likely require hand-editing. 
+Parsing cftags and arguments don't seem to be a the greatest problem. However, separating function-names from variables, and especially nested #function(#variable#)# pound-signs is a big challenge, and will likely require hand-editing. 
 
 I would therefore advise everybody testing this code to start using php-dollar-$variables in CFML pages ... instead of pound-#variables# to avoid parsing headaches.
 
