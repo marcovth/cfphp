@@ -41,8 +41,19 @@ function ArrayLen($array){
 }
 
 function Mid($string,$offset,$len){
-	return substr($string,$offset-1,$len);
+	$from=$offset-1; if($from<0)return ""; 	// To prevent a negative number - Start at a specified position from the end of the string
+	if($len<0)return "";					// To prevent a negative number - The length to be returned from the end of the string
+	return substr($string,$from,$len);
+	//$out="";
+	//$to=$offset+$len-1; if($to>strlen($string))$to=strlen($string);
+	//if($offset>strlen($string)) return "[MidError]";
+	//for($i=$offset-1; $i<$to; $i++){
+	//	$out.=$string[$i];
+	//	break;
+	//}
+	//return $out;
 }
+
 
 function ListGetAt($string,$pos,$delimiter){
 	// ListGetAt(list, position [, delimiters,  includeEmptyFields])

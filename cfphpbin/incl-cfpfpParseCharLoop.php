@@ -3,17 +3,13 @@
 	
 	$InCFtag=false; $InTagName=false; $tagName=""; $InAttributeS=false; $InAttributeName=false; $AttributeName=""; $InAttributeVal=false; $AttributeVal="";
 	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $nAtt=0; $AttributeArr=array(); $AttributeLine="";
-	$InCFEndtag=false; $EndTagName="";
+	$InCFEndtag=false; $EndTagName=""; $InBetweenOrAfterCFTagsHTML=""; 
 	//echo $line;
+	//echo "<br>";
 	for ($i=0; $i<strlen($line); $i++){
-		
-		// ####  Really, really, weird ... "<cf" is detected, but uppercase "<CF" or "<cF" or "<Cf" is NOT !!! #### //
-		// ####  This is my first item on the list for someone else to fix ...                                 #### //
-		//$c1=""; $c2="";
-		//try { $c1=$line[$i+1]; $c2=$line[$i+2];
-		//} catch (Exception $e) { }
-		//if($line[$i]==="<" and LCASE($line[$i+1])==="c" and LCASE($line[$i+2])==="f"){
-		if($line[$i]==="<" and preg_match('/(c)/i', $line[$i+1]) and preg_match('/(f)/i', $line[$i+2])){
+		$cf_start=Mid($line,$i+1,3);// echo "$cf_start ";
+		//if($line[$i]==="<" and preg_match('/(c)/i', $line[$i+1]) and preg_match('/(f)/i', $line[$i+2])){
+		if(UCASE($cf_start)==="<CF"){
 			$InCFtag=true; $InTagName=true;
 			$i++;
 		}
@@ -22,6 +18,7 @@
 			//if($DebugLevel>=2) echo "%$tagName%";
 			if($tagName !== ''){
 				// cfPHP starting tag selector ...
+				$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); $InBetweenOrAfterCFTagsHTML="";
 				include "./cfphpbin/incl-cfpfpParseSelectStartingTag.php";
 			}
 			$InCFtag=false; $InTagName=false; $tagName=""; $InAttributeS=false; $AttributeName=""; $InAttributeVal=false; $AttributeVal="";
@@ -64,16 +61,24 @@
 			}
 			
 			if($InAttributeVal && $line[$i]==='"'){
-				if($InAttributeValDQuote) $InAttributeValDQuote=false;
-				else $InAttributeValDQuote=true;
+				if($InAttributeValDQuote){
+					$InAttributeValDQuote=false;
+					$InAttributeValSQuote=false;
+				} else {
+					$InAttributeValDQuote=true;
+				}
 				//$i++;
 				//echo '["]';
 				
 			}
 			
 			if($InAttributeVal && $line[$i]==="'"){ 
-				if($InAttributeValSQuote) $InAttributeValSQuote=false;
-				else $InAttributeValSQuote=true;
+				if($InAttributeValSQuote){
+					$InAttributeValSQuote=false;
+					$InAttributeValDQuote=false;
+				} else {
+					$InAttributeValSQuote=true;
+				}
 				//$i++;
 				//echo "[']";
 			}
@@ -83,9 +88,9 @@
 			$AttributeLine.=$line[$i];
 			
 		}
-		// ####  Really, really, weird ... "</cf" is detected, but uppercase "</CF" or "</cF" or "</Cf" is NOT !!! #### //
-		// ####  This is my first item on the list for someone else to fix ...                                     #### //
-		if($line[$i]==="<" and $line[$i+1]==="/" and LCASE($line[$i+2])==="c" and LCASE($line[$i+3])==="f"){
+		
+		$cf_end=Mid($line,$i+1,4);// echo "$cf_end ";
+		if(UCASE($cf_end)==="</CF"){
 			$InCFEndtag=true; $EndTagName="";
 			$i++;$i++;
 		}
@@ -115,12 +120,12 @@
 		} else if($InsideInnerHTML and !$SkipChar){
 			$InnerHTML.=$line[$i];
 		} else {
-			// HTML after (closing) tag ...
-			if(!$SkipChar) $output.=$line[$i]; $SkipChar=false;
+			// HTML after (closing) tag, or in between CF-tags ...
+			if(!$SkipChar) $InBetweenOrAfterCFTagsHTML.=$line[$i]; $SkipChar=false;
 		}
 		
 		
 	}
-
+	$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes");
 
 ?>
