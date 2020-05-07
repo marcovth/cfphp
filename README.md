@@ -36,16 +36,19 @@ Why this project?
 
 * It will make easier for CFML coders to switch to PHP.
 * PHP hosting is cheaper and easier to obtain than CFML hosting. All current Coldfusion engines seems to require a Java layer/server.
-* In my experience, PHP servers are faster than (shared) CFML servers. Java based script can get memory issues, requiring server reboots.
+* In my experience, PHP servers are faster than (shared) CFML servers. Java based scripts can get memory issues, requiring server reboots.
 * CFML offers a bit more higher level programming with functionality inside HTML-like CF-tags.
-* Less CFML code than PHP == less debugging. Hopefully better PHP programmers will pick up the project to make it 100% CFML compatible.
-* I know about Smarty temples. It's a great project, I have been playing with it for some months, but I realy mis cfml. 
+* The is less CFML code than with PHP == less debugging. (Hopefully better PHP programmers will pick up this project to make it 100% CFML compatible.)
+* I know about Smarty templates. It's a great project, I have been playing with it for some months, but I realy mis my cfml. 
 --- I hope that php coders will start to appreciate cftags coding, and use this project to make their own tag to extend PHP directly inside PHP code (later on when this project develops).
-* [ It's my personal killing some Corona-time while waiting for new bioinformatics data to come in later this year. ]
+* [ This project is my personal "killing some Corona-time" while waiting for new bioinformatics data to come in later this year. ]
 
-I have 20 years experience with CFML, and about 6 months with PHP. If you want to improve my PHP coding, please join and make sure you teach me :) 
+I have 22 years experience with CFML, and about 6 months with PHP. If you want to improve my PHP coding, please join and make sure you teach me :) 
 
-This project is making use of the Ace online code-editor to debug CFML->PHP code before saving the final PHP file. Please copy the Ace src folder to your cfphp folder as a subdirectory, and rename the "src" folder to "AceEditor".
+This project is making use of the Ace online code-editor to debug CFML->PHP code before saving the final PHP file. There is no need for an external CFML/PHP editor. 
+You still need FTP to upload CFML files to your server, but each CFML file run in Admin mode gets a CFML & PHP online Ace-editor window to make changes and to debug. So, direct editing on the server. 
+
+Please copy the Ace src folder to your cfphp folder as a subdirectory, and rename the "src" folder to "AceEditor".
 
 https://ace.c9.io/  and https://github.com/ajaxorg/ace-builds/tree/2ea299a2bee97fdf58fc90cb76eec6c45535a63f
  
