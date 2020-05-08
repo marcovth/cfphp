@@ -23,10 +23,6 @@ Parsing cftags and arguments don't seem to be a the greatest problem. However, s
 
 I would therefore advise everybody testing this code to start using php-dollar-$variables in CFML pages ... instead of pound-#variables# to avoid parsing headaches.
 
-For a strange reason I don't seem to be able to detect "<cf" tags with a capital letter in C or F or both: <CFxxx <Cfxxx <cFxxx or </CFxxx etc. 
-
-For the moment, only use small-letter cf-tags and /cf-endtags to test, until this is debugged.
-
 The cfscripts (code blocks) are copied over from CFML to PHP, without altering. Please use or edit to php-script inside your <cfscript></cfscript> tags. 
 
 Eventually, most of the cffunctions will be translated with cffunction-names, and you will be able to use cffunctions in your php code as well.
