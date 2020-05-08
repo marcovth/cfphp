@@ -25,7 +25,7 @@ This Application.php file contains the selection mechanisme of how to process a 
 
 Parsing cftags and arguments don't seem to be a the greatest problem. However, separating function-names from variables, and especially nested #function(#variable#)# pound-signs is a big challenge, and will likely require hand-editing. 
 
-I would therefore advise everybody testing this code to start using php-dollar-$variables in CFML pages ... instead of pound-#variables# to avoid parsing headaches.
+I would therefore advise everybody testing this code to start using php-dollar-$variables in CFML pages ... instead of CFML-style pound-#variables# to avoid parsing headaches.
 
 The cfscripts (code blocks) are copied over from CFML to PHP, without altering. Please use or edit to php-script inside your <cfscript></cfscript> tags. 
 
