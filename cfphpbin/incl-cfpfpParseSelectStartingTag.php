@@ -1,4 +1,5 @@
 <?php
+		//echo UCASE($tagName)."\n";
          if(UCASE($tagName)==="CFSET"){     	ParseCFset($AttributeLine,$output);  		//echo "[CFSET $AttributeLine]\n"; 
 	} else if(UCASE($tagName)==="CFLOOP"){ 		ParseCFloop($AttributeLine,$output);  		//echo "[CFLOOP $AttributeLine]<br>\n"; 
 	} else if(UCASE($tagName)==="CFOUTPUT"){	ParseCFoutput($AttributeLine,$output);  	//echo "[CFOUTPUT $AttributeLine]<br>\n"; 

@@ -20,8 +20,8 @@ function cfphpParser($cp_CFfile){
 		while (($line = fgets($file)) !== false) {
 			
 			//if(preg_match('/(\/cfscript)/', $line)) $InCFscript=false;
-			if(FindNoCase("\/cfscript",$line))  $InCFscript=false;
-			if(FindNoCase("\/CFQUERY",$line))  $InsideInnerHTML=false;
+			if(FindNoCase("/cfscript",$line))  $InCFscript=false;
+			if(FindNoCase("/CFQUERY",$line))  $InsideInnerHTML=false;
 			
 			
 			if($InCFscript){
@@ -30,7 +30,7 @@ function cfphpParser($cp_CFfile){
 			} else if($InsideInnerHTML){
 				// Line inside InnerHTML block ... copy over, don't even check ...
 				$InnerHTML.="$line";
-			} else if(FindNoCase("\<cf",$line) or FindNoCase("\<\/cf",$line) ){ // preg_match('/(\<cf)/', $line) or preg_match('/(\<\/cf)/', $line) ) {
+			} else if(FindNoCase("<cf",$line) or FindNoCase("</cf",$line) ){ // preg_match('/(\<cf)/', $line) or preg_match('/(\<\/cf)/', $line) ) {
 				// Line with a CF tag ...
 				include "./cfphpbin/incl-cfpfpParseCharLoop.php";
 				

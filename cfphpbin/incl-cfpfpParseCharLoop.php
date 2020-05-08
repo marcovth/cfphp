@@ -60,7 +60,7 @@
 				//echo "[ ]";
 			}
 			
-			if($InAttributeVal && $line[$i]==='"'){
+			if($InAttributeVal && $line[$i]==="\""){
 				if($InAttributeValDQuote){
 					$InAttributeValDQuote=false;
 					$InAttributeValSQuote=false;

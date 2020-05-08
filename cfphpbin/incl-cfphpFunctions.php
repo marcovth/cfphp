@@ -5,7 +5,7 @@ function Find($find,$string,$start=NULL){
 	if($start>strlen($string)-1) return false;
 	if(strlen($string)==0) return false; 
 	if(strlen($find)==0) return false; 
-	$found=strpos($string,$find,$start);
+	$found=mb_strpos($string,$find,$start);
 	if($found===false) return false;
 	else return $found+1; // Returns CFML 1-based offset or false
 }
@@ -15,7 +15,7 @@ function FindNoCase($find,$string,$start=NULL){
 	if($start>strlen($string)-1) return false;
 	if(strlen($string)==0) return false; 
 	if(strlen($find)==0) return false; 
-	$found=stripos($string,$find,$start);
+	$found=mb_stripos($string,$find,$start);
 	if($found===false) return false;
 	else return $found+1; // Returns CFML 1-based offset or false
 }

@@ -2,6 +2,7 @@
 
 //echo "Application.php";
 require './cfphpbin/incl-cfphpFunctions.php';
+require './cfphpbin/incl-cfphpDetectVariables.php';
 require './cfphpbin/incl-cfphpParseTags.php';
 require "./cfphpbin/cfphpParser.php";
 
