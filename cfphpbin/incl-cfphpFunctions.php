@@ -27,7 +27,7 @@ function IsEndingCharVariables($char){
 }
 
 function IsNumeric($string){
-	if(is_numeric($string)) return true else false;
+	if(is_numeric($string)) return true; else false;
 }
 
 function ArrayLen($array){
