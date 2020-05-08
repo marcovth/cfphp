@@ -1,58 +1,55 @@
 <?php
 
 function Find($find,$string,$start=NULL){
-	// return preg_match("/".$find."/",$string);  preg_match is giving me errors once in a while
-	//cfFind(substring, string [, start ])
 	if(NULL===$start) $start=0; else if($start>0) $start=$start-1; // Index PHP 0 == CFML 1 etc; 
-	if($start>strlen($string)-strlen($find))$start=strlen($string)-strlen($find);
-	$found=0;
-	for($i=$start; $i<strlen($string)-strlen($find); $i++){
-		$straw=MID($string,$i,strlen($find));
-		if($straw===$find) $found=$i+1;  // Convert the position back to CFML offset
-		break;
-	}
-	return $found;
+	if($start>strlen($string)-1) return false;
+	if(strlen($string)==0) return false; 
+	if(strlen($find)==0) return false; 
+	$found=strpos($string,$find,$start);
+	if($found===false) return false;
+	else return $found+1; // Returns CFML 1-based offset or false
 }
+
+function FindNoCase($find,$string,$start=NULL){
+	if(NULL===$start) $start=0; else if($start>0) $start=$start-1; // Index PHP 0 == CFML 1 etc; 
+	if($start>strlen($string)-1) return false;
+	if(strlen($string)==0) return false; 
+	if(strlen($find)==0) return false; 
+	$found=stripos($string,$find,$start);
+	if($found===false) return false;
+	else return $found+1; // Returns CFML 1-based offset or false
+}
+
 function IsEndingCharVariables($char){
 	//$charSet="[~`!@#$%^&*()_\-+=\[\]{}\|\\:;\"\'<,>.]/"; 
 	return preg_match("/[ \\~`!@#$%^&*()\-+=\[\]{}\|\\:;\"\'<,>]/",$char); // removed "._" added "\\"
 	//return preg_match($charSet,$char);
 }
 
-function FindNoCase($find,$string,$start=NULL){
-	 return preg_match("/".$find."/i",$string);
-	//if(NULL===$start) $start=0; else if($start>0) $start=$start-1; // Index PHP 0 == CFML 1 etc; 
-	//if($start>strlen($string)-strlen($find))$start=strlen($string)-strlen($find);
-	//$found=0;
-	//for($i=$start; $i<strlen($string)-strlen($find); $i++){
-	//	$straw=MID($string,$i,strlen($find));
-	//	if(UCASE($straw)===UCASE($find)) $found=$i+1;  // Convert the position back to CFML offset
-	//	break;
-	//}
-	//return $found;
+function IsNumeric($string){
+	if(is_numeric($string)) return true else false;
 }
 
 function ArrayLen($array){
-	// if(array_key_exists(0, $array)) return sizeof($array);
 	// Which one is better? ...
-	if(!empty($array)) return sizeof($array);
 	//if(count($array)>0) return count($array);
+	if(!empty($array)) return sizeof($array);
 	else return 0;
+}
+
+function ListLen($string,$delimiter){
+	// ListGetAt(list, position [, delimiters,  includeEmptyFields])
+	if($delimiter==="") $delimiter=",";
+	$words=explode($delimiter,$string);
+	return sizeof($words);
 }
 
 function Mid($string,$offset,$len){
 	$from=$offset-1; if($from<0)return ""; 	// To prevent a negative number - Start at a specified position from the end of the string
 	if($len<0)return "";					// To prevent a negative number - The length to be returned from the end of the string
 	return substr($string,$from,$len);
-	//$out="";
-	//$to=$offset+$len-1; if($to>strlen($string))$to=strlen($string);
-	//if($offset>strlen($string)) return "[MidError]";
-	//for($i=$offset-1; $i<$to; $i++){
-	//	$out.=$string[$i];
-	//	break;
-	//}
-	//return $out;
 }
+
 
 
 function ListGetAt($string,$pos,$delimiter){
@@ -68,7 +65,7 @@ function ListFirst($string,$delimiter){
 	if($delimiter==="") $delimiter=",";
 	$words=explode($delimiter,$string);
 	if(array_key_exists(0, $words)) return $words[0];
-	else return "";
+	else return "x";
 }
 
 function ListLast($string,$delimiter){
