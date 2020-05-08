@@ -1,59 +1,6 @@
 <?php
 //require './cfphpbin/incl-cfphpFunctions.php';
 
-function IsVariable($string){
-	global $cfFunctionNames, $phplanguagekeywords;
-	if(FindNoCase($string,$phplanguagekeywords)>0 or FindNoCase($string,$cfFunctionNames)>0) return 1;
-	else return 0;
-}
-
-
-function DetectVariables($string,$Addtags){ 									//echo "$Addtags";
-	//$VariableEndingChars="[~`!@#$%^&*()_\-+=\[\]{}\|\\:;\"\'<,>.]/"; 
-	$out=""; $InVariable=false; $InVariableDollar=false; $Variable="";
-	if($Addtags==="yes") $Add=true; else $Add=false;							//echo "$Add";
-	//$string=ltrim($string); // trim and ltrim are cutting off strings prematurely !!!
-	for($i=0; $i<strlen($string); $i++){										//echo "$string[$i]";
-		$c=$string[$i];															//echo "$c".IsEndingCharVariables($c)."<br>\n";
-		if(!$Add){ // default, only remove ## and print pre-pend $	
-			if($string[$i]==="#"){
-				if(!$InVariable){
-					$out.="$";
-					$InVariable=true;
-				} else {
-					// Do nothing == remove #
-					$InVariable=false;
-				}
-			} else $out.=$string[$i];
-			
-		} else { // Add PHP tags to print out variables
-			if($string[$i]==="#"){
-				if(!$InVariable){
-					$Variable.="$";
-					$InVariable=true;
-				} else {
-					// print variable, remove #
-					if(strlen($Variable)>1) $out.="<?php echo ".$Variable."; ?>"; else $out.="#";
-					$InVariable=false; $InVariableDollar=false; $Variable="";
-				}
-			} else if($string[$i]==="$"){
-				if(!$InVariableDollar){
-					$Variable.="$";
-					$InVariableDollar=true;
-				}	
-			} else if($InVariableDollar and IsEndingCharVariables($string[$i])){		//echo "$c".IsEndingCharVariables($c); // 
-					// print variable
-					if(strlen($Variable)>1) $out.="<?php echo ".$Variable."; ?>$c";
-					$InVariableDollar=false; $InVariable=false; $Variable="";
-			} else if($InVariable or $InVariableDollar){ $Variable.=$c;
-			} else $out.=$c;
-		}
-	}																			//echo "<br>\n";
-																				//echo "### $string<br>\n*** $out<br>\n";
-	return $out;
-}
-
-
 
 function ParseAttributeLine($AttributeLine){
 	//$Attributes=explode(" ",$AttributeLine);
@@ -126,7 +73,7 @@ function ParseCFset($AttributeLine,&$output){
 	$out="<?php "; 
 	$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";
 	$AttributeLine=Replace($AttributeLine,"$param=",""); 						//echo "2) $AttributeLine<br>";
-	$param=DetectVariables($param,"NO"); 										//echo "3) $param<br>";
+	$param=DetectVariables($param,"NO","leftside"); 							//echo "3) $param<br>";
 	$AttributeLine=DetectVariables($AttributeLine,"NO");						//echo "4) $AttributeLine<br>";
 																				//echo "[".Mid($param,1,1)."][$param]";
 	if(Mid($param,1,1)!=="$"){
@@ -134,7 +81,7 @@ function ParseCFset($AttributeLine,&$output){
 		else $out.="$".$param." = ".$AttributeLine; 				// parameter
 	} else $out.=$param." = ".$AttributeLine;
 	
-	$output.=$out; $output.=" ?>";
+	$output.=$out; $output.=";//cfset ?>";
 }
 
 function ParseCFloop($AttributeLine,&$output){
