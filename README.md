@@ -41,8 +41,8 @@ Why this project?
 * In my experience, c++ compiled PHP servers are (much) faster than Java-based uncompiled CFML servers. Java based scripts can easily get memory issues, requiring server reboots.
 * CFML offers a bit more higher level programming with functionality inside HTML-like CF-tags, than PHP. I have noticed that I debug a lot more in PHP! The main reason why also Smarty was developed.
 * There is less CFML code than with PHP == less debugging. Just the combination cfquery-cfoutput (or with cfloop) alone saves a lot of time.
-* I know about Smarty templates. It's a great project, I have been playing with it for some months, but I realy mis my cfml. 
---- I hope that php coders will start to appreciate cftags coding, and use this project to make their own tag to extend PHP directly inside PHP code (later on when this project develops).
+* Smarty is a great project, I have been playing with it for some months, but in the end, I realy mis my cfml. 
+Hopefully, php coders will start to appreciate cftags coding as well, and use this project to create their own tags to extend PHP directly inside PHP code (later on when this project develops).
 * [ This project is my personal "killing some Corona-time" while waiting for new bioinformatics data to come in later this year. ]
 
 I have 22 years experience with CFML, and about 6 months with PHP. If you want to improve my PHP coding, please join and make sure you teach me :) 
