@@ -27,9 +27,11 @@ Parsing cftags and arguments don't seem to be a the greatest problem. However, s
 
 I would therefore advise everybody testing this code to start using php-dollar-$variables in CFML pages ... instead of CFML-style pound-#variables# to avoid parsing headaches.
 
-The cfscripts (code blocks) are copied over from CFML to PHP without alterations. Please use or edit to php-script inside your cfscript-tags. 
+The cfscripts (code blocks) are copied over from CFML to PHP without alterations. Please use (or hand-edit to) php-script inside your cfscript-tags. 
 
 Eventually, most of the cffunctions will be translated with cffunction-names, and you will be able to use cffunctions in your php code as well.
+
+Coding/translating CF-Tags and cffunctions will be a great tasks, and will only happen if other coders will join this project. 
 
 
 Why this project?
