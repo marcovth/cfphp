@@ -39,7 +39,7 @@ Why this project?
 * It will make easier for CFML coders to switch to PHP.
 * PHP hosting is cheaper and easier to obtain than CFML hosting. All current Coldfusion engines seem to require a Java layer/server. There are lot more php hosts to chose from than host companies offering Java or Adobe Coldfusion/Lucee. Did I mention that Adobe Coldfusion/Lucee hosting is often a lot more expensive!
 * In my experience, c++ compiled PHP servers are (much) faster than Java-based uncompiled CFML servers. Java based scripts can easily get memory issues, requiring server reboots.
-* CFML offers a bit more higher level programming with functionality inside HTML-like CF-tags.
+* CFML offers a bit more higher level programming with functionality inside HTML-like CF-tags, than PHP. I have noticed that I debug a lot more in PHP! The main reason why also Smarty was developed.
 * The is less CFML code than with PHP == less debugging. (Hopefully better PHP programmers will pick up this project to make it 100% CFML compatible.)
 * I know about Smarty templates. It's a great project, I have been playing with it for some months, but I realy mis my cfml. 
 --- I hope that php coders will start to appreciate cftags coding, and use this project to make their own tag to extend PHP directly inside PHP code (later on when this project develops).
