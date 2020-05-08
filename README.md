@@ -20,7 +20,7 @@ The .htaccess file of this project adds [.cfm, .cfml, .cfc] as PHP template type
 
 The big trick of this project is the added [php_value auto_prepend_file "./Application.php"] line in .htaccess. This will load the Application.php page before every other PHP, cfm, cfml and cfc template. 
 
-This Application.php contains the selection mechanisme of how to process a cfml file. PHP files are passed through without altering the php code, but you can use Application.php for php files as well.
+This Application.php file contains the selection mechanisme of how to process a cfml file. PHP files are passed through without altering the php code, but you can optionally use Application.php to prepend every php file with php code as well.
 
 
 Parsing cftags and arguments don't seem to be a the greatest problem. However, separating function-names from variables, and especially nested #function(#variable#)# pound-signs is a big challenge, and will likely require hand-editing. 
