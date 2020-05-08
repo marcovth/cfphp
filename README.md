@@ -40,7 +40,7 @@ Why this project?
 * PHP hosting is cheaper and easier to obtain than CFML hosting. All current Coldfusion engines seem to require a Java layer/server. There are lot more php hosts to chose from than host companies offering Java or Adobe Coldfusion/Lucee. Did I mention that Adobe Coldfusion/Lucee hosting is often a lot more expensive!
 * In my experience, c++ compiled PHP servers are (much) faster than Java-based uncompiled CFML servers. Java based scripts can easily get memory issues, requiring server reboots.
 * CFML offers a bit more higher level programming with functionality inside HTML-like CF-tags, than PHP. I have noticed that I debug a lot more in PHP! The main reason why also Smarty was developed.
-* There is less CFML code than with PHP == less debugging. Just the combination cfquery-cfoutput (or with cfloop) alone saves a lot of time.
+* There is less CFML code than with PHP == less debugging. Just the combination cfquery-cfoutput (or with cfloop) alone saves a lot of time. The sucess of this project will, in particular, depend on whether we can make the cfquery tag work with all its many options.
 * Smarty is a great project, I have been playing with it for some months, but in the end, I realy mis my cfml. 
 Hopefully, php coders will start to appreciate cftags coding as well, and use this project to create their own tags to extend PHP directly inside PHP code (later on when this project develops).
 * [ This project is my personal "killing some Corona-time" while waiting for new bioinformatics data to come in later this year. ]
