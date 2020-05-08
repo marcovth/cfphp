@@ -1,6 +1,6 @@
 # cfphp
 
-(./cfphp-logo.png?raw=true)
+![Alt text](./cfphp-logo.png?raw=true)
 
 cfphp - coldfusion cfml to php parser.
 
