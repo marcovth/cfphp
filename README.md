@@ -11,7 +11,10 @@ So basically, if you browse to "whatever.cfm" on the server, "whatever_final.php
 
 When the project is finished, with this setup, virtually you will have a mixed Coldfusion-PHP server, with added posibilites of custom CF and other HTML-style tags.
 
-Unlike the "Smarty" engine, with cfphp you can eventually use functional tags straight inside your PHP page, if this project succeeds to that point. No need for seperate smarty tpl templates. If cfphp can translate a CFML file, it should also be able to translate a PHP file with tags inside.
+Unlike the "Smarty" engine, with cfphp you can eventually use functional tags straight inside your PHP page, if this project succeeds to that point. No need for seperate smarty tpl templates. If cfphp can translate a CFML file, it should also be able to translate a PHP file with CF-tags inside.
+
+BTW, I would encourage everybody visiting here to also try and use "Smarty". It has been in development for many years. https://www.smarty.net/
+
 
 The .htaccess file will add .cfm, .cfml, .cfc as PHP template types.
 
