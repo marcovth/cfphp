@@ -16,10 +16,11 @@ Unlike the "Smarty" engine, with cfphp you can eventually use functional tags st
 BTW, I would encourage everybody visiting here to also try and use "Smarty". It has been in development for many years. https://www.smarty.net/
 
 
-The .htaccess file will add .cfm, .cfml, .cfc as PHP template types.
+The .htaccess file of this project adds [.cfm, .cfml, .cfc] as PHP template types. cfphp will only work if you can add or edit the .htaccess file in your website.
 
-The big trick of this project is that [php_value auto_prepend_file "./Application.php"] in .htaccess will load the Application.php page before every other php, cfm, cfml and cfc template. And this Application.php contains the selection mechanisme of how to process a cfml file. PHP files are passed through without altering the php code, but you can use Application.php for php files as well.
+The big trick of this project is the added [php_value auto_prepend_file "./Application.php"] line in .htaccess. This will load the Application.php page before every other PHP, cfm, cfml and cfc template. 
 
+This Application.php contains the selection mechanisme of how to process a cfml file. PHP files are passed through without altering the php code, but you can use Application.php for php files as well.
 
 
 Parsing cftags and arguments don't seem to be a the greatest problem. However, separating function-names from variables, and especially nested #function(#variable#)# pound-signs is a big challenge, and will likely require hand-editing. 
