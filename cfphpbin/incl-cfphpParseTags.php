@@ -73,7 +73,7 @@ function ParseCFset($AttributeLine,&$output){
 	$out="<?php "; 
 	$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";
 	$AttributeLine=Replace($AttributeLine,"$param=",""); 						//echo "2) $AttributeLine<br>";
-	$param=DetectVariables($param,"NO","leftside"); 							//echo "3) $param<br>";
+	$param=DetectVariables($param,"NO"); 							//echo "3) $param<br>";
 	$AttributeLine=DetectVariables($AttributeLine,"NO");						//echo "4) $AttributeLine<br>";
 																				//echo "[".Mid($param,1,1)."][$param]";
 	if(Mid($param,1,1)!=="$"){
@@ -85,8 +85,32 @@ function ParseCFset($AttributeLine,&$output){
 }
 
 function ParseCFloop($AttributeLine,&$output){
-
-	$output.="[CFLOOP $AttributeLine]";
+	//$output.="[CFLOOP $AttributeLine]";
+	
+	$AttributeArr=ParseAttributeLine($AttributeLine);
+	$out="<?php ";
+	$cfloop_from=""; $cfloop_to=""; $cfloop_index=""; $cfloop_step="";
+	for ($nAtt=0; $nAtt<=ArrayLen($AttributeArr); $nAtt++){
+		if($AttributeArr['AttributeName'][$nAtt] !== ""){
+			     if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "FROM") 	$cfloop_from=trim($AttributeArr['AttributeVal'][$nAtt]);
+			else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "TO") 	$cfloop_to=trim($AttributeArr['AttributeVal'][$nAtt]);
+			else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "INDEX") 	$cfloop_index=trim($AttributeArr['AttributeVal'][$nAtt]);
+			else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "STEP") 	$cfloop_step=trim($AttributeArr['AttributeVal'][$nAtt]);
+			else $out.=" ".$AttributeArr['AttributeName'][$nAtt]."=".$AttributeArr['AttributeVal'][$nAtt]." ";
+		}
+	}
+	
+	if($cfloop_from!=="" and $cfloop_to!=="" and $cfloop_index!==""){
+		if($cfloop_step!=="") $cfloop_step=1;
+		$out.="for(\$from=".DetectVariables($cfloop_from,"NO")."; \$to<=".DetectVariables($cfloop_to,"NO")."; ".DetectVariables($cfloop_index,"NO")."=".DetectVariables($cfloop_index,"NO")."+".DetectVariables($cfloop_step,"NO")." ){";
+		$out.="//CFLOOP ?>";
+	}
+	
+	
+	$output.=$out; //"[CFLOOP $AttributeLine]";
+	
+	
+	
 
 }
 
