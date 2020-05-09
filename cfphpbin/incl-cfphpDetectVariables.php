@@ -28,7 +28,7 @@ function DetectVariables($string,$Addtags){//,$type=null){ 									//echo "$Add
 				// Double quote as part of in between single quote text ...
 				$word.=$c;
 			} else { // Not in Double and Not in Single Quotes ... Start of Double quote text ...
-				$out.=$c;  	// print double quote
+				$out.=$word.$c;  	// print double quote
 				$word="";	// start a new word
 				$InAttributeValDQuote=true;														//echo "(InDQ)";
 				$InAttributeValSQuote=false;
@@ -44,7 +44,7 @@ function DetectVariables($string,$Addtags){//,$type=null){ 									//echo "$Add
 				// Double quote as part of in between Single quote text ...
 				$word.=$c;
 			} else { // Not in Double and Not in Single Quotes ... Start of Single quote text ...
-				$out.=$c;  	// print double quote
+				$out.=$word.$c;  	// print single quote
 				$word="";	// start a new word
 				$InAttributeValSQuote=true;														//echo "(InSQ)";
 				$InAttributeValDQuote=false;
@@ -78,6 +78,8 @@ function DetectVariables($string,$Addtags){//,$type=null){ 									//echo "$Add
 				// It's a comma separating arguments in a function ... print word
 				if(IsNumeric($word)){ // No dollar signs in front of numers !
 					$out.=$word.$c;
+				} else if(!$InFunction){
+					$out.=$word.$c."[!F]";
 				} else if(strlen($word)>1){ // Making sure dollsr signs are not printed with empty words.
 					if($Addtags==="yes"){
 						if($InVariableDollar) 	$out.="<?php echo ".$word."; ?>$c"; 	// Dollar sign is already present.
@@ -94,26 +96,27 @@ function DetectVariables($string,$Addtags){//,$type=null){ 									//echo "$Add
 				// It's a comma inside quoted text. Copy comma and move on ...
 				$word.=",";	// copy over the comma
 			}
-		} else if($c===")"){
+		} else if($c===")" or $c==="]" or $c==="+" or $c==="-" or $c==="*"){
+			if($c===")") $InFunction=false;
+			
 			if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 				// It's the end of a function ... print word
 				if(IsNumeric($word)){ // No dollar signs in front of numers !
-					$out.=$word.")";
-				} else if(strlen($word)>1){ // Making sure dollsr signs are not printed with empty words.
+					$out.=$word.$c;//."_1";
+				} else if(strlen(trim($word))>0){ // Making sure dollsr signs are not printed with empty words.
 					if($Addtags==="yes"){
 						if($InVariableDollar) 	$out.="<?php echo ".$word."; ?>$c"; 	// Dollar sign is already present.
 						else 					$out.="<?php echo $".$word."; ?>$c";
 					} else {					
-						if($InVariableDollar) 	$out.=$word.")"; 						// Dollar sign is already present.
-						else 					$out.="$".$word.")";
+						if($InVariableDollar) 	$out.=$word.$c;//."_2"; 						// Dollar sign is already present.
+						else 					$out.="$".$word.$c;//."_3";
 					}
-				}
+				} else $out.=$c;//."_4";
 				$word="";	// start a new word
-				$out.=")";	// Print the )
 				$InVariablePound=false; $InVariableDollar=false;
 			} else {
 				// It's a bracket inside quoted text. Copy bracket and move on ...
-				$word.=")";	// copy over the bracket
+				$word.=$c;//."_5";	// copy over the bracket
 			}
 		} else if($c==="("){
 			if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
@@ -122,6 +125,7 @@ function DetectVariables($string,$Addtags){//,$type=null){ 									//echo "$Add
 				$word="";	// start a new word
 				$out.="(";	// Print the (
 				$InVariablePound=false; $InVariableDollar=false;
+				if($c==="(") $InFunction=true;
 			} else {
 				// It's a bracket inside quoted text. Copy bracket and move on ...
 				$word.=",";	// copy over the bracket
@@ -146,7 +150,7 @@ function DetectVariables($string,$Addtags){//,$type=null){ 									//echo "$Add
 		
 		if($i>=strlen($string)-1){
 			// Make sure the last word is carried over when the line ends.
-			$out.=$word;
+			$out.=$word;//."%";
 		}
 		/*
 		if($i==strlen($string)-1){ // space or last char in the line ... //$c===" " or 
