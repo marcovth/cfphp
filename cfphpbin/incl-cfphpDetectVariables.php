@@ -1,19 +1,18 @@
 <?php
 
-
-function DetectVariables($string,$Addtags){//,$type=null){ 									//echo "$Addtags";
+function DetectVariables($string,$Addtags){																//echo "{".$string."}";
 	//$VariableEndingChars="[~`!@#$%^&*()_\-+=\[\]{}\|\\:;\"\'<,>.]/"; 
 	$out=""; $InVariablePound=false; $InVariableDollar=false; $Variable=""; $word=""; $InFunction=false;
 	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $InHTMLcommendOut=false;
-	if($Addtags==="yes") $Add=true; else $Add=false;									//echo "$Add";
-	// if(null===$type) $type="rightside"; else $type="leftside";	
-	//$string=ltrim($string); // trim and ltrim are cutting off strings prematurely !!!
-	// if(trim($string)==="") return $string;
-	// if($type==="leftside"){																echo "leftside";
-		// $Keywords="true,false";
-		// if(FindNoCase(trim($string),$Keywords)===false) return $string="$".$string;	
-		// else return $string;
-	// }
+	if($Addtags==="yes") $Add=true; else $Add=false;														//echo "$Add";
+	
+	if(strlen($string)===1 and !IsNumeric($string) and $string!==" " and $string!=="	") return "$".$string;
+	if (!IsNumeric(Mid($string,1,1)) and preg_match('/^[a-zA-Z]+[a-zA-Z0-9._]+$/',$string)) {			//echo "[$string]";
+		// If the first char is not a number and the rest of the string is AlphaNumeric ... 
+		// Most cases ...
+		if(Mid($string,1,1)==="$") return $string; else return "$".$string;
+	}
+	if (IsNumeric($string)) return $string;
 																											//echo "<br>\n";
 	for($i=0; $i<strlen($string); $i++){																	//echo "$string[$i]";
 		$c=$string[$i];	
