@@ -111,16 +111,17 @@ function ReplaceNoCase($string,$substring,$replaceString,$scope=NULL){
 	//Replace(string, substring1, obj [, scope ])
 	if($scope=="ALL"){ 
 		$rpl=str_ireplace($substring,$replaceString,$string);
-		//echo "{Replace$scope | $string | $rpl]";
+		//echo "ReplaceNoCase[$scope | $string | $rpl]<br>\n";
 		return $rpl; 
 	} else if(NULL===$scope){ // default
 		$scope=1; 
-		$rpl=implode(UCASE($replaceString), explode($substring,UCASE($string),2)); //str_replace($substring,$replaceString,$string,$scope);
-		//echo "{Replace$scope | $string | $rpl]";
+		//$rpl=implode(UCASE($replaceString), explode($substring,UCASE($string),2)); 
+		$rpl=str_ireplace($substring,$replaceString,$string,$scope);
+		echo "ReplaceNoCase[$scope | $string | $rpl]<br>\n";
 		return $rpl;
 	} else {
 		$rpl=str_ireplace($substring,$replaceString,$string,$scope);
-		//echo "{Replace$scope | $string | $rpl]";
+		//echo "ReplaceNoCase[$scope | $string | $rpl]<br>\n";
 		return $rpl;
 	}
 }
@@ -226,6 +227,24 @@ function StrongPassword($pass){
 	}
 }
 
+function DeleteFile($filePath){
+	$tmp = dirname(__FILE__);
+	if (strpos($tmp, '/', 0)!==false) {
+		define('WINDOWS_SERVER', false);
+	} else {
+		define('WINDOWS_SERVER', true);
+	}
+	$deleteError = 0;
+	if (!WINDOWS_SERVER) {
+		if (!unlink($filePath)) $deleteError = 1;
+	} else {
+		$lines = array();
+		exec("DEL /F/Q \"$filePath\"", $lines, $deleteError);
+	}
+	if ($deleteError) {
+		echo 'file delete error '.WINDOWS_SERVER;
+	}
+}
 
 
 ?>

@@ -79,18 +79,34 @@ function ParseAttributeLine($AttributeLine){
 
 function ParseCFset($AttributeLine,&$output){
 	//$output.="[CFSET $AttributeLine]";
-	$out="<?php "; 
-	$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";
-	$AttributeLine=Replace($AttributeLine,"$param=",""); 						//echo "2) $AttributeLine<br>";
-	$param=DetectVariables($param,"NO"); 										//echo "3) $param<br>";
-	$AttributeLine=DetectVariables($AttributeLine,"NO");						//echo "4) $AttributeLine<br>";
-																				//echo "[".Mid($param,1,1)."][$param]";
-	if(Mid($param,1,1)!=="$"){
-		if(Find("\(",$param)>0) $out.=$param." = ".$AttributeLine; // function call
-		else $out.="$".$param." = ".$AttributeLine; 				// parameter
-	} else $out.=$param." = ".$AttributeLine;
 	
-	$output.=$out; $output.=";//cfset ?>";
+	if(FindNoCase("query",$AttributeLine)){
+		if(FindNoCase("queryNew",$AttributeLine)){
+			$out="<?php ";															//echo "0) $AttributeLine<br>";
+			$param=ListFirst($AttributeLine,"="); 									//echo "1) $param<br>";
+			$AttributeLine=Replace($AttributeLine,"$param=",""); 					//echo "2) $AttributeLine<br>";
+			$param=RemoveSurroundingQuotes(trim($param));
+			$AttributeLine=ReplaceNoCase(trim($AttributeLine),"queryNew(",""); 		//echo "3) $AttributeLine<br>";
+			$AttributeLine=rtrim($AttributeLine,")");
+			$AttributeLine=ltrim($AttributeLine,"\"");
+			$AttributeLine=rtrim($AttributeLine,"\"");								//echo "4) $AttributeLine<br>";
+			$out.="queryNew(\"$param\",\"$AttributeLine\")";
+			$output.=$out.";//cfset ?>";
+		}
+	} else {
+		$out="<?php "; 
+		$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";
+		$AttributeLine=Replace($AttributeLine,"$param=",""); 						//echo "2) $AttributeLine<br>";
+		$param=DetectVariables($param,"NO"); 										//echo "3) $param<br>";
+		$AttributeLine=DetectVariables($AttributeLine,"NO");						//echo "4) $AttributeLine<br>";
+																					//echo "[".Mid($param,1,1)."][$param]";
+		if(Mid($param,1,1)!=="$"){
+			if(Find("\(",$param)>0) $out.=$param." = ".$AttributeLine; // function call
+			else $out.="$".$param." = ".$AttributeLine; 				// parameter
+		} else $out.=$param." = ".$AttributeLine;
+		
+		$output.=$out.";//cfset ?>";
+	}
 }
 
 function ParseCFloop($AttributeLine,&$output){

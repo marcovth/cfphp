@@ -6,44 +6,48 @@ if(strtoupper(basename($_SERVER['PHP_SELF']))==="APPLICATION.PHP"){
 	die(); 
 }
 
-if(!isset($cf_subfolderDir) or trim($cf_subfolderDir)===""  ){
-	$cf_fileDir=dirname(__FILE__); 
-		$cf_fileDir=str_replace("\\","/",$cf_fileDir); 	// Replace backward slashes with forward slashes for Windows.
-		if(substr($cf_fileDir,-1)!="/") $cf_fileDir.="/"; // If the last char is not a forward slash
-}
-																				//echo "$cf_fileDir<br>\n";
-$cf_serverRoot=$_SERVER['DOCUMENT_ROOT'];			
-	if(substr($cf_serverRoot,-1)!="/") $cf_serverRoot.="/"; 					//echo "$cf_serverRoot<br>\n";
-																				
-if(!isset($cf_subfolderDir) or trim($cf_subfolderDir)===""  ){
-	$cf_subfolderRoot=preg_replace("~".$cf_serverRoot."~i","",$cf_fileDir);
-		$cf_subfolderRoot="/".$cf_subfolderRoot;         					 	//echo "$cf_subfolderRoot<br>\n";
-		$cf_subfolderDir=$cf_fileDir;         								 	//echo "$cf_subfolderDir<br>\n";
+$ShowPaths=false;
+
+if(!isset($cf_fileName) or trim($cf_fileName)===""  ){
+	$cf_fileName=basename($_SERVER['PHP_SELF']); 									if($ShowPaths) echo "fileName = $cf_fileName<br>\n";
+		$cf_fileNameParts=explode(".",$cf_fileName);
+		$cf_fileNameExt=$cf_fileNameParts[sizeof($cf_fileNameParts)-1];				if($ShowPaths) echo "fileNameExt = $cf_fileNameExt<br>\n";
+		$cf_fileNameName=rtrim($cf_fileName,".$cf_fileNameExt");					if($ShowPaths) echo "fileNameName = $cf_fileNameName<br>\n";
 }
 
-$cf_serverName=$_SERVER['SERVER_NAME'];         					 			//echo "$cf_serverName<br>\n";
+$cf_fileDir=$_SERVER["SCRIPT_FILENAME"]; 
+	$cf_fileDir=str_ireplace($cf_fileName,"",$cf_fileDir);
+	$cf_fileDir=str_replace("\\","/",$cf_fileDir); 	// Replace backward slashes with forward slashes for Windows.
+	if(substr($cf_fileDir,-1)!="/") $cf_fileDir.="/"; // If the last char is not a forward slash
+
+																					if($ShowPaths) echo "fileDir = $cf_fileDir<br>\n";
+$cf_serverRoot=$_SERVER['DOCUMENT_ROOT'];			
+	if(substr($cf_serverRoot,-1)!="/") $cf_serverRoot.="/"; 						if($ShowPaths) echo "serverRoot = $cf_serverRoot<br>\n";
+																				
+	$cf_subfolderRoot=preg_replace("~".$cf_serverRoot."~i","",$cf_fileDir);
+		$cf_subfolderRoot="/".$cf_subfolderRoot;         					 		if($ShowPaths) echo "subfolderRoot = $cf_subfolderRoot<br>\n";
+		$cf_subfolderDir=$cf_fileDir;         								 		if($ShowPaths) echo "subfolderDir = $cf_subfolderDir<br>\n";
+
+$cf_serverName=$_SERVER['SERVER_NAME'];         					 				if($ShowPaths) echo "serverName = $cf_serverName<br>\n";
 
 $cf_httpType=$_SERVER["REQUEST_SCHEME"];
 if($cf_subfolderRoot=="/"){ 	// website is located in the cf_serverRoot ...
-	$cf_webRootDir=$cf_serverRoot;          								 	//echo "$cf_webRootDir<br>\n";
-	$cf_webRootAddress=$cf_httpType."://".$cf_serverName."/";  					//echo "$cf_webRootAddress<br>\n";
+	$cf_webRootDir=$cf_serverRoot;          								 		if($ShowPaths) echo "webRootDir = $cf_webRootDir<br>\n";
+	$cf_webRootAddress=$cf_httpType."://".$cf_serverName."/";  						if($ShowPaths) echo "webRootAddress = $cf_webRootAddress<br>\n";
 } else { 					// website is located in a subdirectory ...
 	$cf_subtree=explode("/",$cf_subfolderRoot);
-	$cf_webRootDir=$cf_serverRoot."/".$cf_subtree[1]."/";  						//echo "$cf_webRootDir<br>\n";
-	$cf_webRootAddress=$cf_httpType."://".$cf_serverName."/".$cf_subtree[1]."/";//echo "$cf_webRootAddress<br>\n";
+	$cf_webRootDir=$cf_serverRoot."/".$cf_subtree[1]."/";  							if($ShowPaths) echo "webRootDir = $cf_webRootDir<br>\n";
+	$cf_webRootAddress=$cf_httpType."://".$cf_serverName."/".$cf_subtree[1]."/";	if($ShowPaths) echo "webRootAddress = $cf_webRootAddress<br>\n";
 }
 
-if(!isset($cf_fileName) or trim($cf_fileName)===""  ){
-	$cf_fileName=basename($_SERVER['PHP_SELF']); 									//echo "$cf_fileName<br>\n";
-		$cf_fileNameParts=explode(".",$cf_fileName);
-		$cf_fileNameExt=$cf_fileNameParts[sizeof($cf_fileNameParts)-1];				//echo "$cf_fileNameExt<br>\n";
-		$cf_fileNameName=rtrim($cf_fileName,".$cf_fileNameExt");					//echo "$cf_fileNameName<br>\n";
-}
+
+//phpinfo();
 
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpFunctions.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpDetectVariables.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpParseTags.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/cfphpParser.php";
+require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-ParseCFquery.php";
 
 $dir=$cf_webRootDir;
 //echo "$dir $cf_fileNameName . " . UCASE($cf_fileNameExt) . " <p>\n\n";

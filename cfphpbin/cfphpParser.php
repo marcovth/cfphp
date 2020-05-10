@@ -3,7 +3,7 @@
 //ini_set("display_errors", "1"); 
 //ini_set('xdebug.max_nesting_level', 500);
 
-require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-ParseCFquery.php";
+//require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-ParseCFquery.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpParseNestedTags.php";
 //include $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpFunctionNamesAndPHPKeywords.php";
 
