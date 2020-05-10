@@ -1,6 +1,11 @@
 <?php
 //require './cfphpbin/incl-cfphpFunctions.php';
 
+function RemoveSurroundingQuotes($string){
+	$string=rtrim($string,'"'); $string=ltrim($string,'"');
+	$string=rtrim($string,"'"); $string=ltrim($string,"'");
+	return $string;
+}
 
 function ParseAttributeLine($AttributeLine){
 	//$Attributes=explode(" ",$AttributeLine);
@@ -17,8 +22,8 @@ function ParseAttributeLine($AttributeLine){
 			// Push previous attribute to attribute array ...
 																				//echo "$AttributeName==$AttributeVal\n";
 			//if(trim($AttributeVal)!=="" or $AttributeVal!=null){
-				$AttributeArr['AttributeName'][$nAtt]=$AttributeName;			//echo "$AttributeName==$AttributeVal\n";
-				$AttributeArr['AttributeVal'][$nAtt]=$AttributeVal;									
+				$AttributeArr['AttributeName'][$nAtt]=RemoveSurroundingQuotes($AttributeName); //echo "$AttributeName==$AttributeVal\n";
+				$AttributeArr['AttributeVal'][$nAtt]=RemoveSurroundingQuotes($AttributeVal);									
 				$nAtt++;
 			//}
 			$InAttributeName=true;
@@ -62,15 +67,9 @@ function ParseAttributeLine($AttributeLine){
 		}
 	
 	}
-	//if(trim($AttributeVal)!=="" or $AttributeVal!=null){
-		$AttributeArr['AttributeName'][$nAtt]=$AttributeName;					//echo "$AttributeName==$AttributeVal\n";
-		$AttributeArr['AttributeVal'][$nAtt]=$AttributeVal;									
-	//}
-	//if($AttributeName!==""){
-	//	$AttributeArr['AttributeName'][$nAtt]=$AttributeName;
-	//	$AttributeArr['AttributeVal'][$nAtt]=$AttributeVal;
-	//																			echo "$AttributeName+$AttributeVal\n";
-	//}
+
+	$AttributeArr['AttributeName'][$nAtt]=RemoveSurroundingQuotes($AttributeName); //echo "$AttributeName==$AttributeVal\n";
+	$AttributeArr['AttributeVal'][$nAtt]=RemoveSurroundingQuotes($AttributeVal);									
 	//echo "<br>\n";
 	//cfdump($AttributeArr);
 	return $AttributeArr;
@@ -97,7 +96,7 @@ function ParseCFset($AttributeLine,&$output){
 function ParseCFloop($AttributeLine,&$output){
 	//echo "[CFLOOP $AttributeLine]<br>\n";
 	
-	$AttributeArr=ParseAttributeLine($AttributeLine);
+	$AttributeArr=ParseAttributeLine($AttributeLine." x");
 	//cfdump($AttributeArr); echo "(".ArrayLen($AttributeArr['AttributeName']).")";
 	$out="<?php ";
 	$cfloop_from=""; $cfloop_to=""; $cfloop_index=""; $cfloop_step="";
@@ -116,7 +115,8 @@ function ParseCFloop($AttributeLine,&$output){
 		//echo "step=$cfloop_step";
 		if($cfloop_step==="" or $cfloop_step==null) $cfloop_step=1;
 		$index=DetectVariables($cfloop_index,"NO");
-		$out.="for( $index=".DetectVariables($cfloop_from,"NO")."; $index<=".DetectVariables($cfloop_to,"NO")."; ".DetectVariables($cfloop_index,"NO")."=".DetectVariables($cfloop_index,"NO")."+$cfloop_step; ){";
+		if($cfloop_to>$cfloop_from) $cf_direction="<="; else $cf_direction=">=";
+		$out.="for( $index=".DetectVariables($cfloop_from,"NO")."; $index$cf_direction".DetectVariables($cfloop_to,"NO")."; ".DetectVariables($cfloop_index,"NO")."=".DetectVariables($cfloop_index,"NO")."+$cfloop_step ){";
 		$out.="//CFLOOP ?>";
 	}
 	

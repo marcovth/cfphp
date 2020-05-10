@@ -107,8 +107,8 @@
 				$InsideInnerHTML=false; $InnerHTML=""; $InnerHTMLTagAttributeLine="";
 			}
 			
-			//$output.="< }//$EndTagName >";
-			$output.="[/".UCASE($EndTagName)."]";
+			$output.="<?php }//$EndTagName ?>";
+			//$output.="[/".UCASE($EndTagName)."]";
 			$InCFEndtag=false; $EndTagName="";
 			//$i++;
 			$SkipChar=true;

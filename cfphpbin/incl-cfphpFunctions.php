@@ -53,6 +53,10 @@ function ListLen($string,$delimiter){
 	return sizeof($words);
 }
 
+function Len($string){
+	
+}
+
 function Mid($string,$offset,$len){
 	$from=$offset-1; if($from<0)return ""; 	// To prevent a negative number - Start at a specified position from the end of the string
 	if($len<0)return "";					// To prevent a negative number - The length to be returned from the end of the string

@@ -33,10 +33,12 @@ if($cf_subfolderRoot=="/"){ 	// website is located in the cf_serverRoot ...
 	$cf_webRootAddress=$cf_httpType."://".$cf_serverName."/".$cf_subtree[1]."/";//echo "$cf_webRootAddress<br>\n";
 }
 
-$cf_fileName=basename($_SERVER['PHP_SELF']); 									//echo "$cf_fileName<br>\n";
-	$cf_fileNameParts=explode(".",$cf_fileName);
-	$cf_fileNameExt=$cf_fileNameParts[sizeof($cf_fileNameParts)-1];				//echo "$cf_fileNameExt<br>\n";
-	$cf_fileNameName=rtrim($cf_fileName,".$cf_fileNameExt");					//echo "$cf_fileNameName<br>\n";
+if(!isset($cf_fileName) or trim($cf_fileName)===""  ){
+	$cf_fileName=basename($_SERVER['PHP_SELF']); 									//echo "$cf_fileName<br>\n";
+		$cf_fileNameParts=explode(".",$cf_fileName);
+		$cf_fileNameExt=$cf_fileNameParts[sizeof($cf_fileNameParts)-1];				//echo "$cf_fileNameExt<br>\n";
+		$cf_fileNameName=rtrim($cf_fileName,".$cf_fileNameExt");					//echo "$cf_fileNameName<br>\n";
+}
 
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpFunctions.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpDetectVariables.php";
@@ -82,7 +84,7 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 			// Add a new CFML page to the server ...
 			if( isset($_POST["NewCFMLpage"]) and trim($_POST["NewCFMLpage"])!==""){
 				
-				//echo "[".$_POST["NewCFMLpage"]."]";
+				echo "[".$_POST["NewCFMLpage"]."]";
 				$cf_fileNameName=$_POST["NewCFMLpage"];
 				$cf_fileNameName=ListLast($cf_fileNameName,"/"); $cf_fileNameName=ListLast($cf_fileNameName,"\\"); // Making sure a new file is not stored in another directory
 				$cf_fileNameExt=ListLast($cf_fileNameName,".");
@@ -100,6 +102,10 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 					
 					echo "You are editing a new CFML file called: $cf_fileNameName.$cf_fileNameExt";
 				}
+			} else {
+				echo "<a href=$cf_fileName>$cf_fileName</a>"; 
+				header("Location: $cf_fileName");
+				die();
 			}
 			$cp_PHPcode=" ";
 			$cp_CFcode=" ";
@@ -202,22 +208,44 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 		echo "<form name=\"SaveFiles\" action=\"./$cf_fileNameName.$cf_fileNameExt\"  method=\"post\">\n";
 		echo "<table width=\"100%\">\n";
 		echo "	<tr><td align=center>\n";
+		echo "		<input type=button id=scrollbutton value=\"Unlink Scroll\" onclick=\"scrollW();\">\n";
+		echo "		<a href=./ >DirIndex</a>\n";
 		echo "		<input type=button value=\"Translate: CFML => PHP_edit page\" onclick=\"document.getElementById('SaveWhat').value=1;submit();\"> \n";
 		echo "		<input type=button value=\"Update PHP_editing page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\">\n";
 		echo "		<input type=button value=\"Save final PHP page for deployment\" onclick=\"document.getElementById('SaveWhat').value=3;submit();\"></td></tr>\n";
 		echo "		<input type=hidden name=SaveWhat id=SaveWhat value=0><input type=hidden  id=\"CFMcode\" name=\"CFMcode\"><input type=hidden id=\"PHPcode\" name=\"PHPcode\">\n";
-		echo "	<tr><td valign=\"top\" id=\"editor1\" width=\"50%\"><textarea rows=20>".$cp_CFcode."</textarea></td></tr>\n";//$cp_CFcode.
-		echo "	<tr><td valign=\"top\" id=\"editor2\" width=\"50%\"><textarea rows=20>".$cp_PHPcode."</textarea></td></tr>\n";//$cp_PHPcode.</tr>\n";
+		echo "	<tr><td valign=\"top\" id=\"editor1\" width=\"50%\"><textarea rows=20>".$cp_CFcode."\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n</textarea></td></tr>\n";//$cp_CFcode.
+		echo "	<tr><td valign=\"top\" id=\"editor2\" width=\"50%\"><textarea rows=20>".$cp_PHPcode."\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n</textarea></td></tr>\n";//$cp_PHPcode.</tr>\n";
 		echo "	<tr><td valign=\"top\" id=\"PHPpage\" width=\"100%\"><iframe width=\"100%\" height=\"600\"  src=\"./cftemp/$cf_fileNameName.tmp.php\"></iframe></td></tr>\n";
 		echo "</table>\n";
 		echo "</form>\n";
 		
 		echo "<script src=\"$cf_webRootAddress/AceEditor/ace.js\" type=\"text/javascript\" charset=\"utf-8\"></script>\n";
+		
+		?>
+		<script>
+			var scrollobj=document.getElementById("scrollbutton");
+			var scrollLinked=1;
+			function scrollW(){
+				//alert("scroll");
+				if(scrollLinked){ 
+					scrollLinked=0; 
+					scrollobj.value="Link Scroll";
+				} else {
+					scrollLinked=1;
+					scrollobj.value="Unlink Scroll";
+				} 
+			}
+		</script>	
+		<?php 
+		
+		
+		
 		echo "<script>\n";
 		
 		echo "	var CFMcodeobj=document.getElementById(\"CFMcode\");\n";
 		echo "	var PHPcodeobj=document.getElementById(\"PHPcode\");\n";
-		
+
 		echo "	var editor1 = ace.edit(\"editor1\");\n";
 		echo "	editor1.setTheme(\"ace/theme/tomorrow\");\n";
 		echo "	editor1.session.setMode(\"ace/mode/php\");\n";
@@ -233,29 +261,27 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 		echo "	//editor2.setOption(\"maxLines\", 100);\n";
 		echo "	document.getElementById('editor2').style.fontSize='16px';\n";
 
-
 		echo "	editor1.renderer.on(\"afterRender\", function(e) {\n";
 		echo "		if (editor2.session.getScrollTop() != editor1.session.getScrollTop()) {\n";
-		echo "			editor2.session.setScrollTop(editor1.session.getScrollTop());\n";
+		echo "			if(scrollLinked) editor2.session.setScrollTop(editor1.session.getScrollTop());\n";
 		echo "		 }\n";
 		echo "		if (editor2.session.getScrollLeft() != editor1.session.getScrollLeft()) {\n";
-		echo "			editor2.session.setScrollLeft(editor1.session.getScrollLeft());\n";
+		echo "			if(scrollLinked) editor2.session.setScrollLeft(editor1.session.getScrollLeft());\n";
 		echo "		 }\n";
 		echo "		 CFMcodeobj.value=editor1.getValue();\n";
 		echo "	})\n";
 		
 		echo "	editor2.renderer.on(\"afterRender\", function(e2) {\n";
 		echo "		if (editor1.session.getScrollTop() != editor2.session.getScrollTop()) {\n";
-		echo "			editor1.session.setScrollTop(editor2.session.getScrollTop());\n";
+		echo "			if(scrollLinked) editor1.session.setScrollTop(editor2.session.getScrollTop());\n";
 		echo "		 }\n";
 		echo "		if (editor1.session.getScrollLeft() != editor2.session.getScrollLeft()) {\n";
-		echo "			editor1.session.setScrollLeft(editor2.session.getScrollLeft());\n";
+		echo "			if(scrollLinked) editor1.session.setScrollLeft(editor2.session.getScrollLeft());\n";
 		echo "		 }\n";
 		echo "		 PHPcodeobj.value=editor2.getValue();\n";
 		echo "	})\n";
-		
-
 		echo "</script>\n";
+		
 		
 	} else {
 		echo "Sorry, you probably ended up here in error. Ask your administrator to process this page.";
