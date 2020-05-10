@@ -6,16 +6,20 @@ if(strtoupper(basename($_SERVER['PHP_SELF']))==="APPLICATION.PHP"){
 	die(); 
 }
 
-$cf_fileDir=dirname(__FILE__); 
-	$cf_fileDir=str_replace("\\","/",$cf_fileDir); 	// Replace backward slashes with forward slashes for Windows.
-	if(substr($cf_fileDir,-1)!="/") $cf_fileDir.="/"; // If the last char is not a forward slash
+if(!isset($cf_subfolderDir) or trim($cf_subfolderDir)===""  ){
+	$cf_fileDir=dirname(__FILE__); 
+		$cf_fileDir=str_replace("\\","/",$cf_fileDir); 	// Replace backward slashes with forward slashes for Windows.
+		if(substr($cf_fileDir,-1)!="/") $cf_fileDir.="/"; // If the last char is not a forward slash
+}
 																				//echo "$cf_fileDir<br>\n";
 $cf_serverRoot=$_SERVER['DOCUMENT_ROOT'];			
 	if(substr($cf_serverRoot,-1)!="/") $cf_serverRoot.="/"; 					//echo "$cf_serverRoot<br>\n";
-
-$cf_subfolderRoot=preg_replace("~".$cf_serverRoot."~i","",$cf_fileDir);
-    $cf_subfolderRoot="/".$cf_subfolderRoot;         					 		//echo "$cf_subfolderRoot<br>\n";
-	$cf_subfolderDir=$cf_fileDir;         								 		//echo "$cf_subfolderDir<br>\n";
+																				
+if(!isset($cf_subfolderDir) or trim($cf_subfolderDir)===""  ){
+	$cf_subfolderRoot=preg_replace("~".$cf_serverRoot."~i","",$cf_fileDir);
+		$cf_subfolderRoot="/".$cf_subfolderRoot;         					 	//echo "$cf_subfolderRoot<br>\n";
+		$cf_subfolderDir=$cf_fileDir;         								 	//echo "$cf_subfolderDir<br>\n";
+}
 
 $cf_serverName=$_SERVER['SERVER_NAME'];         					 			//echo "$cf_serverName<br>\n";
 
@@ -105,12 +109,12 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==1 ){
 			// Translate CFML to PHP_editing file.
 			if( isset($_POST["CFMcode"]) and trim($_POST["CFMcode"])!==""){
-				//echo "$cp_CFfile";
+																					echo "$cp_CFfile<br>\n";
 				$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
 				fwrite($exportFile,trim($_POST["CFMcode"])); fclose($exportFile);
 			}
 			if( isset($_POST["PHPcode"]) and trim($_POST["PHPcode"])!==""){
-				//echo "$cp_CFfile";
+																					echo "$cp_PHPfile_t<br>\n";
 				$exportFile = fopen($cp_PHPfile_t, "w") or die("Unable to write to CFML file!");
 				fwrite($exportFile,trim($_POST["PHPcode"])); fclose($exportFile);
 			}
@@ -121,13 +125,13 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==2 ){
 			// Update PHP_editing file.
 			if( isset($_POST["CFMcode"]) and trim($_POST["CFMcode"])!==""){
-				//echo "$cp_CFfile";
+																					echo "$cp_CFfile<br>\n";
 				$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
 				fwrite($exportFile,trim($_POST["CFMcode"])); fclose($exportFile);
 				$cp_CFcode=$_POST["CFMcode"];
 			}
 			if( isset($_POST["PHPcode"]) and trim($_POST["PHPcode"])!==""){
-				//echo "$cp_CFfile";
+																					echo "$cp_PHPfile_t<br>\n";
 				$exportFile = fopen($cp_PHPfile_t, "w") or die("Unable to write to CFML file!");
 				fwrite($exportFile,trim($_POST["PHPcode"])); fclose($exportFile);
 				//$exportFile = fopen($cp_PHPfile_f, "w") or die("Unable to write to CFML file!");
