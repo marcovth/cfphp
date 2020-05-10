@@ -56,6 +56,10 @@ $cp_debugMode=true;
 $cp_UserIpAddress=getUserIpAddress(); //::1
 $cp_DebuggerRemoteIpAddress="YourRemoteIP";
 
+$cf_DBfileName=md5($GLOBALS["cf_subfolderDir"].$GLOBALS["cf_fileName"]."_".$_SERVER["REMOTE_ADDR"]);
+$cf_DBfilePath=$GLOBALS["cf_serverRoot"]."../tempdb/$cf_DBfileName.db";
+
+
 
 if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($cf_fileNameExt)==="CFC"){
 

@@ -1,3 +1,3 @@
 <cfset news = queryNew("id,title", "integer,varchar")>
 
-<cfset news = queryNew("id,title")>
+<cfset news2 = queryNew("id,title")>
