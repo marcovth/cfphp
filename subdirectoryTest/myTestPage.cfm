@@ -14,5 +14,4 @@
 <cfset azimuth=ListFirst(azimuth,"<")>
     
     
-test test <!--- commented out --->more test.    
-    
+test test <!--- commented out --->more test.
