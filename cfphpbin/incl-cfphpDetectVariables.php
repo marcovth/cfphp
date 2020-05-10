@@ -2,10 +2,10 @@
 
 function DetectVariables($string,$Addtags){																//echo "{".$string."}";
 	//$VariableEndingChars="[~`!@#$%^&*()_\-+=\[\]{}\|\\:;\"\'<,>.]/"; 
-	$out=""; $InVariablePound=false; $InVariableDollar=false; $Variable=""; $word=""; $InFunction=false;
-	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $InHTMLcommendOut=false;
+	
 	if($Addtags==="yes") $Add=true; else $Add=false;														//echo "$Add";
 	
+	// First easy cases ... single words and single number, single white spaces and tabs ...
 	if(strlen($string)===1 and !IsNumeric($string) and $string!==" " and $string!=="	") return "$".$string;
 	if (!IsNumeric(Mid($string,1,1)) and preg_match('/^[a-zA-Z]+[a-zA-Z0-9._]+$/',$string)) {			//echo "[$string]";
 		// If the first char is not a number and the rest of the string is AlphaNumeric ... 
@@ -13,7 +13,10 @@ function DetectVariables($string,$Addtags){																//echo "{".$string."}
 		if(Mid($string,1,1)==="$") return $string; else return "$".$string;
 	}
 	if (IsNumeric($string)) return $string;
-																											//echo "<br>\n";
+	
+	
+	$out=""; $InVariablePound=false; $InVariableDollar=false; $Variable=""; $word=""; $InFunction=false;
+	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $InHTMLcommendOut=false;
 	for($i=0; $i<strlen($string); $i++){																	//echo "$string[$i]";
 		$c=$string[$i];	
 		$cf_codon="@@@"; if(($i+2)<strlen($string)) $cf_codon=$string[$i].$string[$i+1].$string[$i+2];		//echo "[$cf_codon]";
