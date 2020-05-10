@@ -1,32 +1,63 @@
 <?php 
+//echo "WebRoot Application.php";
 
-//echo "Application.php";
-require './cfphpbin/incl-cfphpFunctions.php';
-require './cfphpbin/incl-cfphpDetectVariables.php';
-require './cfphpbin/incl-cfphpParseTags.php';
-require "./cfphpbin/cfphpParser.php";
+if(strtoupper(basename($_SERVER['PHP_SELF']))==="APPLICATION.PHP"){
+	echo "Sorry, but you are not allowed to call this page.";
+	die(); 
+}
 
-$cffileName=basename($_SERVER['PHP_SELF']);
-$cffileExt=ListLast($cffileName,".");
-$cffileName=Replace($cffileName,".$cffileExt","");
-$dir=__DIR__ ."/" ;
-$cp_dir=__DIR__ ."/" ;
-// echo "$dir $cffileName . " . uCASE($cffileExt) . " <p>\n\n";
+$cf_fileDir=dirname(__FILE__); 
+	$cf_fileDir=str_replace("\\","/",$cf_fileDir); 	// Replace backward slashes with forward slashes for Windows.
+	if(substr($cf_fileDir,-1)!="/") $cf_fileDir.="/"; // If the last char is not a forward slash
+																				//echo "$cf_fileDir<br>\n";
+$cf_serverRoot=$_SERVER['DOCUMENT_ROOT'];			
+	if(substr($cf_serverRoot,-1)!="/") $cf_serverRoot.="/"; 					//echo "$cf_serverRoot<br>\n";
+
+$cf_subfolderRoot=preg_replace("~".$cf_serverRoot."~i","",$cf_fileDir);
+    $cf_subfolderRoot="/".$cf_subfolderRoot;         					 		//echo "$cf_subfolderRoot<br>\n";
+	$cf_subfolderDir=$cf_fileDir;         								 		//echo "$cf_subfolderDir<br>\n";
+
+$cf_serverName=$_SERVER['SERVER_NAME'];         					 			//echo "$cf_serverName<br>\n";
+
+$cf_httpType=$_SERVER["REQUEST_SCHEME"];
+if($cf_subfolderRoot=="/"){ 	// website is located in the cf_serverRoot ...
+	$cf_webRootDir=$cf_serverRoot;          								 	//echo "$cf_webRootDir<br>\n";
+	$cf_webRootAddress=$cf_httpType."://".$cf_serverName."/";  					//echo "$cf_webRootAddress<br>\n";
+} else { 					// website is located in a subdirectory ...
+	$cf_subtree=explode("/",$cf_subfolderRoot);
+	$cf_webRootDir=$cf_serverRoot."/".$cf_subtree[1]."/";  						//echo "$cf_webRootDir<br>\n";
+	$cf_webRootAddress=$cf_httpType."://".$cf_serverName."/".$cf_subtree[1]."/";//echo "$cf_webRootAddress<br>\n";
+}
+
+$cf_fileName=basename($_SERVER['PHP_SELF']); 									//echo "$cf_fileName<br>\n";
+	$cf_fileNameParts=explode(".",$cf_fileName);
+	$cf_fileNameExt=$cf_fileNameParts[sizeof($cf_fileNameParts)-1];				//echo "$cf_fileNameExt<br>\n";
+	$cf_fileNameName=rtrim($cf_fileName,".$cf_fileNameExt");					//echo "$cf_fileNameName<br>\n";
+
+require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpFunctions.php";
+require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpDetectVariables.php";
+require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpParseTags.php";
+require $GLOBALS["cf_webRootDir"]."/cfphpbin/cfphpParser.php";
+
+$dir=$cf_webRootDir;
+//echo "$dir $cf_fileNameName . " . UCASE($cf_fileNameExt) . " <p>\n\n";
 
 $cp_debugMode=true;
 $cp_UserIpAddress=getUserIpAddress(); //::1
 $cp_DebuggerRemoteIpAddress="YourRemoteIP";
 
 
-if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)==="CFC"){
+if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($cf_fileNameExt)==="CFC"){
 
-	$cp_CFfile="$dir$cffileName.$cffileExt";
-	$cp_PHPfile_t="$dir$cffileName.tmp.php";
-	$cp_PHPfile_f="$dir$cffileName.php";
+	$cp_CFfile="$cf_subfolderDir$cf_fileNameName.$cf_fileNameExt";				echo "$cp_CFfile 1<br>\n";
+	$cp_PHPfile_t="$cf_subfolderDir/cftemp/$cf_fileNameName.tmp.php";			echo "$cp_PHPfile_t 1<br>\n";
+	$cp_PHPfile_f="$cf_subfolderDir/cffinal/$cf_fileNameName.php";				echo "$cp_PHPfile_f 1<br>\n";
 	if($cp_debugMode==false and file_exists($cp_PHPfile_f)){
-
+		// Can "::1" or 127.0.0.1 be spoofed? ... https://security.stackexchange.com/questions/124184/is-it-possible-to-send-http-packet-via-spoofed-ip
+		// It's probably safe like this? Will need more expert opinion.
+		
 		if($cp_debugMode and ($cp_UserIpAddress==="::1" or $cp_UserIpAddress==="127.0.0.1" or $cp_UserIpAddress===$cp_DebuggerRemoteIpAddress) ){
-			echo "<form name=\"SaveFiles\" action=\"./$cffileName.$cffileExt\"  method=\"post\">\n";
+			echo "<form name=\"SaveFiles\" action=\"./$cf_fileNameName.$cf_fileNameExt\"  method=\"post\">\n";
 			echo "	<div style='float:left;position:absolute;top:0;left:0;'><input type=button style='font-size:8px;' value=\"Edit page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\"> \n";
 			echo "	<input type=text style='font-size:8px;' name=NewCFMLpage>\n";
 			echo "	<input type=button style='font-size:8px;' value=\"New CFML page\" onclick=\"document.getElementById('SaveWhat').value=10;submit();\"></div> \n";
@@ -34,16 +65,13 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 			echo "</form>\n";
 		}
 		try {
-			include "./$cffileName.php"; // <<<<<<< Execution of Final PHP file
+			include "./cffinal/$cf_fileNameName.php"; // <<<<<<< Execution of Final PHP file
 		} catch (Exception $e) {
 			echo 'PHP error: ',  $e->getMessage(), "\n";
 		}
-		die();
+		die(); // To avoid the exucution of the CFML template
 		
 	} else if($cp_debugMode and ($cp_UserIpAddress==="::1" or $cp_UserIpAddress==="127.0.0.1" or $cp_UserIpAddress===$cp_DebuggerRemoteIpAddress) ){
-		// Can "::1" or 127.0.0.1 be spoofed? ... https://security.stackexchange.com/questions/124184/is-it-possible-to-send-http-packet-via-spoofed-ip
-		// It's probably safe like this? Will need more expert opinion.
-		
 		// ToDo ... backup previous cfml and final-php files to an non-web-accessible folder ...
 		
 		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==10 ){
@@ -51,22 +79,22 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 			if( isset($_POST["NewCFMLpage"]) and trim($_POST["NewCFMLpage"])!==""){
 				
 				//echo "[".$_POST["NewCFMLpage"]."]";
-				$cffileName=$_POST["NewCFMLpage"];
-				$cffileName=ListLast($cffileName,"/"); $cffileName=ListLast($cffileName,"\\"); // Making sure a new file is not stored in another directory
-				$cffileExt=ListLast($cffileName,".");
-				$cffileName=Replace($cffileName,".$cffileExt","");
+				$cf_fileNameName=$_POST["NewCFMLpage"];
+				$cf_fileNameName=ListLast($cf_fileNameName,"/"); $cf_fileNameName=ListLast($cf_fileNameName,"\\"); // Making sure a new file is not stored in another directory
+				$cf_fileNameExt=ListLast($cf_fileNameName,".");
+				$cf_fileNameName=Replace($cf_fileNameName,".$cf_fileNameExt","");
 				
-				if( trim($cffileName)!=="" and (UCASE(trim($cffileExt))==="CFM" or UCASE(trim($cffileExt))==="CFML" or UCASE(trim($cffileExt))==="CFC" ) ){
+				if( trim($cf_fileNameName)!=="" and (UCASE(trim($cf_fileNameExt))==="CFM" or UCASE(trim($cf_fileNameExt))==="CFML" or UCASE(trim($cf_fileNameExt))==="CFC" ) ){
 				
-					$cp_CFfile="$dir$cffileName.$cffileExt";
-					$cp_PHPfile_t="$dir$cffileName.tmp.php";
-					$cp_PHPfile_f="$dir$cffileName.php";
+					$cp_CFfile="$cf_subfolderDir$cf_fileNameName.$cf_fileNameExt";		echo "$cp_CFfile 2<br>\n";
+					$cp_PHPfile_t="$cf_subfolderDir/cftemp/$cf_fileNameName.tmp.php";	echo "$cp_PHPfile_t 2<br>\n";
+					$cp_PHPfile_f="$cf_subfolderDir/cffinal/$cf_fileNameName.php";		echo "$cp_PHPfile_f 2<br>\n";
 				
 				
 					$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
 					fwrite($exportFile," "); fclose($exportFile);
 					
-					echo "You are editing a new CFML file called: $cffileName.$cffileExt";
+					echo "You are editing a new CFML file called: $cf_fileNameName.$cf_fileNameExt";
 				}
 			}
 			$cp_PHPcode=" ";
@@ -134,14 +162,14 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 			//$cp_PHPcode=$_POST["PHPcode"];
 			//$cp_CFcode=$_POST["CFMcode"];
 			
-			echo "<form name=\"SaveFiles\" action=\"./$cffileName.$cffileExt\"  method=\"post\">\n";
+			echo "<form name=\"SaveFiles\" action=\"./$cf_fileNameName.$cf_fileNameExt\"  method=\"post\">\n";
 			echo "	<div style='float:left;position:absolute;top:0;left:0;'><input type=button style='font-size:8px;' value=\"Edit page\" onclick=\"document.getElementById('SaveWhat').value=2;submit();\"> \n";
 			echo "	<input type=text style='font-size:8px;' name=NewCFMLpage>\n";
 			echo "	<input type=button style='font-size:8px;' value=\"New CFML page\" onclick=\"document.getElementById('SaveWhat').value=10;submit();\"></div> \n";
 			echo "	<input type=hidden name=SaveWhat id=SaveWhat value=0>\n";
 			echo "</form>\n";
 			
-			include "./$cffileName.php"; // <<<<<<< Execution of Final PHP file
+			include "./cffinal/$cf_fileNameName.php"; // <<<<<<< Execution of Final PHP file
 			die(); // To avoid the exucution of the CFML template
 		}
 		
@@ -167,7 +195,7 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 		echo "	} \n";
 		echo "	</style> \n";
 		
-		echo "<form name=\"SaveFiles\" action=\"./$cffileName.$cffileExt\"  method=\"post\">\n";
+		echo "<form name=\"SaveFiles\" action=\"./$cf_fileNameName.$cf_fileNameExt\"  method=\"post\">\n";
 		echo "<table width=\"100%\">\n";
 		echo "	<tr><td align=center>\n";
 		echo "		<input type=button value=\"Translate: CFML => PHP_edit page\" onclick=\"document.getElementById('SaveWhat').value=1;submit();\"> \n";
@@ -176,11 +204,11 @@ if(UCASE($cffileExt)==="CFML" or UCASE($cffileExt)==="CFM" or UCASE($cffileExt)=
 		echo "		<input type=hidden name=SaveWhat id=SaveWhat value=0><input type=hidden  id=\"CFMcode\" name=\"CFMcode\"><input type=hidden id=\"PHPcode\" name=\"PHPcode\">\n";
 		echo "	<tr><td valign=\"top\" id=\"editor1\" width=\"50%\"><textarea rows=20>".$cp_CFcode."</textarea></td></tr>\n";//$cp_CFcode.
 		echo "	<tr><td valign=\"top\" id=\"editor2\" width=\"50%\"><textarea rows=20>".$cp_PHPcode."</textarea></td></tr>\n";//$cp_PHPcode.</tr>\n";
-		echo "	<tr><td valign=\"top\" id=\"PHPpage\" width=\"100%\"><iframe width=\"100%\" height=\"600\"  src=\"./$cffileName.tmp.php\"></iframe></td></tr>\n";
+		echo "	<tr><td valign=\"top\" id=\"PHPpage\" width=\"100%\"><iframe width=\"100%\" height=\"600\"  src=\"./cftemp/$cf_fileNameName.tmp.php\"></iframe></td></tr>\n";
 		echo "</table>\n";
 		echo "</form>\n";
 		
-		echo "<script src=\"./AceEditor/ace.js\" type=\"text/javascript\" charset=\"utf-8\"></script>\n";
+		echo "<script src=\"$cf_webRootAddress/AceEditor/ace.js\" type=\"text/javascript\" charset=\"utf-8\"></script>\n";
 		echo "<script>\n";
 		
 		echo "	var CFMcodeobj=document.getElementById(\"CFMcode\");\n";

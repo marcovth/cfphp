@@ -1,17 +1,15 @@
 <?php
 //error_reporting(-1); // reports all errors
 //ini_set("display_errors", "1"); 
-
 //ini_set('xdebug.max_nesting_level', 500);
-//require './incl-cfphpParseTags.php';
-//require './incl-cfphpFunctions.php';
 
-require "./cfphpbin/incl-ParseCFquery.php";
-require "./cfphpbin/incl-cfphpParseNestedTags.php";
-include "./cfphpbin/incl-cfphpFunctionNamesAndPHPKeywords.php";
+require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-ParseCFquery.php";
+require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpParseNestedTags.php";
+//include $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpFunctionNamesAndPHPKeywords.php";
 
 function cfphpParser($cp_CFfile){
-
+	
+	
 	$DebugLevel=1; // 1, 2 or 3
 
 	$output=""; $InCFscript=false; $InsideInnerHTML=false; $InnerHTML=""; $InnerHTMLTagAttributeLine="";
@@ -32,7 +30,7 @@ function cfphpParser($cp_CFfile){
 				$InnerHTML.="$line";
 			} else if(FindNoCase("<cf",$line) or FindNoCase("</cf",$line) ){ // preg_match('/(\<cf)/', $line) or preg_match('/(\<\/cf)/', $line) ) {
 				// Line with a CF tag ...
-				include "./cfphpbin/incl-cfpfpParseCharLoop.php";
+				include $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfpfpParseCharLoop.php";
 				
 			} else {
 				// HTML line ...

@@ -9,7 +9,7 @@ function ParseNestedTags($line){
 	$InsideInnerHTML=false; $InnerHTML=""; $InnerHTMLTagAttributeLine="";
 
 	// Line with a CF tag ...
-	include "./cfphpbin/incl-cfpfpParseCharLoop.php";
+	include $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfpfpParseCharLoop.php";
 	
 	return $output;
 	

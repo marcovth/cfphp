@@ -19,7 +19,7 @@
 			if($tagName !== ''){
 				// cfPHP starting tag selector ...
 				$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); $InBetweenOrAfterCFTagsHTML=""; // In between two CF-tags HTML
-				include "./cfphpbin/incl-cfpfpParseSelectStartingTag.php";
+				include $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfpfpParseSelectStartingTag.php";
 			}
 			$InCFtag=false; $InTagName=false; $tagName=""; $InAttributeS=false; $AttributeName=""; $InAttributeVal=false; $AttributeVal="";
 			$InAttributeValDQuote=false; $InAttributeValSQuote=false; $nAtt=0; $AttributeArr=array(); $AttributeLine="";
