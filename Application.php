@@ -53,9 +53,9 @@ $cp_DebuggerRemoteIpAddress="YourRemoteIP";
 
 if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($cf_fileNameExt)==="CFC"){
 
-	$cp_CFfile="$cf_subfolderDir$cf_fileNameName.$cf_fileNameExt";				echo "$cp_CFfile 1<br>\n";
-	$cp_PHPfile_t="$cf_subfolderDir/cftemp/$cf_fileNameName.tmp.php";			echo "$cp_PHPfile_t 1<br>\n";
-	$cp_PHPfile_f="$cf_subfolderDir/cffinal/$cf_fileNameName.php";				echo "$cp_PHPfile_f 1<br>\n";
+	$cp_CFfile="$cf_subfolderDir$cf_fileNameName.$cf_fileNameExt";				//echo "$cp_CFfile 1<br>\n";
+	$cp_PHPfile_t="$cf_subfolderDir/cftemp/$cf_fileNameName.tmp.php";			//echo "$cp_PHPfile_t 1<br>\n";
+	$cp_PHPfile_f="$cf_subfolderDir/cffinal/$cf_fileNameName.php";				//echo "$cp_PHPfile_f 1<br>\n";
 	if($cp_debugMode==false and file_exists($cp_PHPfile_f)){
 		// Can "::1" or 127.0.0.1 be spoofed? ... https://security.stackexchange.com/questions/124184/is-it-possible-to-send-http-packet-via-spoofed-ip
 		// It's probably safe like this? Will need more expert opinion.
@@ -90,9 +90,9 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 				
 				if( trim($cf_fileNameName)!=="" and (UCASE(trim($cf_fileNameExt))==="CFM" or UCASE(trim($cf_fileNameExt))==="CFML" or UCASE(trim($cf_fileNameExt))==="CFC" ) ){
 				
-					$cp_CFfile="$cf_subfolderDir$cf_fileNameName.$cf_fileNameExt";		echo "$cp_CFfile 2<br>\n";
-					$cp_PHPfile_t="$cf_subfolderDir/cftemp/$cf_fileNameName.tmp.php";	echo "$cp_PHPfile_t 2<br>\n";
-					$cp_PHPfile_f="$cf_subfolderDir/cffinal/$cf_fileNameName.php";		echo "$cp_PHPfile_f 2<br>\n";
+					$cp_CFfile="$cf_subfolderDir$cf_fileNameName.$cf_fileNameExt";		//echo "$cp_CFfile 2<br>\n";
+					$cp_PHPfile_t="$cf_subfolderDir/cftemp/$cf_fileNameName.tmp.php";	//echo "$cp_PHPfile_t 2<br>\n";
+					$cp_PHPfile_f="$cf_subfolderDir/cffinal/$cf_fileNameName.php";		//echo "$cp_PHPfile_f 2<br>\n";
 				
 				
 					$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
@@ -109,12 +109,12 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==1 ){
 			// Translate CFML to PHP_editing file.
 			if( isset($_POST["CFMcode"]) and trim($_POST["CFMcode"])!==""){
-																					echo "$cp_CFfile<br>\n";
+																					//echo "$cp_CFfile<br>\n";
 				$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
 				fwrite($exportFile,trim($_POST["CFMcode"])); fclose($exportFile);
 			}
 			if( isset($_POST["PHPcode"]) and trim($_POST["PHPcode"])!==""){
-																					echo "$cp_PHPfile_t<br>\n";
+																					//echo "$cp_PHPfile_t<br>\n";
 				$exportFile = fopen($cp_PHPfile_t, "w") or die("Unable to write to CFML file!");
 				fwrite($exportFile,trim($_POST["PHPcode"])); fclose($exportFile);
 			}
@@ -125,13 +125,13 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==2 ){
 			// Update PHP_editing file.
 			if( isset($_POST["CFMcode"]) and trim($_POST["CFMcode"])!==""){
-																					echo "$cp_CFfile<br>\n";
+																					//echo "$cp_CFfile<br>\n";
 				$exportFile = fopen($cp_CFfile, "w") or die("Unable to write to CFML file!");
 				fwrite($exportFile,trim($_POST["CFMcode"])); fclose($exportFile);
 				$cp_CFcode=$_POST["CFMcode"];
 			}
 			if( isset($_POST["PHPcode"]) and trim($_POST["PHPcode"])!==""){
-																					echo "$cp_PHPfile_t<br>\n";
+																					//echo "$cp_PHPfile_t<br>\n";
 				$exportFile = fopen($cp_PHPfile_t, "w") or die("Unable to write to CFML file!");
 				fwrite($exportFile,trim($_POST["PHPcode"])); fclose($exportFile);
 				//$exportFile = fopen($cp_PHPfile_f, "w") or die("Unable to write to CFML file!");
