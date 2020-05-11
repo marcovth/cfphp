@@ -122,7 +122,7 @@ function ReplaceNoCase($string,$substring,$replaceString,$scope=NULL){
 		$scope=1; 
 		//$rpl=implode(UCASE($replaceString), explode($substring,UCASE($string),2)); 
 		$rpl=str_ireplace($substring,$replaceString,$string,$scope);
-		echo "ReplaceNoCase[$scope | $string | $rpl]<br>\n";
+		//echo "ReplaceNoCase[$scope | $string | $rpl]<br>\n";
 		return $rpl;
 	} else {
 		$rpl=str_ireplace($substring,$replaceString,$string,$scope);

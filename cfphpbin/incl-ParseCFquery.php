@@ -56,12 +56,13 @@ function querySetCell($qryName,$column,$value){
 	$qryName=trim(RemoveAllQuotes($qryName));
 	$column=trim(RemoveAllQuotes($column));
 	$value=trim(RemoveAllQuotes($value));
-	echo "[$qryName][$column][$value]<br>\n";
+	//echo "[$qryName][$column][$value]<br>\n";
 	$cf_DB = new SQLite3($GLOBALS["cf_DBfilePath"]);
-	$cf_DB->exec("UPDATE $qryName SET ($column) VALUES(\"$value\") WHERE cfid=(SELECT MAX(cfid) FROM $qryName)");
-//<cfset querySetCell(news, "id", "1")>
-//<cfset querySetCell(news, "title", "Dewey defeats Truman")>
-//$cf_DB->exec("INSERT INTO cars(name, price) VALUES('Audi', 52642)");
+	$sql="";
+	if(IsNumeric($value)) $sql="UPDATE $qryName SET $column=$value WHERE cfid=(SELECT MAX(cfid) FROM $qryName);";
+	else $sql="UPDATE $qryName SET $column=\"$value\" WHERE cfid=(SELECT MAX(cfid) FROM $qryName);";
+	echo "$sql<br>\n";
+	$cf_DB->exec($sql);
 }
 
 function ParseCFquery($AttributeLine,$InnerHTML,&$output){
