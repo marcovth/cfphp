@@ -62,14 +62,17 @@ function querySetCell($qryName,$column,$value){
 	while($row=$res->fetchArray(SQLITE3_NUM)) { if($row[1]===$column) $type=$row[2]; } 
 	if($type==="INT" or $type==="REAL") $sql="UPDATE $qryName SET $column=$value WHERE cfid=(SELECT MAX(cfid) FROM $qryName);";
 	else $sql="UPDATE $qryName SET $column=\"$value\" WHERE cfid=(SELECT MAX(cfid) FROM $qryName);";
-	echo "$sql<br>\n";
+	//echo "$sql<br>\n";
 	$cf_DB->exec($sql);
 }
 
 function cfQueryOfQuery($sql){
 	if(trim($sql)!==""){
 		$cf_DB = new SQLite3($GLOBALS["cf_DBfilePath"]);
-		return $cf_DB->query(".trim($sql).");
+		$sql2 = $cf_DB->prepare(".trim($sql).");
+		$rs = $sql2->execute();
+		//$rs = $cf_DB->query(".$sql2.");
+		return $rs;
 	} else return false;
 }
 
