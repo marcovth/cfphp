@@ -1,5 +1,10 @@
 <?php
 
+function FileExists($filePath){
+	return file_exists($filePath);
+}
+
+
 function Find($find,$string,$start=NULL){
 	if(NULL===$start) $start=0; else if($start>0) $start=$start-1; // Index PHP 0 == CFML 1 etc; 
 	if($start>strlen($string)-1) return false;

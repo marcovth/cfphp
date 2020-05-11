@@ -20,25 +20,29 @@
     // ORDER BY title DESC
 // </cfquery>
 
-
+function queryAddRow($qryName){
+	$cf_qryName=trim(RemoveSurroundingQuotes($qryName));
+	$cf_DB = new SQLite3($GLOBALS["cf_DBfilePath"]);
+	$cf_DB->exec("INSERT INTO $cf_qryName DEFAULT VALUES");
+}
 
 function queryNew($qryName,$columns,$type=null){
-	echo "queryNew($qryName,$columns,$type)<br>\n";
+	//echo "queryNew($qryName,$columns,$type)<br>\n";
 	
-	$cf_qryName=$qryName;
+	$cf_qryName=RemoveSurroundingQuotes($qryName);
 	$cf_DB = new SQLite3($GLOBALS["cf_DBfilePath"]);
 
 	//$cf_DBtest = $cf_DB->querySingle('SELECT SQLITE_VERSION()');
 	//echo $cf_DBtest . "\n";
-	$cf_DB->exec("DROP TABLE IF EXISTS $qryName");
-	$cf_sql="CREATE TABLE $qryName(cfid INTEGER PRIMARY KEY";
+	$cf_DB->exec("DROP TABLE IF EXISTS $cf_qryName");
+	$cf_sql="CREATE TABLE $cf_qryName(cfid INTEGER PRIMARY KEY";
 	$columns=explode(",",$columns);
 	$type=explode(",",$type);
 	$n=0;foreach($columns as &$column){
 		$cf_type="TEXT";
 		if(array_key_exists($n,$type)){
 				 if(UCASE(RemoveSurroundingQuotes($type[$n]))==="INTEGER") 	$cf_type="INT";
-			else if(UCASE(RemoveSurroundingQuotes($type[$n]))==="FLOAT") 	$cf_type="FLOAT";
+			else if(UCASE(RemoveSurroundingQuotes($type[$n]))==="FLOAT") 	$cf_type="REAL";
 		}
 		$cf_sql.=", ".RemoveSurroundingQuotes($column)." $cf_type";
 		$n++;
@@ -46,11 +50,19 @@ function queryNew($qryName,$columns,$type=null){
 	$cf_sql.=")";
 	//echo "$cf_sql<br>\n";
 	$cf_DB->exec($cf_sql);
-	
 }
 
-
-
+function querySetCell($qryName,$column,$value){
+	$qryName=trim(RemoveAllQuotes($qryName));
+	$column=trim(RemoveAllQuotes($column));
+	$value=trim(RemoveAllQuotes($value));
+	echo "[$qryName][$column][$value]<br>\n";
+	$cf_DB = new SQLite3($GLOBALS["cf_DBfilePath"]);
+	$cf_DB->exec("UPDATE $qryName SET ($column) VALUES(\"$value\") WHERE cfid=(SELECT MAX(cfid) FROM $qryName)");
+//<cfset querySetCell(news, "id", "1")>
+//<cfset querySetCell(news, "title", "Dewey defeats Truman")>
+//$cf_DB->exec("INSERT INTO cars(name, price) VALUES('Audi', 52642)");
+}
 
 function ParseCFquery($AttributeLine,$InnerHTML,&$output){
 	//echo "ParseCFqueryF";

@@ -1,6 +1,9 @@
 <?php
 //require './cfphpbin/incl-cfphpFunctions.php';
 
+function RemoveAllQuotes($string){
+	return str_replace(array("'",'"'),"",$string );
+}
 function RemoveSurroundingQuotes($string){
 	$string=rtrim($string,'"'); $string=ltrim($string,'"');
 	$string=rtrim($string,"'"); $string=ltrim($string,"'");
@@ -91,6 +94,23 @@ function ParseCFset($AttributeLine,&$output){
 			$AttributeLine=ltrim($AttributeLine,"\"");
 			$AttributeLine=rtrim($AttributeLine,"\"");								//echo "4) $AttributeLine<br>";
 			$out.="queryNew(\"$param\",\"$AttributeLine\")";
+			$output.=$out.";//cfset ?>";
+		}if(FindNoCase("queryAddRow",$AttributeLine)){
+			$AttributeLine=ReplaceNoCase(trim($AttributeLine),"queryAddRow(",""); 		//echo "3) $AttributeLine<br>";
+			$AttributeLine=rtrim($AttributeLine,")");
+			$AttributeLine=trim(RemoveSurroundingQuotes($AttributeLine));
+			$out="<?php ";
+			$out.="queryAddRow(\"$AttributeLine\")";
+			$output.=$out.";//cfset ?>";
+		}if(FindNoCase("querySetCell",$AttributeLine)){
+			$AttributeLine=ReplaceNoCase(trim($AttributeLine),"querySetCell(",""); 		//echo "3) $AttributeLine<br>";
+			$AttributeLine=rtrim($AttributeLine,")");
+			$AttributeLine=trim(RemoveAllQuotes($AttributeLine));
+			$AttributeLine=Replace($AttributeLine,", ",",","ALL");
+			$AttributeLine=Replace($AttributeLine," ,",",","ALL");
+			$AttributeLine=Replace($AttributeLine,",","\",\"","ALL");
+			$out="<?php ";
+			$out.="querySetCell(\"$AttributeLine\")";
 			$output.=$out.";//cfset ?>";
 		}
 	} else {

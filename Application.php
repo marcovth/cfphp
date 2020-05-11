@@ -1,11 +1,22 @@
 <?php 
 //echo "WebRoot Application.php";
+// For this demo-project, Application.php is located in the webRoot folder.
+// But you might want to test if you can place it off-server in a directory higher than the serverRoot.
+// Please, don't forget to set the absolute path to Application.php in your site's htaccess file.
+// If you don't set the absolute path to Application.php in htaccess, you will need an Application.php 
+// in all subdirectories to make cfPHP work !
+// Further down you see an include link to prepend.php You can activate that for prepend PHP code for each php file.
 
+// Only allow this include page to be executed by indirect (include) call from other pages ...
 if(strtoupper(basename($_SERVER['PHP_SELF']))==="APPLICATION.PHP"){
 	echo "Sorry, but you are not allowed to call this page.";
 	die(); 
 }
 
+// ###############################################
+// cfPHP needs directory awareness. If the editing windows don't appear, ...
+// it's likely your server doesn't return the same _SERVER directory paths or filenames as tested by this demo project.
+// Worse case you will have to hard-code the paths. But use $ShowPaths and phpinfo() for debugging ... 
 $ShowPaths=false;
 
 if(!isset($cf_fileName) or trim($cf_fileName)===""  ){
@@ -39,26 +50,45 @@ if($cf_subfolderRoot=="/"){ 	// website is located in the cf_serverRoot ...
 	$cf_webRootDir=$cf_serverRoot."/".$cf_subtree[1]."/";  							if($ShowPaths) echo "webRootDir = $cf_webRootDir<br>\n";
 	$cf_webRootAddress=$cf_httpType."://".$cf_serverName."/".$cf_subtree[1]."/";	if($ShowPaths) echo "webRootAddress = $cf_webRootAddress<br>\n";
 }
-
+// ###############################################
 
 //phpinfo();
 
+// ###############################################
+// Obviously, the includes used by cfPHP ...
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpFunctions.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpDetectVariables.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpParseTags.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/cfphpParser.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-ParseCFquery.php";
+// ###############################################
 
-$dir=$cf_webRootDir;
-//echo "$dir $cf_fileNameName . " . UCASE($cf_fileNameExt) . " <p>\n\n";
+$dir=$cf_subfolderDir; // For personal use in my pages. You can remove this.
 
-$cp_debugMode=true;
+// ###############################################
+// This will activate the CFML->PHP editing windows if a final PHP file is not exported ... 
+$cp_debugMode=true; // 
 $cp_UserIpAddress=getUserIpAddress(); //::1
 $cp_DebuggerRemoteIpAddress="YourRemoteIP";
+// For now it's based on the remote-ipaddress of the site owner, but this needs a login system later on. 
+// ###############################################
 
+
+// ###############################################
+// Each visitor will get their own SQlite DB based on IP address for cfquery-of-query type of operations.
+// I am sure later on a better system can be implemented based on visitor cookies.
+// The db files are stored, off-server, in the tempdb folder, one directory higher than the serverRoot dir.
+// Please configure the path yourself. Please note that the db files are not encrypted. 
 $cf_DBfileName=md5($GLOBALS["cf_subfolderDir"].$GLOBALS["cf_fileName"]."_".$_SERVER["REMOTE_ADDR"]);
 $cf_DBfilePath=$GLOBALS["cf_serverRoot"]."../tempdb/$cf_DBfileName.db";
+// ###############################################
 
+
+// ###############################################
+// If present in the subfolder, include the prepend.php file per subdirectory ... 
+// or use $cf_webRootDir instead, to use one prepend.php file for the entire subdirectory structure.
+if(FileExists($cf_subfolderDir."prepend.php")) include $cf_subfolderDir."prepend.php";
+// ###############################################
 
 
 if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($cf_fileNameExt)==="CFC"){
