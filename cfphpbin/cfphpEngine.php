@@ -1,14 +1,14 @@
 <?php 
-//echo "WebRoot Application.php";
-// For this demo-project, Application.php is located in the webRoot folder.
+//echo "WebRoot cfphpEngine.php";
+// For this demo-project, cfphpEngine.php is located in the webRoot folder.
 // But you might want to test if you can place it off-server in a directory higher than the serverRoot.
-// Please, don't forget to set the absolute path to Application.php in your site's htaccess file.
-// If you don't set the absolute path to Application.php in htaccess, you will need an Application.php 
-// in all subdirectories to make cfPHP work !
+// Please, don't forget to set the absolute path to cfphpEngine.php in your site's htaccess file.
+// If you don't set the absolute path to cfphpEngine.php in htaccess, you will need a cfphpEngine.php 
+// in all subdirectories to make cfPHP work for a partucular subdirectory !
 // Further down you see an include link to prepend.php You can activate that for prepend PHP code for each php file.
 
 // Only allow this include page to be executed by indirect (include) call from other pages ...
-if(strtoupper(basename($_SERVER['PHP_SELF']))==="APPLICATION.PHP"){
+if(strtoupper(basename($_SERVER['PHP_SELF']))==="cfphpEngine.PHP"){
 	echo "Sorry, but you are not allowed to call this page.";
 	die(); 
 }

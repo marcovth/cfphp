@@ -2,7 +2,7 @@
 
 # cfphp - coldfusion cfml to php parser.
 
-This is a first alpha attempt to code a cfml-to-php parser.
+This is a first alpha attempt to code a cfml-to-php parser or "engine".
 
 (Considering my limited PHP coding skills) The goal of this project is to make an 80% correct cfml->php parser, which should require limited php manual editing before a final php template is exported.
 
@@ -19,9 +19,11 @@ BTW, I would encourage everybody visiting here to also try and use "Smarty". It 
 
 The .htaccess file of this project adds [.cfm, .cfml, .cfc] as PHP template types. cfphp will only work if you can add or edit the .htaccess file in your website.
 
-The big trick of this project is the added [php_value auto_prepend_file "./Application.php"] line in .htaccess. This will load the Application.php page before every other PHP, cfm, cfml and cfc template. 
+The big trick of this project is the added direct full path to ... [php_value auto_prepend_file "/www/cfphp/cfphpbin/cfphpEngine.php"] line in .htaccess. Please don't use a relative path for this, otherwise you will need that same cfphpEngine.php file in each subdirectory. 
 
-This Application.php file contains the selection mechanisme of how to process a cfml file. PHP files are passed through without altering the php code, but you can optionally use Application.php to prepend every php file with php code as well.
+This will load the cfphpEngine.php (include) page before every other PHP, cfm, cfml and cfc template. 
+
+This cfphpEngine.php file contains the selection mechanisme of how to process a cfml file. PHP files are passed through without altering the php code, but you can optionally use prepend.php to prepend every php file with php code as well.
 
 
 Parsing cftags and arguments don't seem to be a the greatest problem. However, separating function-names from variables, and especially nested #function(#variable#)# pound-signs is a big challenge, and will likely require hand-editing. 
