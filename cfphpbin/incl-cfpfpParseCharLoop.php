@@ -99,15 +99,19 @@
 			$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); // HTML before ending-CF-tags = mostly whitespace
 			$InBetweenOrAfterCFTagsHTML="";
 			
-			if(UCASE($EndTagName)==="CFSCRIPT"){ $InCFscript=false; }
-			
-			if(UCASE($EndTagName)==="CFQUERY"){ 
+			// ###############  END TAGS ###################
+			if(UCASE($EndTagName)==="CFSCRIPT"){ 
+				$InCFscript=false; 
+				$output.="<?php }//$EndTagName ?>";
+			} else if(UCASE($EndTagName)==="CFQUERY"){ 
 				//echo "ParseCFqueryCall";
 				ParseCFquery($InnerHTMLTagAttributeLine,$InnerHTML,$output);
 				$InsideInnerHTML=false; $InnerHTML=""; $InnerHTMLTagAttributeLine="";
+			} else {
+				$output.="<?php }//$EndTagName ?>";
 			}
+			// ###############  END TAGS ###################
 			
-			$output.="<?php }//$EndTagName ?>";
 			//$output.="[/".UCASE($EndTagName)."]";
 			$InCFEndtag=false; $EndTagName="";
 			//$i++;

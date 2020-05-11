@@ -58,18 +58,70 @@ function querySetCell($qryName,$column,$value){
 	$value=trim(RemoveAllQuotes($value));
 	//echo "[$qryName][$column][$value]<br>\n";
 	$cf_DB = new SQLite3($GLOBALS["cf_DBfilePath"]);
-	$sql="";
-	if(IsNumeric($value)) $sql="UPDATE $qryName SET $column=$value WHERE cfid=(SELECT MAX(cfid) FROM $qryName);";
+	$sql=""; $type="TEXT"; $res = $cf_DB->query("PRAGMA table_info($qryName)");
+	while($row=$res->fetchArray(SQLITE3_NUM)) { if($row[1]===$column) $type=$row[2]; } 
+	if($type==="INT" or $type==="REAL") $sql="UPDATE $qryName SET $column=$value WHERE cfid=(SELECT MAX(cfid) FROM $qryName);";
 	else $sql="UPDATE $qryName SET $column=\"$value\" WHERE cfid=(SELECT MAX(cfid) FROM $qryName);";
 	echo "$sql<br>\n";
 	$cf_DB->exec($sql);
+}
+
+function cfQueryOfQuery($sql){
+	if(trim($sql)!==""){
+		$cf_DB = new SQLite3($GLOBALS["cf_DBfilePath"]);
+		return $cf_DB->query(".trim($sql).");
+	} else return false;
 }
 
 function ParseCFquery($AttributeLine,$InnerHTML,&$output){
 	//echo "ParseCFqueryF";
 	$InnerHTML2 = preg_replace('/\s+/', ' ', trim($InnerHTML));
 	$InnerHTML3=ParseNestedTags($InnerHTML2);
-	$output.="[CFQUERY $AttributeLine]$InnerHTML3";
+	//$output.="[CFQUERY $AttributeLine]$InnerHTML3";
+	
+	//<cfquery name="sortedNews" dbtype="query">
+	$AttributeArr=ParseAttributeLine($AttributeLine." x");
+	//cfdump($AttributeArr); echo "(".ArrayLen($AttributeArr['AttributeName']).")";
+	$out="<?php ";
+	$cfquery_name=""; $cfquery_dbtype=""; //$cfloop_index=""; $cfloop_step="";
+	for ($nAtt=0; $nAtt<ArrayLen($AttributeArr['AttributeName']); $nAtt++){ //echo "[".$AttributeArr['AttributeName'][$nAtt]."=".$AttributeArr['AttributeVal'][$nAtt]."]<br>\n";
+		if($AttributeArr['AttributeName'][$nAtt] !== ""){
+			     if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "NAME") 	$cfquery_name=trim($AttributeArr['AttributeVal'][$nAtt]);
+			else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "DBTYPE") 	$cfquery_dbtype=trim($AttributeArr['AttributeVal'][$nAtt]);
+			//else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "INDEX") $cfloop_index=trim($AttributeArr['AttributeVal'][$nAtt]);
+			//else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "STEP") $cfloop_step=trim($AttributeArr['AttributeVal'][$nAtt]);
+			else ; //$out.=" ".$AttributeArr['AttributeName'][$nAtt]."=".$AttributeArr['AttributeVal'][$nAtt]." ";
+		}
+	}
+	//echo "name[$cfquery_name] dbtype[$cfquery_dbtype]<br>\n";
+	
+	if($cfquery_name!=="" and $cfquery_dbtype!=="" and UCASE($cfquery_dbtype)==="QUERY"){ //
+		//echo "dbtype=QUERY<br>\n";
+		$out.=" \$".$cfquery_name." = cfQueryOfQuery(\"".$InnerHTML3."\"); //CFQUERY ?>\n";
+		
+		
+		//$out.="\t \$cf_DB = new SQLite3(\$GLOBALS[\"cf_DBfilePath\"]);\n";
+		//$out.="\t \$".$cfquery_name." = \$db->query(\"".$InnerHTML3."\");\n";
+		//$out.="//CFQUERY ?]\n";
+		
+		//$cf_from=FindNoCase(" FROM ",$InnerHTML);
+		//if(!$cf_from==0){
+		//	$cf_from=MID($InnerHTML,$cf_from+6,100);
+		//	$cf_from=trim(ListFirst(trim($cf_from)," "));
+		//	//echo "FROM[$cf_from]<br>\n";
+		//	if($cf_from==="") $out.=" Error: query-FROM not found "; 
+		//	else {
+		//		$cf_DB = new SQLite3($GLOBALS["cf_DBfilePath"]);
+		//		$cf_DB->exec($InnerHTML);
+		//		$res = $db->query($InnerHTML);
+		//	}
+		//	//$out.=" $cf_from ";
+		//} else $out.=" Error: query-FROM not found ";
+		//$out.="for( $index=".DetectVariables($cfloop_from,"NO")."; $index$cf_direction".DetectVariables($cfloop_to,"NO")."; ".DetectVariables($cfloop_index,"NO")."=".DetectVariables($cfloop_index,"NO")."+$cfloop_step ){";
+		//$out.="//CFQUERY ?]";
+	}
+	$output.=$out;
+	
 	
 	//$query_famRemarks = "SELECT * FROM famRemarks WHERE hide=0 AND persID =".$row_person['persID'];
 	//echo $query_famRemarks;

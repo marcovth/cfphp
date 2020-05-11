@@ -82,7 +82,7 @@ function ListFirst($string,$delimiter){
 	// ListGetAt(list, position [, delimiters,  includeEmptyFields])
 	if($delimiter==="") $delimiter=",";
 	$words=explode($delimiter,$string);
-	if(array_key_exists(0, $words)) return $words[0];
+	if(array_key_exists(0, $words)) return trim($words[0],$delimiter);
 	else return "x";
 }
 
