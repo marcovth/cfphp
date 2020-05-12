@@ -53,8 +53,14 @@ I have 22 years experience with CFML, and about 6 months with PHP. If you want t
 This project is making use of the Ace online code-editor to debug CFML->PHP code before saving the final PHP file. There is no need for an external CFML/PHP editor. 
 You still need FTP to upload CFML files to your server, but each CFML file run in Admin mode gets a CFML & PHP online Ace-editor window to make changes and to debug. So, direct editing on the server. 
 
-Please copy the Ace src folder to your cfphp folder as a subdirectory, and rename the "src" folder to "AceEditor".
-
+For a quick testing setup on Windows ...
+1) Install https://www.uwamp.com/en/  (my location is c:\uwamp\)
+2) Copy this project to C:\UwAmp\www\cfphp so that you will have the C:\UwAmp\www\cfphp folder.
+3) Check C:\UwAmp\www\cfphp\.htaccess for the correct direct path of "/cfphp/cfphpbin/cfphpEngine.php"
+4) Copy the Ace "src" folder to your cfphp folder as a subdirectory, and rename the "src" folder to "AceEditor".
 https://ace.c9.io/  and https://github.com/ajaxorg/ace-builds/tree/2ea299a2bee97fdf58fc90cb76eec6c45535a63f
- 
+I don't want to share Ace in my github.
+5) Start the webserver
+6) Load http://localhost/cfphp/CFMLtestPages/cfqueryTests.cfm ... as one example.
+
 
