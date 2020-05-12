@@ -64,4 +64,19 @@ cfQueryofQuery operations are conducted with SQlite, for which per visitor a db-
 5) Start the webserver
 6) Load http://localhost/cfphp/CFMLtestPages/cfqueryTests.cfm ... for one example.
 
+Please remember ... this is just the proof of concept phase. Don't expect a fully functional cfPHP engine. 
+
+For the moment I want to show that it's possible to parse CFML code and to make some tags functional. 
+
+This project will require a number of coders to produce a fully operational CFML layer on top of PHP.
+
+The whole task will be way too big for one coder alone.
+
+Enjoy !
+
+- Marco.
+
+
+
+
 
