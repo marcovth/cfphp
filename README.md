@@ -60,7 +60,9 @@ For a quick testing setup on Windows ...
 4) Copy the Ace "src" folder to your cfphp folder as a subdirectory, and rename the "src" folder to "AceEditor".
 https://ace.c9.io/  and https://github.com/ajaxorg/ace-builds/tree/2ea299a2bee97fdf58fc90cb76eec6c45535a63f
 I don't want to share Ace in my github.
+5) Create a new directory "tempdb" in C:\UwAmp\ ==> C:\UwAmp\tempdb\  ... 
+cfQueryofQuery operations are conducted with SQlite, for which per visitor a db-file is created in a tempdb folder, off-web, one level higher than the serverRoot ( C:/UwAmp/www/../tempdb/ in this example ).
 5) Start the webserver
-6) Load http://localhost/cfphp/CFMLtestPages/cfqueryTests.cfm ... as one example.
+6) Load http://localhost/cfphp/CFMLtestPages/cfqueryTests.cfm ... for one example.
 
 
