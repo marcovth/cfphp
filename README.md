@@ -57,7 +57,7 @@ For a quick testing setup on Windows ...
 1) Install https://www.uwamp.com/en/  (my location is c:\uwamp\)
 2) Copy this project to C:\UwAmp\www\ so that you will have the C:\UwAmp\www\cfphp folder.
 3) Check C:\UwAmp\www\cfphp\.htaccess for the correct direct path of "/cfphp/cfphpbin/cfphpEngine.php"
-4) Copy the Ace "src" folder to your cfphp folder as a subdirectory, and rename the "src" folder to "AceEditor": https://github.com/ajaxorg/ace-builds/tree/2ea299a2bee97fdf58fc90cb76eec6c45535a63f
+4) Copy the Ace "src" folder to your cfphp folder as a subdirectory, and rename "src" to "AceEditor" (e.g. C:\UwAmp\www\cfphp\AceEditor\): https://github.com/ajaxorg/ace-builds/tree/2ea299a2bee97fdf58fc90cb76eec6c45535a63f
 I don't want to share Ace in my github. https://ace.c9.io/ 
 5) Create a new directory "tempdb" in C:\UwAmp\ ==> C:\UwAmp\tempdb\  ... 
 cfQueryofQuery operations are conducted with SQlite, for which per visitor a db-file is created in a tempdb folder, off-web, one level higher than the serverRoot ( C:/UwAmp/www/../tempdb/ in this example ).
