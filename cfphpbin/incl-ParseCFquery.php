@@ -69,10 +69,20 @@ function querySetCell($qryName,$column,$value){
 function cfQueryOfQuery($sql){
 	if(trim($sql)!==""){
 		$cf_DB = new SQLite3($GLOBALS["cf_DBfilePath"]);
-		$sql2 = $cf_DB->prepare(".trim($sql).");
-		$rs = $sql2->execute();
-		//$rs = $cf_DB->query(".$sql2.");
-		return $rs;
+		$rs="";
+		if($stmt = $cf_DB->prepare(trim($sql))){
+			$rs = $stmt->execute();
+			//echo "cfQueryOfQuery success";
+			return $rs;
+				 //$names=array();
+				 //while($arr=$result->fetchArray(SQLITE3_ASSOC))
+				 //{
+				 // $names[$arr['id']]=$arr['student_name'];
+				 //}
+		} else {
+			echo "cfQueryOfQuery failed";
+			return false;
+		}
 	} else return false;
 }
 
@@ -101,40 +111,8 @@ function ParseCFquery($AttributeLine,$InnerHTML,&$output){
 	if($cfquery_name!=="" and $cfquery_dbtype!=="" and UCASE($cfquery_dbtype)==="QUERY"){ //
 		//echo "dbtype=QUERY<br>\n";
 		$out.=" \$".$cfquery_name." = cfQueryOfQuery(\"".$InnerHTML3."\"); //CFQUERY ?>\n";
-		
-		
-		//$out.="\t \$cf_DB = new SQLite3(\$GLOBALS[\"cf_DBfilePath\"]);\n";
-		//$out.="\t \$".$cfquery_name." = \$db->query(\"".$InnerHTML3."\");\n";
-		//$out.="//CFQUERY ?]\n";
-		
-		//$cf_from=FindNoCase(" FROM ",$InnerHTML);
-		//if(!$cf_from==0){
-		//	$cf_from=MID($InnerHTML,$cf_from+6,100);
-		//	$cf_from=trim(ListFirst(trim($cf_from)," "));
-		//	//echo "FROM[$cf_from]<br>\n";
-		//	if($cf_from==="") $out.=" Error: query-FROM not found "; 
-		//	else {
-		//		$cf_DB = new SQLite3($GLOBALS["cf_DBfilePath"]);
-		//		$cf_DB->exec($InnerHTML);
-		//		$res = $db->query($InnerHTML);
-		//	}
-		//	//$out.=" $cf_from ";
-		//} else $out.=" Error: query-FROM not found ";
-		//$out.="for( $index=".DetectVariables($cfloop_from,"NO")."; $index$cf_direction".DetectVariables($cfloop_to,"NO")."; ".DetectVariables($cfloop_index,"NO")."=".DetectVariables($cfloop_index,"NO")."+$cfloop_step ){";
-		//$out.="//CFQUERY ?]";
 	}
 	$output.=$out;
-	
-	
-	//$query_famRemarks = "SELECT * FROM famRemarks WHERE hide=0 AND persID =".$row_person['persID'];
-	//echo $query_famRemarks;
-	//$famRemarks = mysql_query($query_famRemarks, $stamboom) or die("qryfamRemarks: ".mysql_error()."<hr>".$query_famRemarks);
-	//$row_famRemarks = mysql_fetch_assoc($famRemarks);
-	//$totalRows_famRemarks = mysql_num_rows($famRemarks);
-	//$famID=$row_famRemarks['famID'][0];
-	
-	
-
 }
 
 function QueryOfQuery($rs, // The recordset to query
