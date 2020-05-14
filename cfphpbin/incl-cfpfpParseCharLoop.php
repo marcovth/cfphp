@@ -1,6 +1,6 @@
 <?php
 	// Line with a CF tag ...
-	
+	$DebugLevel=0;
 	$InCFtag=false; $InTagName=false; $tagName=""; $InAttributeS=false; $InAttributeName=false; $AttributeName=""; $InAttributeVal=false; $AttributeVal="";
 	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $nAtt=0; $AttributeArr=array(); $AttributeLine="";
 	$InCFEndtag=false; $EndTagName=""; $InBetweenOrAfterCFTagsHTML=""; 

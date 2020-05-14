@@ -10,4 +10,4 @@
     <li><?php echo $id; ?> [<?php echo $title; ?>]</li>
 <?php }//cfoutput ?>
 <p>
-RecordCount=<?php echo $sortedNews_Recordcount; ?>
+RecordCount= <?php echo $sortedNews_Recordcount; ?>

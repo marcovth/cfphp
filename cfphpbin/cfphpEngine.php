@@ -58,9 +58,10 @@ if($cf_subfolderRoot=="/"){ 	// website is located in the cf_serverRoot ...
 // Obviously, the includes used by cfPHP ...
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpFunctions.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpDetectVariables.php";
+require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpParseSQL.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpParseTags.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/cfphpParser.php";
-require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-ParseCFquery.php";
+//require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-ParseCFquery.php";
 // ###############################################
 
 $dir=$cf_subfolderDir; // For personal use in my pages. You can remove this.
@@ -117,6 +118,9 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 		
 	} else if($cp_debugMode and ($cp_UserIpAddress==="::1" or $cp_UserIpAddress==="127.0.0.1" or $cp_UserIpAddress===$cp_DebuggerRemoteIpAddress) ){
 		// ToDo ... backup previous cfml and final-php files to an non-web-accessible folder ...
+		
+		$cp_PHPcode=cfphpParser($cp_CFfile); // echo $cp_PHPcode;
+		$cp_CFcode=ReadFileTXT($cp_CFfile);
 		
 		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==10 ){
 			// Add a new CFML page to the server ...

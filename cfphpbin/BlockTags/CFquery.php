@@ -1,24 +1,5 @@
 <?php
 
-//$cf_sqliteversion = SQLite3::version();
-//echo $cf_sqliteversion['versionString'] . "\n";
-//echo $cf_sqliteversion['versionNumber'] . "\n";
-//var_dump($cf_sqliteversion);
-
-// <cfset news = queryNew("id,title", "integer,varchar")>
-// <cfset queryAddRow(news)>
-// <cfset querySetCell(news, "id", "1")>
-// <cfset querySetCell(news, "title", "Dewey defeats Truman")>
-// <cfset queryAddRow(news)>
-// <cfset querySetCell(news, "id", "2")>
-// <cfset querySetCell(news, "title", "Men walk on Moon")>
-// <cfset writeDump(news)>
-
-// <!--- run QofQ (query of query) --->
-// <cfquery name="sortedNews" dbtype="query">
-    // SELECT id, title FROM news
-    // ORDER BY title DESC
-// </cfquery>
 
 function queryAddRow($qryName){
 	$cf_qryName=trim(RemoveSurroundingQuotes($qryName));
@@ -74,11 +55,6 @@ function cfQueryOfQuery($sql){
 			$rs = $stmt->execute();
 			//echo "cfQueryOfQuery success";
 			return $rs;
-				 //$names=array();
-				 //while($arr=$result->fetchArray(SQLITE3_ASSOC))
-				 //{
-				 // $names[$arr['id']]=$arr['student_name'];
-				 //}
 		} else {
 			echo "cfQueryOfQuery failed";
 			return false;
@@ -88,20 +64,18 @@ function cfQueryOfQuery($sql){
 
 function ParseCFquery($AttributeLine,$InnerHTML,&$output){
 	//echo "ParseCFqueryF";
-	$InnerHTML2 = preg_replace('/\s+/', ' ', trim($InnerHTML));
-	$InnerHTML3=ParseNestedTags($InnerHTML2);
-	//$output.="[CFQUERY $AttributeLine]$InnerHTML3";
+	$InnerHTML = preg_replace('/\s+/', ' ', trim($InnerHTML));
 	
 	//<cfquery name="sortedNews" dbtype="query">
 	$AttributeArr=ParseAttributeLine($AttributeLine." x");
 	//cfdump($AttributeArr); echo "(".ArrayLen($AttributeArr['AttributeName']).")";
-	$out="<?php ";
-	$cfquery_name=""; $cfquery_dbtype=""; //$cfloop_index=""; $cfloop_step="";
+	$out="";
+	$cfquery_name=""; $cfquery_dbtype=""; $cfquery_datasource="";
 	for ($nAtt=0; $nAtt<ArrayLen($AttributeArr['AttributeName']); $nAtt++){ //echo "[".$AttributeArr['AttributeName'][$nAtt]."=".$AttributeArr['AttributeVal'][$nAtt]."]<br>\n";
 		if($AttributeArr['AttributeName'][$nAtt] !== ""){
 			     if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "NAME") 	$cfquery_name=trim($AttributeArr['AttributeVal'][$nAtt]);
 			else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "DBTYPE") 	$cfquery_dbtype=trim($AttributeArr['AttributeVal'][$nAtt]);
-			//else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "INDEX") $cfloop_index=trim($AttributeArr['AttributeVal'][$nAtt]);
+			else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "DATASOURCE") $cfquery_datasource=trim($AttributeArr['AttributeVal'][$nAtt]);
 			//else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "STEP") $cfloop_step=trim($AttributeArr['AttributeVal'][$nAtt]);
 			else ; //$out.=" ".$AttributeArr['AttributeName'][$nAtt]."=".$AttributeArr['AttributeVal'][$nAtt]." ";
 		}
@@ -110,10 +84,37 @@ function ParseCFquery($AttributeLine,$InnerHTML,&$output){
 	
 	if($cfquery_name!=="" and $cfquery_dbtype!=="" and UCASE($cfquery_dbtype)==="QUERY"){ //
 		//echo "dbtype=QUERY<br>\n";
-		$out.=" \$".$cfquery_name." = cfQueryOfQuery(\"".$InnerHTML3."\"); //CFQUERY ?>\n";
+		//echo "$InnerHTML<br>\n";
+		$SQL=ParseSQL($InnerHTML);
+		//echo "$SQL<br>\n";
+		$out.="<?php \$SQL=\"\"; ?>".$SQL."\n";
+		$out.="<?php \$".$cfquery_name." = cfQueryOfQuery(\$SQL); //CFQUERY ?>\n";
 	}
+	
+	if($cfquery_name!=="" and $cfquery_datasource!==""){ //
+		$SQL=ParseSQL($InnerHTML);
+		$out.="<?php \$SQL=\"\"; ?>".$SQL."\n";
+		//echo "$cfquery_datasource<br>\n";
+		$out.="<?php echo \"datasource not implemented yet\"; \n";
+		//$out.=" \$".$cfquery_name." = cfQueryDB(\$SQL);";
+		$out.=" //CFQUERY ?>\n";
+	}
+	
 	$output.=$out;
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
 
 function QueryOfQuery($rs, // The recordset to query
 	$fields = "*", // optional comma-separated list of fields to return, or * for all fields

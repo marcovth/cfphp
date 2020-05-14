@@ -1,20 +1,27 @@
 <?php
 
-function DetectVariables($string,$Addtags){																//echo "{".$string."}";
+function DetectVariables($string,$Addtags){	
+	// echo "DetectVariables($string,$Addtags)<br>\n";
 	//$VariableEndingChars="[~`!@#$%^&*()_\-+=\[\]{}\|\\:;\"\'<,>.]/"; 
 	
 	if($Addtags==="yes") $Add=true; else $Add=false;														//echo "$Add";
 	
 	// First easy cases ... single words and single number, single white spaces and tabs ...
-	if(strlen($string)===1 and !IsNumeric($string) and $string!==" " and $string!=="	") return "$".$string;
-	if (!IsNumeric(Mid($string,1,1)) and preg_match('/^[a-zA-Z]+[a-zA-Z0-9._]+$/',$string)) {			//echo "[$string]";
+	if(strlen($string)===1 and !IsNumeric($string) and $string!==" " and $string!=="	"){
+		if($Addtags==="yes") return "<?php echo \$".$string."; ?>"; else return "$".$string;
+	} else if (!IsNumeric(Mid($string,1,1)) and preg_match('/^[a-zA-Z]+[a-zA-Z0-9._]+$/',$string)) {			//echo "[$string]";
 		// If the first char is not a number and the rest of the string is AlphaNumeric ... 
 		// Most cases ...
-		if(Mid($string,1,1)==="$") return $string; else return "$".$string;
+		if(Mid($string,1,1)==="$"){
+			if($Addtags==="yes") return "<?php echo ".$string."; ?>"; else return $string; 
+		} else { 
+			if($Addtags==="yes") return "<?php echo \$".$string."; ?>"; else return "$".$string;
+		}
+	} else if (IsNumeric($string)){ 
+		if($Addtags==="yes") return "<?php echo ".$string."; ?>"; else return $string; 
 	}
-	if (IsNumeric($string)) return $string;
 	
-	
+	//echo "DetectVariables($string,$Addtags) Other cases ...<br>\n";
 	$out=""; $InVariablePound=false; $InVariableDollar=false; $Variable=""; $word=""; $InFunction=false;
 	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $InHTMLcommendOut=false;
 	for($i=0; $i<strlen($string); $i++){																	//echo "$string[$i]";
@@ -165,7 +172,9 @@ function DetectVariables($string,$Addtags){																//echo "{".$string."}
 			
 			if($i>=strlen($string)-1){
 				// Make sure the last word is carried over when the line ends.
-				$out.=$word;//."%";
+				//$out.=$word;//."%";
+				if($Addtags==="yes" and (trim($c)!=="")) 	$out.="<?php echo ".$word."; ?>"; 
+				else  					$out.=$word;
 			}
 			/*
 			if($i==strlen($string)-1){ // space or last char in the line ... //$c===" " or 

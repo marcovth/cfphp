@@ -9,4 +9,4 @@
     <li>#id# [#title#]</li>
 </cfoutput>
 <p>
-RecordCount=#sortedNews_Recordcount#
+RecordCount= $sortedNews_Recordcount

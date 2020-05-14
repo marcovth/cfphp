@@ -8,4 +8,4 @@
     <?php echo $i; ?> 
 <?php }//cfloop ?> <p>
 
-<?php for( $i=30; $i>=20; $i=$i+-1 ){//CFLOOP ?><?php echo $i; ?><?php }//cfloop ?>
+<?php for( $i=30; $i>=20; $i=$i+-1 ){//CFLOOP ?><?php echo $i; ?><?php echo ; ?><?php }//cfloop ?>
