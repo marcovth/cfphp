@@ -1,5 +1,12 @@
-<cfdirectory action="list" directory="#expandPath("./")#" recurse="false" name="myList">
+<cfdirectory action="list" directory="#expandPath("../")#" recurse="false" name="myList">
 
-<cfoutput query="">
-    <li>#name#</li>
+<cfoutput query="myList">
+    <li>#name# | #size# | #type# | </li>
+</cfoutput>
+
+<cfquery name="myList2" dbtype="query">SELECT * FROM myList WHERE type='Dir'</cfquery>
+<hr>
+
+<cfoutput query="myList2">
+    <li>#name# | #size# | #type# | </li>
 </cfoutput>

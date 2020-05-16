@@ -80,22 +80,22 @@ function ParseAttributeLine($AttributeLine){
 
 // ###### INCLUDE ALL THE TAGS TO BE TRANSLATED ...
 
-$SingleLineTags=ListDirectory($GLOBALS["cf_webRootDir"]."/cfphpbin/SingleLineTags/",'/\.php/i', 'name', 1); //print_r($SingleLineTags);
+$SingleLineTags=ListDirectoryArr($GLOBALS["cf_webRootDir"]."/cfphpbin/SingleLineTags/",'/\.php/i', 'name', 1); //print_r($SingleLineTags);
 foreach($SingleLineTags as $TagFile){
 	include $GLOBALS["cf_webRootDir"]."/cfphpbin/SingleLineTags/".$TagFile;
 }
 
-$BlockTags=ListDirectory($GLOBALS["cf_webRootDir"]."/cfphpbin/BlockTags/",'/\.php/i', 'name', 1); //print_r($BlockTags);
+$BlockTags=ListDirectoryArr($GLOBALS["cf_webRootDir"]."/cfphpbin/BlockTags/",'/\.php/i', 'name', 1); //print_r($BlockTags);
 foreach($BlockTags as $TagFile){
 	include $GLOBALS["cf_webRootDir"]."/cfphpbin/BlockTags/".$TagFile;
 }
 
-$cSingleLineTags=ListDirectory($GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/SingleLineTags/",'/\.php/i', 'name', 1); //print_r($cSingleLineTags);
+$cSingleLineTags=ListDirectoryArr($GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/SingleLineTags/",'/\.php/i', 'name', 1); //print_r($cSingleLineTags);
 foreach($cSingleLineTags as $TagFile){
 	include $GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/SingleLineTags/".$TagFile;
 }
 
-$cBlockTags=ListDirectory($GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/BlockTags/",'/\.php/i', 'name', 1); //print_r($cBlockTags);
+$cBlockTags=ListDirectoryArr($GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/BlockTags/",'/\.php/i', 'name', 1); //print_r($cBlockTags);
 foreach($cBlockTags as $TagFile){
 	include $GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/BlockTags/".$TagFile;
 }

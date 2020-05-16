@@ -26,6 +26,7 @@ function DetectVariables($string,$Addtags){
 	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $InHTMLcommendOut=false;
 	for($i=0; $i<strlen($string); $i++){																	//echo "$string[$i]";
 		$c=$string[$i];	
+		//echo "[*$c]";
 		$cf_codon="@@@"; if(($i+2)<strlen($string)) $cf_codon=$string[$i].$string[$i+1].$string[$i+2];		//echo "[$cf_codon]";
 		if($cf_codon==="<!-"){
 			$InHTMLcommendOut=true;
@@ -72,16 +73,17 @@ function DetectVariables($string,$Addtags){
 					$InAttributeValDQuote=false;
 				} 
 			} else if($c==="#"){
+				//echo "[@$c$InVariablePound]";
 				//if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 					if(!$InVariablePound){
-						$out.=$word; // print previous word
-						$word="$";   // start new word and replace first # for $
+						if(trim($word)!=="") $out.=$word; // print previous word
+						$word="";   // start new word and replace first # for $
 						$InVariablePound=true;														//echo "(In#)";
 					} else {
 						// Ending pound-sign ... print variable, remove last #
-						if(strlen($word)>1){
-							if($Addtags==="yes") 	$out.="<?php echo ".$word."; ?>"; 
-							else  					$out.=$word; 
+						if(trim($word)!==""){
+							if($Addtags==="yes") 	$out.="<?php echo \$".$word."; ?>"; 
+							else  					$out.="\$".$word; 
 							$word="";	// start a new word
 						} else $out.="#"; // Special-case ... In CFML ## is used to print a single # for html/javascript: Example ##leftslider { width:100%; } -> #leftslider { width:100%; }
 						$InVariablePound=false; $InVariableDollar=false; $word="";					//echo "(Out#)";
@@ -141,16 +143,17 @@ function DetectVariables($string,$Addtags){
 					$word.=$c;//."_5";	// copy over the bracket
 				}
 			} else if($c==="("){
+				//echo "[@$c$InVariablePound]";
 				if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 					// It's the end of a function name ... print word
-					$out.=$word;
+					//echo "[$word(]";
+					$out.=$word."(";
 					$word="";	// start a new word
-					$out.="(";	// Print the (
-					$InVariablePound=false; $InVariableDollar=false;
+					//$InVariablePound=false; $InVariableDollar=false;
 					if($c==="(") $InFunction=true;
 				} else {
 					// It's a bracket inside quoted text. Copy bracket and move on ...
-					$word.=",";	// copy over the bracket
+					$word.="(";	// copy over the bracket
 				}
 			/*} else if( ($c===" " or $i>=strlen($string)-1) ){
 				if(ListLen($string," ")==1){ echo "%".ListFirst($string," ")."%";
@@ -173,8 +176,8 @@ function DetectVariables($string,$Addtags){
 			if($i>=strlen($string)-1){
 				// Make sure the last word is carried over when the line ends.
 				//$out.=$word;//."%";
-				if($Addtags==="yes" and (trim($c)!=="")) 	$out.="<?php echo ".$word."; ?>"; 
-				else  					$out.=$word;
+				if($Addtags==="yes" and (trim($c)!=="")) 	$out.="<?php echo \"".$word."\"; ?>"; 
+				else  					$out.="".$word;
 			}
 			/*
 			if($i==strlen($string)-1){ // space or last char in the line ... //$c===" " or 

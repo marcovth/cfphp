@@ -19,7 +19,23 @@
 			if($tagName !== ''){
 				// cfPHP starting tag selector ...
 				$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); $InBetweenOrAfterCFTagsHTML=""; // In between two CF-tags HTML
-				include $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfpfpParseSelectStartingTag.php";
+				//include $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfpfpParseSelectStartingTag.php";
+				
+				// ######### STARTING TAG SELECTION #########
+				if(UCASE($tagName)==="CFSCRIPT"){	
+					ParseCFscript($AttributeLine,$output); $InCFscript=true; 
+				} else if(UCASE($tagName)==="CFQUERY"){
+					$InsideInnerHTML=true; $InnerHTML=""; 
+					$InnerHTMLTagAttributeLine=$AttributeLine; $SkipChar=true;
+				} else {
+					try{ // Dynamic function call ...
+						$func="Parse"."$tagName";
+						$func($AttributeLine,$output);
+					} catch ( \Exception $e ) {
+						
+					}
+				}
+				
 			}
 			$InCFtag=false; $InTagName=false; $tagName=""; $InAttributeS=false; $AttributeName=""; $InAttributeVal=false; $AttributeVal="";
 			$InAttributeValDQuote=false; $InAttributeValSQuote=false; $nAtt=0; $AttributeArr=array(); $AttributeLine="";

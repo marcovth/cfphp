@@ -77,7 +77,7 @@ function ParseCFquery($AttributeLine,$InnerHTML,&$output){
 			else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "DBTYPE") 	$cfquery_dbtype=trim($AttributeArr['AttributeVal'][$nAtt]);
 			else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "DATASOURCE") $cfquery_datasource=trim($AttributeArr['AttributeVal'][$nAtt]);
 			//else if(UCASE(trim($AttributeArr['AttributeName'][$nAtt]))=== "STEP") $cfloop_step=trim($AttributeArr['AttributeVal'][$nAtt]);
-			else ; //$out.=" ".$AttributeArr['AttributeName'][$nAtt]."=".$AttributeArr['AttributeVal'][$nAtt]." ";
+			//else ; //$out.=" ".$AttributeArr['AttributeName'][$nAtt]."=".$AttributeArr['AttributeVal'][$nAtt]." ";
 		}
 	}
 	//echo "name[$cfquery_name] dbtype[$cfquery_dbtype]<br>\n";

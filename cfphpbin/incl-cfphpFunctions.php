@@ -4,7 +4,8 @@ function FileExists($filePath){
 	return file_exists($filePath);
 }
 
-function ListDirectory($dir, $filter, $SortBy='name', $desc=0){
+
+function ListDirectoryArr($dir, $filter, $SortBy='name', $desc=0){
 	// ##Files can be sorted on name and stat() attributes, ascending and descending:
 	// name    file name
 	// dev     device number
@@ -20,7 +21,7 @@ function ListDirectory($dir, $filter, $SortBy='name', $desc=0){
 	// ctime   time of last inode change (Unix timestamp)
 	// blksize blocksize of filesystem IO *
 	// blocks  number of blocks allocated
-	//$r = ListDirectory('./book/', '/^article[0-9]{4}\.txt$/i', 'ctime', 1); print_r($r);
+	//$r = ListDirectoryArr('./book/', '/^article[0-9]{4}\.txt$/i', 'ctime', 1); print_r($r);
 
     $r = array();
     $dh = @opendir($dir);
@@ -37,17 +38,17 @@ function ListDirectory($dir, $filter, $SortBy='name', $desc=0){
     }
     return(array_keys($r));
 }
-//$r = ListDirectory("C:/UwAmp/www/cfphp/CFMLtestPages/", '/\.cfm/i', 'ctime', 1); print_r($r);
+//$r = ListDirectoryArr("C:/UwAmp/www/cfphp/CFMLtestPages/", '/\.cfm/i', 'ctime', 1); print_r($r);
 
 
 // ###### INCLUDE ALL THE FUCTIONS ...
 
-$cffunctions=ListDirectory($GLOBALS["cf_webRootDir"]."/cfphpbin/cffunctions/",'/\.php/i', 'name', 1); //print_r($cffunctions);
+$cffunctions=ListDirectoryArr($GLOBALS["cf_webRootDir"]."/cfphpbin/cffunctions/",'/\.php/i', 'name', 1); //print_r($cffunctions);
 foreach($cffunctions as $TagFile){
 	include $GLOBALS["cf_webRootDir"]."/cfphpbin/cffunctions/".$TagFile;
 }
 
-$cfunctions=ListDirectory($GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/functions/",'/\.php/i', 'name', 1); //print_r($cfunctions);
+$cfunctions=ListDirectoryArr($GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/functions/",'/\.php/i', 'name', 1); //print_r($cfunctions);
 foreach($cfunctions as $TagFile){
 	include $GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/functions/".$TagFile;
 }

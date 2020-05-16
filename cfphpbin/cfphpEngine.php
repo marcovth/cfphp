@@ -82,6 +82,7 @@ $cp_DebuggerRemoteIpAddress="YourRemoteIP";
 // Please configure the path yourself. Please note that the db files are not encrypted. 
 $cf_DBfileName=md5($GLOBALS["cf_subfolderDir"].$GLOBALS["cf_fileName"]."_".$_SERVER["REMOTE_ADDR"]);
 $cf_DBfilePath=$GLOBALS["cf_serverRoot"]."../tempdb/$cf_DBfileName.db";
+$cf_TempEvalFile=$GLOBALS["cf_serverRoot"]."../tempdb/temp.php";
 // ###############################################
 
 
