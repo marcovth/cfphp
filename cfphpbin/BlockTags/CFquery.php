@@ -62,9 +62,80 @@ function cfQueryOfQuery($sql){
 	} else return false;
 }
 
-function ParseCFquery($AttributeLine,$InnerHTML,&$output){
+function cfQueryDB($sql,$conn,$qryName){
+	include $GLOBALS["cf_webRootDir"]."/cfphpbin/DBconnections.php";
+	//echo "cfQueryDB sql=[$sql]<br>\n";
+	if(trim($sql)!==""){
+		$rs="";
+		try {
+			$rs=${$conn}->query("$sql");
+			//$rs= $GLOBALS[$conn]->query($sql);
+			// Convert to a SQlite table to allow for cfoutput and cfQueryOfQuery operations ...
+			$colcount = $rs->columnCount();
+			$rowcount = $rs->rowCount();
+			$LiteCREATE="CREATE TABLE $qryName(cfid INTEGER PRIMARY KEY";
+			$LiteData="";
+			$c=0;foreach($rs as $row) {
+				$LiteCols="\"cfid\""; $LiteVals="$c";
+				for($m=0; $m<$colcount; $m++){
+					$meta = $rs->getColumnMeta($m); //print_r($meta);
+					//echo ." | ".$meta['native_type']."<br>\n"; 
+					$colname=$meta['name'];
+					if(${$conn."_type"}==="MySQL"){
+						$ColType="TEXT";
+						switch ($meta['native_type']) {
+							case 'LONG':
+							case 'TINY': $ColType="INT"; $LiteVals.=",".$row["$colname"]; //intval($value);
+								break;
+							case 'DOUBLE': $ColType="REAL"; $LiteVals.=",".$row["$colname"]; //floatval($value);
+								break;
+							//case 'BLOB': $ColType="TEXT";
+							default: $ColType="TEXT"; $LiteVals.=",\"".$row["$colname"]."\"";
+						}
+					}
+					if($c==0)$LiteCREATE.=", $colname $ColType";
+					$LiteCols.=",\"$colname\"";
+				}
+				//$LiteCols.=""; echo "$LiteCols<br>\n";
+				//$LiteVals.=""; echo "$LiteVals<br>\n";
+				$LiteData.="INSERT INTO ".$qryName."($LiteCols) VALUES($LiteVals);\n";
+				$c++;
+			}
+			${$conn}=null;
+			$LiteCREATE.=");"; 
+			//echo "$LiteCREATE<br>\n";
+			//echo "$LiteData<br>\n";
+			
+			//$cf_qryName=RemoveSurroundingQuotes($qryName);
+			$cf_DB = new SQLite3($GLOBALS["cf_DBfilePath"]);
+			$cf_DB->exec("DROP TABLE IF EXISTS $qryName");
+			$cf_DB->exec($LiteCREATE);
+			$cf_DB->exec($LiteData);
+			
+			$rs=""; $sql="SELECT * FROM $qryName";
+			if($stmt=$cf_DB->prepare($sql)){
+				$rs=$stmt->execute();
+				//echo "cfQueryOfQuery success";
+				return $rs;
+			} else {
+				echo "cfQuery failed";
+				return false;
+			}
+			
+		} catch(PDOException $e) {
+			echo "Database $conn error ... "."sql=[$sql]<br>\n". $e->getMessage()."<br>\n";
+		}
+
+	} else {
+		echo "Database $conn error ... "."sql=[$sql]<br>\n";
+		return "";
+	}
+}
+
+
+function ParseCFquery($AttributeLine,$InnerCFML,&$output){
 	//echo "ParseCFqueryF";
-	$InnerHTML = preg_replace('/\s+/', ' ', trim($InnerHTML));
+	$InnerCFML = preg_replace('/\s+/', ' ', trim($InnerCFML));
 	
 	//<cfquery name="sortedNews" dbtype="query">
 	$AttributeArr=ParseAttributeLine($AttributeLine." x");
@@ -84,19 +155,21 @@ function ParseCFquery($AttributeLine,$InnerHTML,&$output){
 	
 	if($cfquery_name!=="" and $cfquery_dbtype!=="" and UCASE($cfquery_dbtype)==="QUERY"){ //
 		//echo "dbtype=QUERY<br>\n";
-		//echo "$InnerHTML<br>\n";
-		$SQL=ParseSQL($InnerHTML);
+		//echo "$InnerCFML<br>\n";
+		$SQL=ParseSQL($InnerCFML);
 		//echo "$SQL<br>\n";
-		$out.="<?php \$SQL=\"\"; ?>".$SQL."\n";
+		//$out.="<?php \$SQL=\"\"; ?]".$SQL."\n";
+		$out.="<?php \$SQL=\"$SQL\"; //SQL ?>\n";
 		$out.="<?php \$".$cfquery_name." = cfQueryOfQuery(\$SQL); //CFQUERY ?>\n";
-	}
 	
-	if($cfquery_name!=="" and $cfquery_datasource!==""){ //
-		$SQL=ParseSQL($InnerHTML);
-		$out.="<?php \$SQL=\"\"; ?>".$SQL."\n";
-		//echo "$cfquery_datasource<br>\n";
-		$out.="<?php echo \"datasource not implemented yet\"; \n";
-		//$out.=" \$".$cfquery_name." = cfQueryDB(\$SQL);";
+	} else if($cfquery_name!=="" and $cfquery_datasource!==""){ //
+		//echo "ParseCFquery InnerCFML=[$InnerCFML]<br>\n";
+		$SQL=ParseSQL($InnerCFML);
+		//echo "ParseCFquery sql=[$SQL]<br>\n";
+		//cfQueryDB($SQL,$cfquery_datasource);
+		
+		$out.="<?php \$SQL=\"$SQL\"; //SQL ?>\n";
+		$out.="<?php \$".$cfquery_name." = cfQueryDB(\$SQL,\"$cfquery_datasource\",\"$cfquery_name\");";
 		$out.=" //CFQUERY ?>\n";
 	}
 	

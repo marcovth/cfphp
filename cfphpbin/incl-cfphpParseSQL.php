@@ -1,7 +1,7 @@
 <?php
 
 function ParseSQL($string){	
-	
+	//echo "ParseSQL_in sql=[$string]<br>\n";
 	
 	if(FindNoCase("<cf",$string)>0){
 		$SQL=""; $n=1;
@@ -36,10 +36,12 @@ function ParseSQL($string){
 			$SQL.="<?php \$SQL.=\"$InnerSQL\"; ?>\n";
 		}
 		//echo "[$SQL]\n\n\n";
-		
+		echo "ParseSQL_out sql=[$SQL]<br>\n";
 		return $SQL; //"CF".FindNoCase("<cf",$string);
 	} else {
-		return "<?php \$SQL.=\"$string\"; ?>\n";
+		//echo "ParseSQL_out sql=[$string]<br>\n";
+		return trim($string);
+		//return "<?php \$SQL.=\"$string\"; ?]\n";
 	}
 }
 

@@ -36,6 +36,9 @@ Eventually, most of the cffunctions will be translated with cffunction-names, an
 
 Coding/translating CF-Tags and cffunctions will be a great tasks, and will only happen if other coders will join this project. 
 
+The MyWind MySQL version of the Microsoft Access 2010 Northwind sample database will be used to test and debug MySQL queries.
+https://github.com/dalers/mywind
+
 
 Why this project?
 
