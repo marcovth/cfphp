@@ -35,6 +35,13 @@ function ParseCFset($AttributeLine,&$output){
 			$out.="querySetCell(\"$AttributeLine\")";
 			$output.=$out.";//cfset ?>";
 		}
+	} else if(FindNoCase("StructNew",$AttributeLine)){
+		$param=trim(ListFirst($AttributeLine,"="));
+		$param=RemoveSurroundingQuotes(trim($param));
+		//if(Mid($param,1,1)!=="$") $param="\$".$param;
+		$out="<?php ";
+		$out.="\$".$param."=StructNew(\"$param\")";
+		$output.=$out.";//cfset ?>";
 	} else {
 		$out="<?php "; 
 		$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";

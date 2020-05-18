@@ -92,6 +92,10 @@ $cf_TempEvalFile=$GLOBALS["cf_serverRoot"]."../tempdb/temp.php";
 if(FileExists($cf_subfolderDir."prepend.php")) include $cf_subfolderDir."prepend.php";
 // ###############################################
 
+// ###############################################
+// Some global variables to help the translation from CFML to PHP ...
+$GLOBALS["cf_ActiveStructureNames"]="";
+// ###############################################
 
 if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($cf_fileNameExt)==="CFC"){
 

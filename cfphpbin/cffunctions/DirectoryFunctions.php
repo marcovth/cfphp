@@ -2,6 +2,11 @@
 
 //ListDirectory.php
 
+function expandPath($string){
+	//echo "expandPath=".$GLOBALS["cf_subfolderDir"].$string."<br>\n";
+	return $GLOBALS["cf_subfolderDir"].$string;
+}
+
 function ListDirectory($qryName,$dir,$filter=null,$SortBy="name",$desc="ASC",$recurse=0){
 	// Sorting by ... name,size,ctime,mtime,atime,created,modified,accessed,type,fullPath,RealPath
 	

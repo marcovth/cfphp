@@ -17,6 +17,7 @@ function ParseCFoutput($AttributeLine,&$output){
 	}
 	
 	if($cfoutput_query!=="" ){ //and $cfloop_to!=="" and $cfloop_index!==""){
+		//$out.=" include \$GLOBALS[\"cf_webRootDir\"].\"/cfphpbin/other/CFoutput-loop.php\";//CFOUTPUT ?]";
 		$out.=" \$nrow=0; while(\$row = \$".$cfoutput_query."->fetchArray()) { \$CurrentRow=\$nrow+1;"; //cfdump(\$row);echo \$".$cfoutput_query."->columnName(\$ncol); 
 		$out.="for(\$ncol=0; \$ncol< \$".$cfoutput_query."->numColumns(); \$ncol++) { \${\$".$cfoutput_query."->columnName(\$ncol)}=\$row[\$ncol]; } \$nrow++; \$".$cfoutput_query."_Recordcount=\$nrow; \$Recordcount=\$nrow; ";
 		$out.="//CFOUTPUT ?>";

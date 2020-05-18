@@ -5,8 +5,7 @@
 <?php }//cfoutput ?>
 <li><?php echo $myList_Recordcount; ?></li>
 
-<?php $SQL=""; ?><?php $SQL.="SELECT * FROM myList WHERE type='Dir'"; ?>
-
+<?php $SQL="SELECT * FROM myList WHERE type='Dir'"; //SQL ?>
 <?php $myList2 = cfQueryOfQuery($SQL); //CFQUERY ?>
 
 <hr>
