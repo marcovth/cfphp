@@ -5,6 +5,8 @@
 function ParseCFset($AttributeLine,&$output){
 	//$output.="[CFSET $AttributeLine]";
 	
+	//$struct=CheckForStructure();
+	
 	if(FindNoCase("query",$AttributeLine)){
 		if(FindNoCase("queryNew",$AttributeLine)){
 			$out="<?php ";															//echo "0) $AttributeLine<br>";
