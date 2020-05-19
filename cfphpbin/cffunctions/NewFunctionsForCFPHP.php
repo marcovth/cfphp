@@ -1,5 +1,22 @@
 <?php
 
+
+function DebugLine($name,$string){
+	echo $name."=[".$string."]<br>\n";
+}
+
+function StripVariable($Variable){
+	$Variable=trim($Variable,"#");
+	$Variable=trim($Variable,"$");
+	$Variable=trim($Variable,"(");
+	$Variable=trim($Variable,")");
+	return $Variable;
+	//$charSet="[~`!@#$%^&*()_\-+=\[\]{}\|\\:;\"\'<,>.]/"; 
+	//return preg_match("/!@#$%^&*()\-+=\[\]{}\|\\:;\"\'<,>]/",$Variable); // removed "._" added "\\"
+	//return preg_match($charSet,$char);
+}
+
+
 function getUserIpAddress(){
     if(!empty($_SERVER['HTTP_CLIENT_IP'])){
         //ip from share internet

@@ -7,7 +7,11 @@ function DetectVariables($string,$Addtags){
 	if($Addtags==="yes") $Add=true; else $Add=false;														//echo "$Add";
 	
 	// First easy cases ... single words and single number, single white spaces and tabs ...
-	if(strlen($string)===1 and !IsNumeric($string) and $string!==" " and $string!=="	"){
+	if(trim(CheckForStructureName($string))!==""){
+		// Structure variable ...
+	
+
+	} else if(strlen($string)===1 and !IsNumeric($string) and $string!==" " and $string!=="	"){
 		if($Addtags==="yes") return "<?php echo \$".$string."; ?>"; else return "$".$string;
 	} else if (!IsNumeric(Mid($string,1,1)) and preg_match('/^[a-zA-Z]+[a-zA-Z0-9._]+$/',$string)) {			//echo "[$string]";
 		// If the first char is not a number and the rest of the string is AlphaNumeric ... 
@@ -176,8 +180,9 @@ function DetectVariables($string,$Addtags){
 			if($i>=strlen($string)-1){
 				// Make sure the last word is carried over when the line ends.
 				//$out.=$word;//."%";
-				if($Addtags==="yes" and (trim($c)!=="")) 	$out.="<?php echo \"".$word."\"; ?>"; 
-				else  					$out.="".$word;
+				//if($Addtags==="yes" and (trim($c)!=="")) 	$out.="<?php echo \"".$word."\"; ?"; 
+				//else  					
+					$out.="".$word;
 			}
 			/*
 			if($i==strlen($string)-1){ // space or last char in the line ... //$c===" " or 

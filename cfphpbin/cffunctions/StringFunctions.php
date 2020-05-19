@@ -8,7 +8,7 @@ function Mid($string,$offset,$len){
 
 
 function Len($string){
-	
+	return strlen($list);
 }
 
 function Find($find,$string,$start=NULL){
@@ -42,7 +42,7 @@ function FindNoCase($find,$string,$start=NULL){
 	else return $found+1; // Returns CFML 1-based offset or false
 }
 
-function Replace($string,$substring,$replaceString,$scope=NULL){
+function Replace($string,$substring,$replaceString="",$scope=NULL){
 	//Replace(string, substring1, obj [, scope ])
 	if($scope=="ALL"){ 
 		$rpl=str_replace($substring,$replaceString,$string);
