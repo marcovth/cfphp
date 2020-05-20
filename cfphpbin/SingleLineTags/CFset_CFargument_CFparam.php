@@ -18,10 +18,14 @@ function ParseCFset($AttributeLine,&$output){
 		$StructKeys="['".Replace($StructKeys,".","']['","ALL")."']";
 		//DebugLine("StructName",$StructName);
 		//DebugLine("StructKeys",$StructKeys);
-		$AttributeLine=DetectVariables($AttributeLine,"NO");
-		$out="<?php ";
-		$out.="\$".$StructName.$StructKeys." = ".$AttributeLine;
-		$output.=$out.";//cfset ?>";
+		if(Find("{",$AttributeLine)>0){
+			$output.=ParseStructureAttributes($StructName,$AttributeLine);
+		} else {
+			$AttributeLine=DetectVariables($AttributeLine,"NO");
+			$out="<?php ";
+			$out.="\$".$StructName.$StructKeys." = ".$AttributeLine;
+			$output.=$out.";//cfset ?>";
+		}
 		
 	} else if(FindNoCase("query",$AttributeLine)){
 		if(FindNoCase("queryNew(",$AttributeLine)){

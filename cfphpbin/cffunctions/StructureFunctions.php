@@ -2,6 +2,11 @@
 
 //StructNew.php
 
+function ParseStructureAttributes($string){
+	echo "ParseStructureAttributes($string)<br>\n";
+	
+}
+
 function CheckForStructureName($string){
 	//echo "CheckForStructureName($string)<br>\n";
 	if(FindNoCase("StructNew(",$string)>0) return "";

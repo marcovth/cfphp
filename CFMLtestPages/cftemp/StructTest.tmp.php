@@ -1,6 +1,5 @@
-
-<?php $TestStruct=StructNew("TestStruct");//cfset ?>
-<?php $TestStruct['name'] = "Apple corp";//cfset ?>
+<?php $student=StructNew("student");//cfset ?>
+<?php $student[''] =  {firstName="Jane", lastName="Janes", grades=[91, 78, 87]} ;//cfset ?>
     
 <?php $TestStruct2=StructNew("TestStruct2");//cfset ?>
 <?php $TestStruct2['name']['last']['offical'] = "Google corp";//cfset ?>
