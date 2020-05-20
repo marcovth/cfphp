@@ -1,7 +1,7 @@
 <?php
 
-function ParseCFif($AttributeLine,&$output){
-	//$output.="[CFIF $AttributeLine]";
+function ParseCFif($AttributeLine,&$toPHPtranslation){
+	//$toPHPtranslation.="[CFIF $AttributeLine]";
 	$out="<?php if( ";
 	$words=explode(" ",$AttributeLine);
 	$n=0;
@@ -22,22 +22,22 @@ function ParseCFif($AttributeLine,&$output){
 		
 	}
 	unset($word);
-	//if(null===$output){
+	//if(null===$toPHPtranslation){
 	//	return $out."){ ?]";
 	//} else { 
-		$output.=$out; $output.="){ ?>";
+		$toPHPtranslation.=$out; $toPHPtranslation.="){ ?>";
 	//}
 	
 }
 
-function ParseCFelse($AttributeLine,&$output){
+function ParseCFelse($AttributeLine,&$toPHPtranslation){
 
-$output.="<?php } else { ?>";
+$toPHPtranslation.="<?php } else { ?>";
 
 }
 
-function ParseCFelseif($AttributeLine,&$output){
-	//$output.="[CFELSEIF $AttributeLine]";
+function ParseCFelseif($AttributeLine,&$toPHPtranslation){
+	//$toPHPtranslation.="[CFELSEIF $AttributeLine]";
 	$out="<?php } else if( ";
 	$words=explode(" ",$AttributeLine);
 	foreach($words as &$word) {
@@ -54,7 +54,7 @@ function ParseCFelseif($AttributeLine,&$output){
 		//}
 	}
 	unset($word);
-	$output.=$out; $output.="){ ?>";
+	$toPHPtranslation.=$out; $toPHPtranslation.="){ ?>";
 
 }
 

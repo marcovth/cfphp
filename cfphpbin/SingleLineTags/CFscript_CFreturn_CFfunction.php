@@ -3,21 +3,21 @@
 //CFscript_CFreturn_CFfunction.php
 
 
-function ParseCFscript($AttributeLine,&$output){
+function ParseCFscript($AttributeLine,&$toPHPtranslation){
 
-	$output.="[CFSCRIPT $AttributeLine]";
-
-}
-
-function ParseCFreturn($AttributeLine,&$output){
-
-	$output.="[CFRETURN $AttributeLine]";
+	$toPHPtranslation.="[CFSCRIPT $AttributeLine]";
 
 }
 
-function ParseCFfunction($AttributeLine,&$output){
+function ParseCFreturn($AttributeLine,&$toPHPtranslation){
 
-	$output.="[CFFUNCTION $AttributeLine]";
+	$toPHPtranslation.="[CFRETURN $AttributeLine]";
+
+}
+
+function ParseCFfunction($AttributeLine,&$toPHPtranslation){
+
+	$toPHPtranslation.="[CFFUNCTION $AttributeLine]";
 
 }
 

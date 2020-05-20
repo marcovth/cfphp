@@ -3,9 +3,9 @@
 //CFform.php
 
 
-function ParseCFform($AttributeLine,&$output){
+function ParseCFform($AttributeLine,&$toPHPtranslation){
 
-	$output.="[CFFORM $AttributeLine]";
+	$toPHPtranslation.="[CFFORM $AttributeLine]";
 
 }
 

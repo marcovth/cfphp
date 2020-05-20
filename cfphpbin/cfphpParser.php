@@ -12,7 +12,7 @@ function cfphpParser($cp_CFfile){
 	
 	$DebugLevel=1; // 1, 2 or 3
 
-	$output=""; $InCFscript=false; $InsideInnerHTML=false; $InnerHTML=""; $InnerHTMLTagAttributeLine="";
+	$toPHPtranslation=""; $InCFscript=false; $InsideInnerHTML=false; $InnerHTML=""; $InnerHTMLTagAttributeLine="";
 	$file = fopen($cp_CFfile,"r") or die;
 	if ($file) {
 		while (($line = fgets($file)) !== false) {
@@ -24,7 +24,7 @@ function cfphpParser($cp_CFfile){
 			
 			if($InCFscript){
 				// Line inside cfscript block ... copy over, don't even check ...
-				$output.="$line";
+				$toPHPtranslation.="$line";
 			} else if($InsideInnerHTML){
 				// Line inside InnerHTML block ... copy over, don't even check ...
 				$InnerHTML.="$line";
@@ -36,7 +36,7 @@ function cfphpParser($cp_CFfile){
 				// HTML line ...
 																				//echo "$line<br>\n"; 
 																				//echo DetectVariables($line)."<br>\n";
-				$output.=DetectVariables($line,"yes");
+				$toPHPtranslation.=DetectVariables($line,"yes");
 			}
 			
 		}
@@ -45,7 +45,7 @@ function cfphpParser($cp_CFfile){
 		// error opening the file.
 	} 
 	
-	return $output;
+	return $toPHPtranslation;
 }	
 
 ?>

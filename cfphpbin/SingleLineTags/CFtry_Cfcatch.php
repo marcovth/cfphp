@@ -1,14 +1,14 @@
 <?php
 
-function ParseCFtry($AttributeLine,&$output){
+function ParseCFtry($AttributeLine,&$toPHPtranslation){
 
-	$output.="[CFTRY $AttributeLine]";
+	$toPHPtranslation.="[CFTRY $AttributeLine]";
 
 }
 
-function ParseCFcatch($AttributeLine,&$output){
+function ParseCFcatch($AttributeLine,&$toPHPtranslation){
 
-	$output.="[CFCATCH $AttributeLine]";
+	$toPHPtranslation.="[CFCATCH $AttributeLine]";
 
 }
 

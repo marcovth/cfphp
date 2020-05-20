@@ -133,7 +133,7 @@ function cfQueryDB($sql,$conn,$qryName){
 }
 
 
-function ParseCFquery($AttributeLine,$InnerCFML,&$output){
+function ParseCFquery($AttributeLine,$InnerCFML,&$toPHPtranslation){
 	//echo "ParseCFqueryF";
 	$InnerCFML = preg_replace('/\s+/', ' ', trim($InnerCFML));
 	
@@ -173,7 +173,7 @@ function ParseCFquery($AttributeLine,$InnerCFML,&$output){
 		$out.=" //CFQUERY ?>\n";
 	}
 	
-	$output.=$out;
+	$toPHPtranslation.=$out;
 	
 	
 	

@@ -3,15 +3,15 @@
 //CFabort_CFdump.php
 
 
-function ParseCFabort($AttributeLine,&$output){
+function ParseCFabort($AttributeLine,&$toPHPtranslation){
 
-	$output.="<?php die(); ?>";
+	$toPHPtranslation.="<?php die(); ?>";
 
 }
 
-function ParseCFdump($AttributeLine,&$output){
+function ParseCFdump($AttributeLine,&$toPHPtranslation){
 
-	$output.="<?php die(); ?>";
+	$toPHPtranslation.="<?php die(); ?>";
 
 }
 

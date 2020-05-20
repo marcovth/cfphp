@@ -1,6 +1,6 @@
 <?php
 
-function ParseCFloop($AttributeLine,&$output){
+function ParseCFloop($AttributeLine,&$toPHPtranslation){
 	//echo "[CFLOOP $AttributeLine]<br>\n";
 	
 	$AttributeArr=ParseAttributeLine($AttributeLine." x");
@@ -28,7 +28,7 @@ function ParseCFloop($AttributeLine,&$output){
 	}
 	
 	
-	$output.=$out; //"[CFLOOP $AttributeLine]";
+	$toPHPtranslation.=$out; //"[CFLOOP $AttributeLine]";
 	
 	
 	

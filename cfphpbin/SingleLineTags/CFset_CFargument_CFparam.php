@@ -2,8 +2,8 @@
 
 //CFset_CFargument_CFparam.php
 
-function ParseCFset($AttributeLine,&$output){
-	//$output.="[CFSET $AttributeLine]";
+function ParseCFset($AttributeLine,&$toPHPtranslation){
+	//$toPHPtranslation.="[CFSET $AttributeLine]";
 	
 	$struct=CheckForStructureName($AttributeLine);								//echo "[$struct]";
 	if(trim($struct)!==""){														//echo "ParseStructLine";
@@ -19,12 +19,12 @@ function ParseCFset($AttributeLine,&$output){
 		//DebugLine("StructName",$StructName);
 		//DebugLine("StructKeys",$StructKeys);
 		if(Find("{",$AttributeLine)>0){
-			$output.=ParseStructureAttributes($StructName,$AttributeLine);
+			$toPHPtranslation.=ParseStructureAttributes($StructName,$AttributeLine);
 		} else {
 			$AttributeLine=DetectVariables($AttributeLine,"NO");
 			$out="<?php ";
 			$out.="\$".$StructName.$StructKeys." = ".$AttributeLine;
-			$output.=$out.";//cfset ?>";
+			$toPHPtranslation.=$out.";//cfset ?>";
 		}
 		
 	} else if(FindNoCase("query",$AttributeLine)){
@@ -38,14 +38,14 @@ function ParseCFset($AttributeLine,&$output){
 			$AttributeLine=ltrim($AttributeLine,"\"");
 			$AttributeLine=rtrim($AttributeLine,"\"");								//echo "4) $AttributeLine<br>";
 			$out.="queryNew(\"$param\",\"$AttributeLine\")";
-			$output.=$out.";//cfset ?>";
+			$toPHPtranslation.=$out.";//cfset ?>";
 		}if(FindNoCase("queryAddRow(",$AttributeLine)){
 			$AttributeLine=ReplaceNoCase(trim($AttributeLine),"queryAddRow(",""); 		//echo "3) $AttributeLine<br>";
 			$AttributeLine=rtrim($AttributeLine,")");
 			$AttributeLine=trim(RemoveSurroundingQuotes($AttributeLine));
 			$out="<?php ";
 			$out.="queryAddRow(\"$AttributeLine\")";
-			$output.=$out.";//cfset ?>";
+			$toPHPtranslation.=$out.";//cfset ?>";
 		}if(FindNoCase("querySetCell(",$AttributeLine)){
 			$AttributeLine=ReplaceNoCase(trim($AttributeLine),"querySetCell(",""); 		//echo "3) $AttributeLine<br>";
 			$AttributeLine=rtrim($AttributeLine,")");
@@ -55,7 +55,7 @@ function ParseCFset($AttributeLine,&$output){
 			$AttributeLine=Replace($AttributeLine,",","\",\"","ALL");
 			$out="<?php ";
 			$out.="querySetCell(\"$AttributeLine\")";
-			$output.=$out.";//cfset ?>";
+			$toPHPtranslation.=$out.";//cfset ?>";
 		}
 	} else if(FindNoCase("StructNew(",$AttributeLine)){
 		$param=trim(ListFirst($AttributeLine,"="));
@@ -66,7 +66,7 @@ function ParseCFset($AttributeLine,&$output){
 		StructNew($param);
 		$out="<?php ";
 		$out.="\$".$param."=StructNew(\"$param\")";
-		$output.=$out.";//cfset ?>";
+		$toPHPtranslation.=$out.";//cfset ?>";
 	} else {
 		$out="<?php "; 
 		$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";
@@ -79,17 +79,17 @@ function ParseCFset($AttributeLine,&$output){
 			else $out.="$".$param." = ".$AttributeLine; 				// parameter
 		} else $out.=$param." = ".$AttributeLine;
 		
-		$output.=$out.";//cfset ?>";
+		$toPHPtranslation.=$out.";//cfset ?>";
 	}
 }
 
-function ParseCFargument($AttributeLine,&$output){
+function ParseCFargument($AttributeLine,&$toPHPtranslation){
 
-	$output.="[CFARGUMENT $AttributeLine]";
+	$toPHPtranslation.="[CFARGUMENT $AttributeLine]";
 
 }
 
-function ParseCFparam($AttributeLine,&$output){
+function ParseCFparam($AttributeLine,&$toPHPtranslation){
 	// <cfparam name="name" type="numeric" default="0">
 	//$name=ListFirst(trim($AttributeLine)," ");
 	//$name=ListGetAt(trim($AttributeLine)," ");
@@ -104,7 +104,7 @@ function ParseCFparam($AttributeLine,&$output){
 			$out.=" ".$AttributeArr['AttributeName'][$nAtt]."=".$AttributeArr['AttributeVal'][$nAtt]." ";
 		}
 	}
-	$output.=$out; //"[CFPARAM $AttributeLine]";
+	$toPHPtranslation.=$out; //"[CFPARAM $AttributeLine]";
 
 }
 

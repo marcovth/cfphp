@@ -2,8 +2,8 @@
 
 //CFdirectory_CFfile_CFinclude.php
 
-function ParseCFdirectory($AttributeLine,&$output){
-	//$output.="[CFDIRECTORY $AttributeLine]";
+function ParseCFdirectory($AttributeLine,&$toPHPtranslation){
+	//$toPHPtranslation.="[CFDIRECTORY $AttributeLine]";
 	// echo "[CFDIRECTORY $AttributeLine]<br>\n";
 	// action="list" directory="#expandPath("./")#" recurse="false" name="myList"
 	
@@ -35,21 +35,21 @@ function ParseCFdirectory($AttributeLine,&$output){
 		//echo $path."<br>\n";
 		$out="<?php \$$cf_3=ListDirectory(\"".$cf_3."\",evaluate(\"".$path."\"),\"".$cf_4."\",\"name\",\"ASC\",$recurse); //CFDIRECTORY ?>";
 	}
-	$output.=$out;
+	$toPHPtranslation.=$out;
 
 }
 
 
 
-function ParseCFfile($AttributeLine,&$output){
+function ParseCFfile($AttributeLine,&$toPHPtranslation){
 
-	$output.="[CFFILE $AttributeLine]";
+	$toPHPtranslation.="[CFFILE $AttributeLine]";
 
 }
 
-function ParseCFinclude($AttributeLine,&$output){
+function ParseCFinclude($AttributeLine,&$toPHPtranslation){
 
-	$output.="[CFINCLUDE $AttributeLine]";
+	$toPHPtranslation.="[CFINCLUDE $AttributeLine]";
 
 }
 

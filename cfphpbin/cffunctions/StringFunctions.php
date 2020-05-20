@@ -120,6 +120,7 @@ function UCASE($string){
 }
 
 function IsNumeric($string){
+	//echo "IsNumeric($string)<br>\n";
 	if(is_numeric($string)) return true; else false;
 }
 

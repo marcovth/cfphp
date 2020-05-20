@@ -18,19 +18,19 @@
 			//if($DebugLevel>=2) echo "%$tagName%";
 			if($tagName !== ''){
 				// cfPHP starting tag selector ...
-				$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); $InBetweenOrAfterCFTagsHTML=""; // In between two CF-tags HTML
+				$toPHPtranslation.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); $InBetweenOrAfterCFTagsHTML=""; // In between two CF-tags HTML
 				//include $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfpfpParseSelectStartingTag.php";
 				
 				// ######### STARTING TAG SELECTION #########
 				if(UCASE($tagName)==="CFSCRIPT"){	
-					ParseCFscript($AttributeLine,$output); $InCFscript=true; 
+					ParseCFscript($AttributeLine,$toPHPtranslation); $InCFscript=true; 
 				} else if(UCASE($tagName)==="CFQUERY"){
 					$InsideInnerHTML=true; $InnerHTML=""; 
 					$InnerHTMLTagAttributeLine=$AttributeLine; $SkipChar=true;
 				} else {
 					try{ // Dynamic function call ...
 						$func="Parse"."$tagName";
-						$func($AttributeLine,$output);
+						$func($AttributeLine,$toPHPtranslation);
 					} catch ( \Exception $e ) {
 						
 					}
@@ -112,23 +112,23 @@
 		}
 		if($line[$i]===">" and $InCFEndtag){
 			
-			$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); // HTML before ending-CF-tags = mostly whitespace
+			$toPHPtranslation.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); // HTML before ending-CF-tags = mostly whitespace
 			$InBetweenOrAfterCFTagsHTML="";
 			
 			// ###############  END TAGS ###################
 			if(UCASE($EndTagName)==="CFSCRIPT"){ 
 				$InCFscript=false; 
-				$output.="<?php }//$EndTagName ?>";
+				$toPHPtranslation.="<?php }//$EndTagName ?>";
 			} else if(UCASE($EndTagName)==="CFQUERY"){ 
 				//echo "ParseCFqueryCall";
-				ParseCFquery($InnerHTMLTagAttributeLine,$InnerHTML,$output);
+				ParseCFquery($InnerHTMLTagAttributeLine,$InnerHTML,$toPHPtranslation);
 				$InsideInnerHTML=false; $InnerHTML=""; $InnerHTMLTagAttributeLine="";
 			} else {
-				$output.="<?php }//$EndTagName ?>";
+				$toPHPtranslation.="<?php }//$EndTagName ?>";
 			}
 			// ###############  END TAGS ###################
 			
-			//$output.="[/".UCASE($EndTagName)."]";
+			//$toPHPtranslation.="[/".UCASE($EndTagName)."]";
 			$InCFEndtag=false; $EndTagName="";
 			//$i++;
 			$SkipChar=true;
@@ -150,6 +150,6 @@
 		
 		
 	}
-	$output.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); // After the last CF-tags HTML
+	$toPHPtranslation.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); // After the last CF-tags HTML
 
 ?>

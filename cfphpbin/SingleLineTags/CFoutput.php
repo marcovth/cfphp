@@ -1,7 +1,7 @@
 <?php
 
-function ParseCFoutput($AttributeLine,&$output){
-	//$output.="[CFOUTPUT $AttributeLine]";
+function ParseCFoutput($AttributeLine,&$toPHPtranslation){
+	//$toPHPtranslation.="[CFOUTPUT $AttributeLine]";
 	
 	$AttributeArr=ParseAttributeLine($AttributeLine." x");
 	$out="<?php ";
@@ -22,7 +22,7 @@ function ParseCFoutput($AttributeLine,&$output){
 		$out.="for(\$ncol=0; \$ncol< \$".$cfoutput_query."->numColumns(); \$ncol++) { \${\$".$cfoutput_query."->columnName(\$ncol)}=\$row[\$ncol]; } \$nrow++; \$".$cfoutput_query."_Recordcount=\$nrow; \$Recordcount=\$nrow; ";
 		$out.="//CFOUTPUT ?>";
 	}
-	$output.=$out;
+	$toPHPtranslation.=$out;
 }
 
 ?>
