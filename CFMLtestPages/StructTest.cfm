@@ -1,5 +1,5 @@
 <cfset Struct2D=StructNew()>
-<cfset Struct2D = {Key1 = {innerKey1 = "innerValue1"}}> Working on this.
+<cfset Struct2D = {KeyA = {innerKeyA1 = "innerValueA1", {KeyC = {innerKeyC1 = "innerValueC1"}}, {KeyB={innerKeyB1 = "innerValueB1", innerKeyB2 = "innerValueB2"}}>
 
 
 <cfset student=StructNew()>

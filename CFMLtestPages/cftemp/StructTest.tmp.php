@@ -1,6 +1,9 @@
 <?php $Struct2D=StructNew("Struct2D");//cfset ?>
-<?php $Struct2D['innerKey1'] = "innerValue1";//cfset ?>
- Working on this.
+<?php $Struct2D['KeyA']['innerKeyA1'] = "innerValueA1";//cfset ?>
+<?php $Struct2D['KeyA']['KeyC']['innerKeyC1'] = "innerValueC1";//cfset ?>
+<?php $Struct2D['KeyB']['innerKeyB1'] = "innerValueB1";//cfset ?>
+<?php $Struct2D['KeyB']['innerKeyB2'] = "innerValueB2";//cfset ?>
+
 
 
 <?php $student=StructNew("student");//cfset ?>

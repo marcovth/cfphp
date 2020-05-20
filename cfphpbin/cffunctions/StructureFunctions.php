@@ -8,15 +8,24 @@ function ParseStructureAttributes($StructName,$AttributeLine){
 	$AttributeLine=trim(RemoveSurroundingQuotes($AttributeLine));
 	
 	$out=""; $InVariablePound=false; $InVariableDollar=false; 
-	$VariableName=""; $word=""; $InFunction=false;
+	$word=""; $InFunction=false;
 	$InAttributeValDQuote=false; $InAttributeValSQuote=false; 
-	$InArray=false; $InStructure=false;
+	$InArray=false; $InStructure=false; 
+	$VariableName=""; $MDVariables=array(); $nMDVariables=0;
 	for($i=0; $i<strlen($AttributeLine); $i++){																	//echo "$string[$i]";
 		$c=$AttributeLine[$i];	
 		//echo "[$c][*$VariableName][$word]<br>\n";
 		if($c==="{"){
 			if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 				// "{" not part of a string
+				if($InStructure){
+					// Oh, oh, we are entering a multidimentional structure !
+					if(trim($VariableName)!==""){
+						$MDVariables[$nMDVariables]=trim($VariableName);
+						//echo "&[".$MDVariables[$nMDVariables]."]<br>\n";
+						$nMDVariables++;
+					}
+				}
 				$InStructure=true;
 			} else $word.=$c;
 		} else if($c==="}"){
@@ -24,9 +33,16 @@ function ParseStructureAttributes($StructName,$AttributeLine){
 				// "}" not part of a string
 				$word=trim($word);
 				if($word!==""){
-					if(IsNumeric($word)) $out.="<?php \$".$StructName."['".$VariableName."'] = $word;//cfset ?>\n";
-					else $out.="<?php \$".$StructName."['".$VariableName."'] = \"$word\";//cfset ?>\n";
+					$MDVariablesTXT="";
+					if(!ArrayIsEmpty($MDVariables)){
+						foreach($MDVariables as &$MD) {
+							$MD=trim($MD); if(trim($MD)!=="") $MDVariablesTXT.="['".$MD."']";
+						}
+					}
+					if(IsNumeric($word)) $out.="<?php \$".$StructName.$MDVariablesTXT."['".$VariableName."'] = $word;//cfset ?>\n";
+					else $out.="<?php \$".$StructName.$MDVariablesTXT."['".$VariableName."'] = \"$word\";//cfset ?>\n";
 				}
+				ArrayDeleteLast($MDVariables); $nMDVariables--;
 				$word=""; // print word, start a new word
 				$VariableName="";
 				$InStructure=false;
@@ -45,8 +61,14 @@ function ParseStructureAttributes($StructName,$AttributeLine){
 						// Ending double quote ... print text from in between double quotes ...
 						$word=trim($word);
 						if($word!==""){
-							if(IsNumeric($word)) $out.="<?php \$".$StructName."['".$VariableName."'] = $word;//cfset ?>\n";
-							else $out.="<?php \$".$StructName."['".$VariableName."'] = \"$word\";//cfset ?>\n";
+							$MDVariablesTXT="";
+							if(!ArrayIsEmpty($MDVariables)){
+								foreach($MDVariables as &$MD) {
+									$MD=trim($MD); if(trim($MD)!=="") $MDVariablesTXT.="['".$MD."']";
+								}
+							}
+							if(IsNumeric($word)) $out.="<?php \$".$StructName.$MDVariablesTXT."['".$VariableName."'] = $word;//cfset ?>\n";
+							else $out.="<?php \$".$StructName.$MDVariablesTXT."['".$VariableName."'] = \"$word\";//cfset ?>\n";
 						}
 						$word=""; // print word, start a new word
 						$VariableName="";
@@ -69,8 +91,14 @@ function ParseStructureAttributes($StructName,$AttributeLine){
 						// Ending Single quote ... print text from in between Single quotes ...
 						$word=trim($word);
 						if($word!==""){
-							if(IsNumeric($word)) $out.="<?php \$".$StructName."['".$VariableName."'] = $word;//cfset ?>\n";
-							else $out.="<?php \$".$StructName."['".$VariableName."'] = \"$word\";//cfset ?>\n";
+							$MDVariablesTXT="";
+							if(!ArrayIsEmpty($MDVariables)){
+								foreach($MDVariables as &$MD) {
+									$MD=trim($MD); if(trim($MD)!=="") $MDVariablesTXT.="['".$MD."']";
+								}
+							}
+							if(IsNumeric($word)) $out.="<?php \$".$StructName.$MDVariablesTXT."['".$VariableName."'] = $word;//cfset ?>\n";
+							else $out.="<?php \$".$StructName.$MDVariablesTXT."['".$VariableName."'] = \"$word\";//cfset ?>\n";
 						}
 						$word=""; // print word, start a new word
 						$VariableName="";
@@ -91,8 +119,14 @@ function ParseStructureAttributes($StructName,$AttributeLine){
 					// "," not part of a string.
 					$word=trim($word);
 					if($word!==""){
-						if(IsNumeric($word)) $out.="<?php \$".$StructName."['".$VariableName."'] = $word;//cfset ?>\n";
-						else $out.="<?php \$".$StructName."['".$VariableName."'] = \"$word\";//cfset ?>\n";
+						$MDVariablesTXT="";
+						if(!ArrayIsEmpty($MDVariables)){
+							foreach($MDVariables as &$MD) {
+								$MD=trim($MD); if(trim($MD)!=="") $MDVariablesTXT.="['".$MD."']";
+							}
+						}
+						if(IsNumeric($word)) $out.="<?php \$".$StructName.$MDVariablesTXT."['".$VariableName."'] = $word;//cfset ?>\n";
+						else $out.="<?php \$".$StructName.$MDVariablesTXT."['".$VariableName."'] = \"$word\";//cfset ?>\n";
 					}
 					$word=""; // print word, start a new word
 					$VariableName="";
@@ -110,13 +144,19 @@ function ParseStructureAttributes($StructName,$AttributeLine){
 					$word=trim($word);
 					$vals=ListToArray($word,","); //print_r($words);
 					$valTxt="";
+					$MDVariablesTXT="";
+					if(!ArrayIsEmpty($MDVariables)){
+						foreach($MDVariables as &$MD) {
+							$MD=trim($MD); if(trim($MD)!=="") $MDVariablesTXT.="['".$MD."']";
+						}
+					}
 					foreach($vals as &$val) {
 						$val=trim($val);
 						//echo "[$val]";
 						if(IsNumeric($val)) $valTxt.="$val,";
 						else { $valTxt.="\"$val\",";  } 
 					} $valTxt=rtrim(trim($valTxt),',');
-					if($word!=="") $out.="<?php \$".$StructName."['".$VariableName."'] = array($valTxt);//cfset ?>\n";
+					if($word!=="") $out.="<?php \$".$StructName.$MDVariablesTXT."['".$VariableName."'] = array($valTxt);//cfset ?>\n";
 					$InArray=false;
 					$VariableName=""; $word="";
 				} else $word.=$c;
