@@ -7,11 +7,7 @@ function DetectVariables($string,$Addtags){
 	if($Addtags==="yes") $Add=true; else $Add=false;														//echo "$Add";
 	
 	// First easy cases ... single words and single number, single white spaces and tabs ...
-	if(trim(CheckForStructureName($string))!==""){
-		// Structure variable ...
-	
-
-	} else if(strlen($string)===1 and !IsNumeric($string) and $string!==" " and $string!=="	"){
+	if(strlen($string)===1 and !IsNumeric($string) and $string!==" " and $string!=="	"){
 		if($Addtags==="yes") return "<?php echo \$".$string."; ?>"; else return "$".$string;
 	} else if (!IsNumeric(Mid($string,1,1)) and preg_match('/^[a-zA-Z]+[a-zA-Z0-9._]+$/',$string)) {			//echo "[$string]";
 		// If the first char is not a number and the rest of the string is AlphaNumeric ... 
@@ -27,7 +23,7 @@ function DetectVariables($string,$Addtags){
 	
 	//echo "DetectVariables($string,$Addtags) Other cases ...<br>\n";
 	$out=""; $InVariablePound=false; $InVariableDollar=false; $Variable=""; $word=""; $InFunction=false;
-	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $InHTMLcommendOut=false;
+	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $InHTMLcommendOut=false; $InStructureVar=false;
 	for($i=0; $i<strlen($string); $i++){																	//echo "$string[$i]";
 		$c=$string[$i];	
 		//echo "[*$c]";
@@ -85,6 +81,8 @@ function DetectVariables($string,$Addtags){
 						$InVariablePound=true;														//echo "(In#)";
 					} else {
 						// Ending pound-sign ... print variable, remove last #
+						if($InStructureVar){ $word.="']"; $InStructureVar=false; }
+						
 						if(trim($word)!==""){
 							if($Addtags==="yes") 	$out.="<?php echo \$".$word."; ?>"; 
 							else  					$out.="\$".$word; 
@@ -124,19 +122,20 @@ function DetectVariables($string,$Addtags){
 					// It's a comma inside quoted text. Copy comma and move on ...
 					$word.=",";	// copy over the comma
 				}
-			} else if($c===")" or $c==="]" or $c==="+" or $c==="-" or $c==="*"){
+			} else if($c===")" or $c==="]" or $c==="+" or $c==="-" or $c==="*" or $c==="<"){
 				if($c===")") $InFunction=false;
-				
+																					//DebugLine("word",$word);
 				if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 					// It's the end of a function ... print word
 					if(IsNumeric($word)){ // No dollar signs in front of numers !
 						$out.=$word.$c;//."_1";
 					} else if(strlen(trim($word))>0 and Mid($word,1,1)!==" " and Mid($word,1,1)!=="	"){ // Making sure dollsr signs are not printed with empty words.
+						if($InStructureVar){ $word.="']"; $InStructureVar=false; }
 						if($Addtags==="yes"){
 							if($InVariableDollar) 	$out.="<?php echo ".$word."; ?>$c"; 	// Dollar sign is already present.
 							else 					$out.="<?php echo $".$word."; ?>$c";
 						} else {					
-							if($InVariableDollar) 	$out.=$word.$c;//."_2"; 						// Dollar sign is already present.
+							if($InVariableDollar) 	$out.=$word.$c;//."_2"; 				// Dollar sign is already present.
 							else 					$out.="$".$word.$c;//."_3";
 						}
 					} else $out.=$word.$c;//."_4";
@@ -159,20 +158,24 @@ function DetectVariables($string,$Addtags){
 					// It's a bracket inside quoted text. Copy bracket and move on ...
 					$word.="(";	// copy over the bracket
 				}
-			/*} else if( ($c===" " or $i>=strlen($string)-1) ){
-				if(ListLen($string," ")==1){ echo "%".ListFirst($string," ")."%";
-					// Single word line == $
-					$out.="$".$word;
-				} else if($InVariablePound){
-					$out.="$".$word.$c;
-					$InVariablePound=false; $InVariableDollar=false; $word="";
-				} else if($InVariableDollar){
-					$out.=$word.$c;
-					$InVariablePound=false; $InVariableDollar=false; $word="";
+			} else if($c==="."){
+				if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
+					// Possibly part of a Structure variable?
+					if($InStructureVar){
+						$word.="']['";
+					} else {
+						if(trim(CheckForStructureName($string))!==""){
+							$InStructureVar=true;
+							$word.="['";
+						} else {
+							// Not sure yet what this means? Probably a dot in a number? ...
+							$word.=$c;
+						}
+					}
 				} else {
-					$out.=$word.$c; $word="";
-				}*/
-		
+					// In a quoted word, copy over the dot ...
+					$word.=$c;
+				}
 			} else {
 				$word.=$c;
 			} 
@@ -180,9 +183,10 @@ function DetectVariables($string,$Addtags){
 			if($i>=strlen($string)-1){
 				// Make sure the last word is carried over when the line ends.
 				//$out.=$word;//."%";
-				//if($Addtags==="yes" and (trim($c)!=="")) 	$out.="<?php echo \"".$word."\"; ?"; 
-				//else  					
-					$out.="".$word;
+				if($InStructureVar){ $word.="']"; $InStructureVar=false; }
+				if($InVariableDollar and $Addtags==="yes" and (trim($c)!=="")){
+					$out.="<?php echo \"".$word."\"; ?"; 
+				} else  $out.="".$word;
 			}
 			/*
 			if($i==strlen($string)-1){ // space or last char in the line ... //$c===" " or 

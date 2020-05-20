@@ -6,4 +6,5 @@
 <cfset #TestStruct2#=StructNew()>
 <cfset TestStruct2.name.last.offical="Google corp">
 
-<li>#TestStruct2.name.last.offical#</li>
+<li>Name = #TestStruct2.name.last.offical#</li>
+<li>$TestStruct.name</li>

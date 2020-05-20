@@ -1,7 +1,7 @@
 <?php
 
 
-function DebugLine($name,$string){
+function DebugLine($name="",$string=""){
 	echo $name."=[".$string."]<br>\n";
 }
 

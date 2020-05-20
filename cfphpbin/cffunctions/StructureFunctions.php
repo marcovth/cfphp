@@ -3,6 +3,7 @@
 //StructNew.php
 
 function CheckForStructureName($string){
+	//echo "CheckForStructureName($string)<br>\n";
 	if(FindNoCase("StructNew(",$string)>0) return "";
 	//echo "***".$GLOBALS["cf_ActiveStructureNames"]."<br>\n";
 	$string=trim($string);
