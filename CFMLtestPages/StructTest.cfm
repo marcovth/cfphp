@@ -3,7 +3,7 @@
 
 
 <cfset student=StructNew()>
-<cfset student = {firstName="Jane", lastName="Smith", grades=[91, 78, 87, "A"], city="Montreal", housenumber=8} >
+<cfset student = {firstName="Jane", lastName="Smith", grades=[91, 78, 87, "A"], city="New York", housenumber=8} >
 
 #student.housenumber#    
     

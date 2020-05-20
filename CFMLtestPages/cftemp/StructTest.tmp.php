@@ -7,7 +7,7 @@
 <?php $student['firstName'] = "Jane";//cfset ?>
 <?php $student['lastName'] = "Smith";//cfset ?>
 <?php $student['grades'] = array(91,78,87,"A");//cfset ?>
-<?php $student['city'] = "Montreal";//cfset ?>
+<?php $student['city'] = "New York";//cfset ?>
 <?php $student['housenumber'] = 8;//cfset ?>
 
 
