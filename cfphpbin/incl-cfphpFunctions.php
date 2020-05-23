@@ -44,15 +44,52 @@ function ListDirectoryArr($dir, $filter, $SortBy='name', $desc=0){
 // ###### INCLUDE ALL THE FUCTIONS ...
 
 $cffunctions=ListDirectoryArr($GLOBALS["cf_webRootDir"]."/cfphpbin/cffunctions/",'/\.php/i', 'name', 1); //print_r($cffunctions);
-foreach($cffunctions as $TagFile){
-	include $GLOBALS["cf_webRootDir"]."/cfphpbin/cffunctions/".$TagFile;
+foreach($cffunctions as $funcFile){
+	
+	$ffile = fopen($GLOBALS["cf_webRootDir"]."/cfphpbin/cffunctions/".$funcFile,"r");
+	//echo "$funcFile<br>\n";
+	if ($ffile) {
+		while (($fline = fgets($ffile)) !== false) {
+			//echo "[".stripos($fline,"function ")."]";
+			if(is_numeric(stripos($fline,"function "))){
+				// Watch out, stripos return 0 for the first offset.
+				// These 0-based languages are idiot.
+				$fline=str_ireplace("function ","",$fline);
+				$words=explode("(",$fline);
+				$FuncName=trim($words[0]);
+				$GLOBALS["cf_FunctionNames"].=$FuncName.",";
+				//echo "$FuncName<br>\n";
+			}
+		}
+	}
+	fclose($ffile);
+	include $GLOBALS["cf_webRootDir"]."/cfphpbin/cffunctions/".$funcFile;
 }
 
 $cfunctions=ListDirectoryArr($GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/functions/",'/\.php/i', 'name', 1); //print_r($cfunctions);
-foreach($cfunctions as $TagFile){
-	include $GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/functions/".$TagFile;
+foreach($cfunctions as $funcFile){
+	$ffile = fopen($GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/functions/".$funcFile,"r");
+	//echo "$funcFile<br>\n";
+	if ($ffile) {
+		while (($fline = fgets($ffile)) !== false) {
+			//echo "[".stripos($fline,"function ")."]";
+			if(is_numeric(stripos($fline,"function "))){
+				// Watch out, stripos return 0 for the first offset.
+				// These 0-based languages are idiot.
+				$fline=str_ireplace("function ","",$fline);
+				$words=explode("(",$fline);
+				$FuncName=trim($words[0]);
+				$GLOBALS["cf_FunctionNames"].=$FuncName.",";
+				//echo "$FuncName<br>\n";
+			}
+		}
+	}
+	fclose($ffile);
+	include $GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/functions/".$funcFile;
 }
-
+$PHPfunctions="array";
+$GLOBALS["cf_FunctionNames"].=$PHPfunctions;
+//echo $GLOBALS["cf_FunctionNames"]."<br>\n";
 
 
 

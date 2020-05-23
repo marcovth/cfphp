@@ -55,6 +55,13 @@ if($cf_subfolderRoot=="/"){ 	// website is located in the cf_serverRoot ...
 //phpinfo();
 
 // ###############################################
+// Some global variables to help the translation from CFML to PHP ...
+$GLOBALS["cf_ActiveStructureNames"]="";
+$GLOBALS["cf_FunctionNames"]="";
+// ###############################################
+
+
+// ###############################################
 // Obviously, the includes used by cfPHP ...
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpFunctions.php";
 require $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpDetectVariables.php";
@@ -92,10 +99,6 @@ $cf_TempEvalFile=$GLOBALS["cf_serverRoot"]."../tempdb/temp.php";
 if(FileExists($cf_subfolderDir."prepend.php")) include $cf_subfolderDir."prepend.php";
 // ###############################################
 
-// ###############################################
-// Some global variables to help the translation from CFML to PHP ...
-$GLOBALS["cf_ActiveStructureNames"]="";
-// ###############################################
 
 if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($cf_fileNameExt)==="CFC"){
 

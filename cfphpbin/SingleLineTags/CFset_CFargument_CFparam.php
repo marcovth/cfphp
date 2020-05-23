@@ -6,6 +6,10 @@ function ParseCFset($AttributeLine,&$toPHPtranslation){
 	// echo "CFSET $AttributeLine<br>\n";
 	//$toPHPtranslation.="[CFSET $AttributeLine]";
 	
+	$FunctionFound=ListFindNoCase($GLOBALS['cf_FunctionNames'],$AttributeLine,",","Partial","InvertedSearch");
+	//echo "CFSET $AttributeLine [$FunctionFound]<br>\n";
+	
+	
 	$struct=CheckForStructureName($AttributeLine);								//echo "[$struct]";
 	if(trim($struct)!==""){														//echo "ParseStructLine";
 		$param=ListFirst($AttributeLine,"="); 									//echo "1) $param<br>";
@@ -71,6 +75,9 @@ function ParseCFset($AttributeLine,&$toPHPtranslation){
 		$out="<?php ";
 		$out.="\$".$param."=StructNew(\"$param\")";
 		$toPHPtranslation.=$out.";//cfset ?>";
+	//} else if($FunctionFound){
+	//	// Find all the other known (cf)Functions ...
+	//	echo "CFSET Function in $AttributeLine<br>\n";
 	} else {
 		//echo "CFSET else $AttributeLine<br>\n";
 		$out="<?php "; 

@@ -45,72 +45,140 @@ function ListLen($list,$delimiter=","){
 	return sizeof($words);
 }
 
-function ListFind($list,$find,$delimiter=",",$PartialFind=0){
+function ListFind($list,$find,$delimiter=",",$PartialFind=0,$InvertedSearch=0){
 	// Determines the index of the first list element in which a specified value occurs. 
 	// Returns 0 if not found. Case-sensitive
 	// listFind(list, value [, delimiters, includeEmptyValues]) → returns numeric
 	// https://cfdocs.org/listfind
+	
+	// Additional options with cfPHP ...
+	// list="test,aaa,bbb,ccc" Find="aa" ... PartialFind returns 2, FullFind returns 0;
+	// list="test,aaa,bbb,ccc" Find="aaa" ... PartialFind returns 2, FullFind returns 2;
+	// InvertedSearch will take each element in the same list, and checks if they can 
+	// 	be found in ... Find="aaaa is a long sentence" ... 
+	//		PartialFind returns 2, FullFind returns 0;
+
 	//echo "[$PartialFind][$delimiter][".UCASE($PartialFind)."]<br>\n";
 	if(null===$PartialFind) $PF=false; else $PF=true;
-	if(UCASE($PartialFind)==="FULL") { $PF=false; } 
+	if(UCASE($PartialFind)==="FULL" or UCASE($PartialFind)==="FULLFIND") { $PF=false; } 
 	else if(UCASE($PartialFind)==="PARTIAL") { $PF=true; } 
 	else if($PartialFind==0) { $PF=false; } 
 	else if($PartialFind==1) { $PF=true; } 
-	//if($delimiter) $del=","; else 
-	//echo "[$PF][$delimiter]<br>\n";
+	
+	if(null===$InvertedSearch) $IS=false; else $IS=true; 
+	if(UCASE($InvertedSearch)==="INVERTED" or UCASE($InvertedSearch)==="INVERTEDSEARCH") { $IS=true; } 
+	else if($InvertedSearch==0) { $IS=false; } 
+	else if($InvertedSearch==1) { $IS=true; } 
+
+	//echo "ListFindNoCase([list][$find][$delimiter][$PF][$IS])<br>\n";
+	//echo "$list<br>\n";
+	
 	$words=ListToArray($list,$delimiter); //print_r($words);
 	$found=0; $n=0;
-	
 	foreach($words as &$word) {	$n++;
-		//echo "ListFind=[$find] IN [$word]<br>\n";
-		//echo "N-$word<br>\n";
-		if($PF){
-			//echo "P-$word(".Find($find,$word).")<br>\n";
-			if(Find($find,$word)>0){ 
-				$found=$n; break;
+		if(!$IS){
+			// Normal function call ... Find="AA" in list="test,aaa,bbb,ccc"
+			//echo "ListFind=[$find] IN [$word]<br>\n";
+			if($PF){
+				if(Find($find,$word)>0){ 
+					$found=$n; break;
+				}
+			} else {
+				$word=RemoveSurroundingQuotes($word);
+				if($find===$word){
+					$found=$n; break;
+				}
 			}
 		} else {
-			$word=RemoveSurroundingQuotes($word);
-			//echo "F-$word<br>\n";
-			if($find===$word){
-				$found=$n; break;
+			// Inverted search ... Find any of the elements in list="test,aaa,bbb,ccc"
+			// in search-string Find="aaaa is a long sentence"
+			$Sentence=ListToArray($find," ");
+			if($PF){
+				foreach($Sentence as &$sword) {
+					$sword=RemoveSurroundingQuotes($sword);
+					if(Find($word,$sword)>0){ 
+						$found=$n; break; break;
+					}
+				}
+			} else {
+				$word=RemoveSurroundingQuotes($word);
+				foreach($Sentence as &$sword) {
+					$sword=RemoveSurroundingQuotes($sword);
+					if($sword===$word){
+						$found=$n; break; break;
+					}
+				}
 			}
 		}
 	}
 	return $found;
 }
 
-function ListFindNoCase($list,$find,$delimiter=",",$PartialFind=0){
+function ListFindNoCase($list,$find,$delimiter=",",$PartialFind=0,$InvertedSearch=0){
 	// Determines the index of the first list element in which a specified value occurs. 
 	// Returns 0 if not found. Case-sensitive
 	// listFind(list, value [, delimiters, includeEmptyValues]) → returns numeric
 	// https://cfdocs.org/listfind
+	
+	// Additional options with cfPHP ...
+	// list="test,aaa,bbb,ccc" Find="AA" ... PartialFind returns 2, FullFind returns 0;
+	// list="test,aaa,bbb,ccc" Find="AAA" ... PartialFind returns 2, FullFind returns 2;
+	// InvertedSearch will take each element in the same list, and checks if they can 
+	// 	be found in ... Find="AAAA is a long sentence" ... 
+	//		PartialFind returns 2, FullFind returns 0;
+
 	//echo "[$PartialFind][$delimiter][".UCASE($PartialFind)."]<br>\n";
 	if(null===$PartialFind) $PF=false; else $PF=true;
-	if(UCASE($PartialFind)==="FULL") { $PF=false; } 
+	if(UCASE($PartialFind)==="FULL" or UCASE($PartialFind)==="FULLFIND") { $PF=false; } 
 	else if(UCASE($PartialFind)==="PARTIAL") { $PF=true; } 
 	else if($PartialFind==0) { $PF=false; } 
 	else if($PartialFind==1) { $PF=true; } 
-	//if($delimiter) $del=","; else 
-	//echo "[$PF][$delimiter]<br>\n";
+	
+	if(null===$InvertedSearch) $IS=false; else $IS=true; 
+	if(UCASE($InvertedSearch)==="INVERTED" or UCASE($InvertedSearch)==="INVERTEDSEARCH") { $IS=true; } 
+	else if($InvertedSearch==0) { $IS=false; } 
+	else if($InvertedSearch==1) { $IS=true; } 
+
+	//echo "ListFindNoCase([list][$find][$delimiter][$PF][$IS])<br>\n";
+	//echo "$list<br>\n";
+	
 	$words=ListToArray($list,$delimiter); //print_r($words);
 	$found=0; $n=0;
-	
 	foreach($words as &$word) {	$n++;
 		$word=UCASE($word);
 		$find=UCASE($find);
-		//echo "ListFind=[$find] IN [$word]<br>\n";
-		//echo "N-$word<br>\n";
-		if($PF){
-			//echo "P-$word(".Find($find,$word).")<br>\n";
-			if(Find($find,$word)>0){ 
-				$found=$n; break;
+		if(!$IS){
+			// Normal function call ... Find="AA" in list="test,aaa,bbb,ccc"
+			//echo "ListFind=[$find] IN [$word]<br>\n";
+			if($PF){
+				if(Find($find,$word)>0){ 
+					$found=$n; break;
+				}
+			} else {
+				$word=RemoveSurroundingQuotes($word);
+				if($find===$word){
+					$found=$n; break;
+				}
 			}
 		} else {
-			$word=RemoveSurroundingQuotes($word);
-			//echo "F-$word<br>\n";
-			if($find===$word){
-				$found=$n; break;
+			// Inverted search ... Find any of the elements in list="test,aaa,bbb,ccc"
+			// in search-string Find="AAAA is a long sentence"
+			$Sentence=ListToArray($find," ");
+			if($PF){
+				foreach($Sentence as &$sword) {
+					$sword=UCASE(RemoveSurroundingQuotes($sword));
+					if(Find($word,$sword)>0){ 
+						$found=$n; break; break;
+					}
+				}
+			} else {
+				$word=RemoveSurroundingQuotes($word);
+				foreach($Sentence as &$sword) {
+					$sword=UCASE(RemoveSurroundingQuotes($sword));
+					if($sword===$word){
+						$found=$n; break; break;
+					}
+				}
 			}
 		}
 	}

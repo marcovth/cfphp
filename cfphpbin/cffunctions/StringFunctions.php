@@ -1,5 +1,9 @@
 <?php
 
+// !!! Watch out using strpos or stripos, first position in string returns 0, 
+// but also false when not found. Use is_numeric(stripos($string,$find)) to simply test.
+// 1-based CFML returns are a lot more clear. It's either 0 (not found), 1++ (found)
+
 function Mid($string,$offset,$len){
 	$from=$offset-1; if($from<0)return ""; 	// To prevent a negative number - Start at a specified position from the end of the string
 	if($len<0)return "";					// To prevent a negative number - The length to be returned from the end of the string
