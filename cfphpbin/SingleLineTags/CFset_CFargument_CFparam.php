@@ -72,7 +72,7 @@ function ParseCFset($AttributeLine,&$toPHPtranslation){
 		$out.="\$".$param."=StructNew(\"$param\")";
 		$toPHPtranslation.=$out.";//cfset ?>";
 	} else {
-		echo "CFSET else $AttributeLine<br>\n";
+		//echo "CFSET else $AttributeLine<br>\n";
 		$out="<?php "; 
 		$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";
 		$AttributeLine=Replace($AttributeLine,"$param=",""); 						//echo "2) $AttributeLine<br>";
