@@ -5,7 +5,6 @@
 <?php $Struct2D['KeyB']['innerKeyB2'] = "innerValueB2";//cfset ?>
 
 
-
 <?php $student=StructNew("student");//cfset ?>
 <?php $student['firstName'] = "Jane";//cfset ?>
 <?php $student['lastName'] = "Smith";//cfset ?>
@@ -15,7 +14,12 @@
 
 
 <?php echo $student['housenumber']; ?>    
-    
+
+<?php $myStruct=StructNew("myStruct");//cfset ?>
+<?php $myStruct['first'] = "I am number one";//cfset ?>
+<?php $myStruct['second'] = "I am number two";//cfset ?>
+ <?php echo "<!--- // Don't use arrays (like the grades above) in combination with square-brackets used here !!! --->"; ?>
+
 <?php $TestStruct2=StructNew("TestStruct2");//cfset ?>
 <?php $TestStruct2['name']['last']['offical'] = "Google corp";//cfset ?>
 

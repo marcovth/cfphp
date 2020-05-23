@@ -15,7 +15,7 @@
 		}
 		$SkipChar=false;
 		if($line[$i]===">" and $InCFtag and !$InAttributeValDQuote and !$InAttributeValSQuote){ 
-			//if($DebugLevel>=2) echo "%$tagName%";
+			//if($DebugLevel>=2) echo "%$tagName%<br>\n";
 			if($tagName !== ''){
 				// cfPHP starting tag selector ...
 				$toPHPtranslation.=DetectVariables($InBetweenOrAfterCFTagsHTML,"yes"); $InBetweenOrAfterCFTagsHTML=""; // In between two CF-tags HTML
@@ -79,7 +79,7 @@
 			if($InAttributeVal && $line[$i]==="\""){
 				if($InAttributeValDQuote){
 					$InAttributeValDQuote=false;
-					$InAttributeValSQuote=false;
+					//$InAttributeValSQuote=false;
 				} else {
 					$InAttributeValDQuote=true;
 				}
@@ -91,7 +91,7 @@
 			if($InAttributeVal && $line[$i]==="'"){ 
 				if($InAttributeValSQuote){
 					$InAttributeValSQuote=false;
-					$InAttributeValDQuote=false;
+					//$InAttributeValDQuote=false;
 				} else {
 					$InAttributeValSQuote=true;
 				}
@@ -118,7 +118,7 @@
 			// ###############  END TAGS ###################
 			if(UCASE($EndTagName)==="CFSCRIPT"){ 
 				$InCFscript=false; 
-				$toPHPtranslation.="<?php }//$EndTagName ?>";
+				$toPHPtranslation.="//$EndTagName ?>";
 			} else if(UCASE($EndTagName)==="CFQUERY"){ 
 				//echo "ParseCFqueryCall";
 				ParseCFquery($InnerHTMLTagAttributeLine,$InnerHTML,$toPHPtranslation);

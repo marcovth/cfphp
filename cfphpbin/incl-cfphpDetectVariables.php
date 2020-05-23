@@ -22,11 +22,11 @@ function DetectVariables($string,$Addtags){
 	}
 	
 	//echo "DetectVariables($string,$Addtags) Other cases ...<br>\n";
-	$out=""; $InVariablePound=false; $InVariableDollar=false; $Variable=""; $word=""; $InFunction=false;
+	$out=""; $InVariablePound=false; $InVariableDollar=false; $Variable=""; $word=""; $InFunction=false; $FunctionName="";
 	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $InHTMLcommendOut=false; $InStructureVar=false;
 	for($i=0; $i<strlen($string); $i++){																	//echo "$string[$i]";
 		$c=$string[$i];	
-		//echo "[*$c]";
+		//echo "[$c]";
 		$cf_codon="@@@"; if(($i+2)<strlen($string)) $cf_codon=$string[$i].$string[$i+1].$string[$i+2];		//echo "[$cf_codon]";
 		if($cf_codon==="<!-"){
 			$InHTMLcommendOut=true;
@@ -41,37 +41,49 @@ function DetectVariables($string,$Addtags){
 			$InAttributeValDQuote=false; $InAttributeValSQuote=false; 
 		} else {
 			if($c==="\""){						
-				if($InAttributeValDQuote){ // In Double
-					// Ending double quote ... print text from in between double quotes ...
-					$out.=$word; $word=""; // print word, start a new word
-					$out.=$c;	// print double quote
-					$InAttributeValDQuote=false;													//echo "(OutDQ)";
-					$InAttributeValSQuote=false;
-				} else if($InAttributeValSQuote){ // In Single
-					// Double quote as part of in between single quote text ...
+				if($InFunction){
 					$word.=$c;
-				} else { // Not in Double and Not in Single Quotes ... Start of Double quote text ...
-					$out.=$word.$c;  	// print double quote
-					$word="";	// start a new word
-					$InAttributeValDQuote=true;														//echo "(InDQ)";
-					$InAttributeValSQuote=false;
-				}  
-			} else if($c==="'"){ 
-				if($InAttributeValSQuote){ // In Single
-					// Ending Single quote ... print text from in between Single quotes ...
-					$out.=$word; $word=""; // print word, start a new word
-					$out.=$c;	// print Single quote
-					$InAttributeValSQuote=false;													//echo "(OutSQ)";
-					$InAttributeValDQuote=false;
-				} else if($InAttributeValDQuote){ // In Double
-					// Double quote as part of in between Single quote text ...
+					if($InAttributeValDQuote) $InAttributeValDQuote=false; else $InAttributeValDQuote=true;
+				} else {
+					if($InAttributeValDQuote){ // In Double
+						// Ending double quote ... print text from in between double quotes ...
+						DebugLine("*\"",$word);
+						$out.=$word; $word=""; // print word, start a new word
+						$out.=$c;	// print double quote
+						$InAttributeValDQuote=false;													//echo "(OutDQ)";
+						//$InAttributeValSQuote=false;
+					} else if($InAttributeValSQuote){ // In Single
+						// Double quote as part of in between single quote text ...
+						$word.=$c;
+					} else { // Not in Double and Not in Single Quotes ... Start of Double quote text ...
+						$out.=$word.$c;  	// print double quote
+						$word="";	// start a new word
+						$InAttributeValDQuote=true;														//echo "(InDQ)";
+						//$InAttributeValSQuote=false;
+					}
+				}
+			} else if($c==="'"){
+				if($InFunction){
 					$word.=$c;
-				} else { // Not in Double and Not in Single Quotes ... Start of Single quote text ...
-					$out.=$word.$c;  	// print single quote
-					$word="";	// start a new word
-					$InAttributeValSQuote=true;														//echo "(InSQ)";
-					$InAttributeValDQuote=false;
-				} 
+					if($InAttributeValSQuote) $InAttributeValSQuote=false; else $InAttributeValSQuote=true;
+				} else {
+					if($InAttributeValSQuote and !$InFunction){ // In Single
+						// Ending Single quote ... print text from in between Single quotes ...
+						//DebugLine("'word",$word);
+						$out.=$word; $word=""; // print word, start a new word
+						$out.=$c;	// print Single quote
+						$InAttributeValSQuote=false;													//echo "(OutSQ)";
+						//$InAttributeValDQuote=false;
+					} else if($InAttributeValDQuote){ // In Double
+						// Double quote as part of in between Single quote text ...
+						$word.=$c;
+					} else { // Not in Double and Not in Single Quotes ... Start of Single quote text ...
+						$out.=$word.$c;  	// print single quote
+						$word="";	// start a new word
+						$InAttributeValSQuote=true;														//echo "(InSQ)";
+						//$InAttributeValDQuote=false;
+					}
+				}
 			} else if($c==="#"){
 				//echo "[@$c$InVariablePound]";
 				//if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
@@ -100,6 +112,7 @@ function DetectVariables($string,$Addtags){
 					}
 				//} else $out.="$"; // $-sign inside a quoted text string
 			} else if($c===","){ 
+				
 				if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 					// It's a comma separating arguments in a function ... print word
 					if(IsNumeric($word)){ // No dollar signs in front of numers !
@@ -120,20 +133,44 @@ function DetectVariables($string,$Addtags){
 					$InVariablePound=false; $InVariableDollar=false;
 				} else {
 					// It's a comma inside quoted text. Copy comma and move on ...
+					//DebugLine("word",$word);
 					$word.=",";	// copy over the comma
 				}
 			} else if($c===")" or $c==="]" or $c==="+" or $c==="-" or $c==="*" or $c==="<"){
-				if($c===")") $InFunction=false;
-																					//DebugLine("word",$word);
+				//DebugLine("*)",$word);
 				if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
-					// It's the end of a function ... print word
-					if(IsNumeric($word)){ // No dollar signs in front of numers !
+					if($c===")"){
+						// It's the end of a function ... print word
+						
+						$MDVariablesTXT="";
+						$MDVariables=explode(",",$word);
+						if(!ArrayIsEmpty($MDVariables) and Mid($word,1,1)!=="$"){
+							foreach($MDVariables as &$MD) {
+								$MD=trim($MD,"\""); $MD=trim($MD,"'"); $MD=trim($MD); 
+								//echo "[$MD]";
+								if(IsNumeric($MD)) $MDVariablesTXT.=$MD.",";
+								else $MDVariablesTXT.="'".$MD."',";
+							}
+							$MDVariablesTXT=rtrim($MDVariablesTXT,",");
+							$word=$FunctionName."(\"".$MDVariablesTXT."\"";
+						} else $word=$FunctionName."(".$word."";
+						
+						if($Addtags==="yes"){
+							$out.="<?php echo ".$word.$c."; ?>";
+						} else {					
+							$out.=$word.$c;
+						}
+						
+						//DebugLine("FunctionName",$FunctionName);
+						//DebugLine("FunctionTXT",$word);
+						$InFunction=false;
+					}else if(IsNumeric($word)){ // No dollar signs in front of numers !
 						$out.=$word.$c;//."_1";
 					} else if(strlen(trim($word))>0 and Mid($word,1,1)!==" " and Mid($word,1,1)!=="	"){ // Making sure dollsr signs are not printed with empty words.
 						if($InStructureVar){ $word.="']"; $InStructureVar=false; }
 						if($Addtags==="yes"){
-							if($InVariableDollar) 	$out.="<?php echo ".$word."; ?>$c"; 	// Dollar sign is already present.
-							else 					$out.="<?php echo $".$word."; ?>$c";
+							if($InVariableDollar) 	$out.="<?php echo ".$word.$c."; ?>";//$c"; 	// Dollar sign is already present.
+							else 					$out.="<?php echo $".$word.$c."; ?>";//$c";
 						} else {					
 							if($InVariableDollar) 	$out.=$word.$c;//."_2"; 				// Dollar sign is already present.
 							else 					$out.="$".$word.$c;//."_3";
@@ -149,11 +186,12 @@ function DetectVariables($string,$Addtags){
 				//echo "[@$c$InVariablePound]";
 				if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 					// It's the end of a function name ... print word
-					//echo "[$word(]";
-					$out.=$word."(";
+					//echo "[%$word(]";
+					$FunctionName=$word;
+					//$out.=$word."(";
 					$word="";	// start a new word
 					//$InVariablePound=false; $InVariableDollar=false;
-					if($c==="(") $InFunction=true;
+					$InFunction=true;
 				} else {
 					// It's a bracket inside quoted text. Copy bracket and move on ...
 					$word.="(";	// copy over the bracket
@@ -185,7 +223,7 @@ function DetectVariables($string,$Addtags){
 				//$out.=$word;//."%";
 				if($InStructureVar){ $word.="']"; $InStructureVar=false; }
 				if($InVariableDollar and $Addtags==="yes" and (trim($c)!=="")){
-					$out.="<?php echo \"".$word."\"; ?"; 
+					$out.="<?php echo \"".$word."\"; ?>"; 
 				} else  $out.="".$word;
 			}
 			/*
@@ -211,7 +249,8 @@ function DetectVariables($string,$Addtags){
 				}
 			}*/
 		}
-	}	
+	}
+	//echo "<br>";
 	//echo "### $string<br>\n*** $out<br>\n";	//echo "<br>\n";
 	return $out;																
 }

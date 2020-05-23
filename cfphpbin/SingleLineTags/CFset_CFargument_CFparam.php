@@ -3,6 +3,7 @@
 //CFset_CFargument_CFparam.php
 
 function ParseCFset($AttributeLine,&$toPHPtranslation){
+	// echo "CFSET $AttributeLine<br>\n";
 	//$toPHPtranslation.="[CFSET $AttributeLine]";
 	
 	$struct=CheckForStructureName($AttributeLine);								//echo "[$struct]";
@@ -18,12 +19,15 @@ function ParseCFset($AttributeLine,&$toPHPtranslation){
 		$StructKeys="['".Replace($StructKeys,".","']['","ALL")."']";
 		//DebugLine("StructName",$StructName);
 		//DebugLine("StructKeys",$StructKeys);
-		if(Find("{",$AttributeLine)>0){
+		$AttributeLine=trim(RemoveSurroundingQuotes($AttributeLine));
+	
+		if(Find("{",$AttributeLine)>0 or Mid($AttributeLine,1,1)==="["){
 			$toPHPtranslation.=ParseStructureAttributes($StructName,$AttributeLine);
 		} else {
 			$AttributeLine=DetectVariables($AttributeLine,"NO");
 			$out="<?php ";
-			$out.="\$".$StructName.$StructKeys." = ".$AttributeLine;
+			if(IsNumeric($AttributeLine)) $out.="\$".$StructName.$StructKeys." = ".$AttributeLine;
+			else $out.="\$".$StructName.$StructKeys." = \"".$AttributeLine."\"";
 			$toPHPtranslation.=$out.";//cfset ?>";
 		}
 		
@@ -68,6 +72,7 @@ function ParseCFset($AttributeLine,&$toPHPtranslation){
 		$out.="\$".$param."=StructNew(\"$param\")";
 		$toPHPtranslation.=$out.";//cfset ?>";
 	} else {
+		echo "CFSET else $AttributeLine<br>\n";
 		$out="<?php "; 
 		$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";
 		$AttributeLine=Replace($AttributeLine,"$param=",""); 						//echo "2) $AttributeLine<br>";

@@ -7,6 +7,16 @@ function ParseStructureAttributes($StructName,$AttributeLine){
 	// {firstName="Jane", lastName="Janes", grades=[91, 78, 87]}
 	$AttributeLine=trim(RemoveSurroundingQuotes($AttributeLine));
 	
+	if(Mid($AttributeLine,1,1)==="["){
+		// Crude method to allow for <cfset myStruct=[first:"I am number one",second="I am number two"]>
+		// However, it might messup square-brackets inside quotes or for arrays.
+		// I have tried to deal with this in the char-loop below, 
+		// but it gave headaches with arrays like grades=[91, 78, 87, "A"].
+		$AttributeLine=Replace($AttributeLine,"[","{","ALL");
+		$AttributeLine=Replace($AttributeLine,"]","}","ALL");
+		//echo "ReplaceBrackets($StructName,$AttributeLine)<br>\n";
+	}
+	
 	$out=""; $InVariablePound=false; $InVariableDollar=false; 
 	$word=""; $InFunction=false;
 	$InAttributeValDQuote=false; $InAttributeValSQuote=false; 
@@ -49,7 +59,7 @@ function ParseStructureAttributes($StructName,$AttributeLine){
 			} else $word.=$c;
 		} else if($InStructure){
 			//echo "[$c]";
-			if($c==="="){
+			if($c==="=" or $c===":"){
 				if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 					// "=" not part of a string, therefore assumed a Struct variable Name
 					$VariableName=trim($word);

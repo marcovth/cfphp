@@ -8,7 +8,7 @@
 //include $GLOBALS["cf_webRootDir"]."/cfphpbin/incl-cfphpFunctionNamesAndPHPKeywords.php";
 
 function cfphpParser($cp_CFfile){
-	
+	//echo "cfphpParser ".$GLOBALS['cf_fileName']."<br>\n";
 	
 	$DebugLevel=1; // 1, 2 or 3
 

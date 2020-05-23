@@ -139,10 +139,15 @@ function ListFirst($string,$delimiter=","){
 function ListLast($string,$delimiter){
 	// Gets the last element of a list.
 	// listLast(list [, delimiters, includeEmptyValues ]) → returns string
-	//echo "ListLast";
-	if($delimiter==="") $delimiter=",";
-	$words=ListToArray($string,$delimiter); //print_r($words);
-	return $words[ArrayLen($words)];
+	//echo "ListLast($string,$delimiter)<br>\n";
+	try{
+		if($delimiter==="") $delimiter=",";
+		$words=ListToArray($string,$delimiter); //print_r($words);
+		return $words[ArrayLen($words)];
+	} catch ( \Exception $e ) {
+		//echo $e->getMessage();
+		return "";
+	}
 }
 
 function ListAppend($list,$delimiter=","){

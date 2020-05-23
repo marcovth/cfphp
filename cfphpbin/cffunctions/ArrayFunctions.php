@@ -1,15 +1,83 @@
 <?php
 
+function ArrayNew($ValuesString1D=""){
+	// Creates an array of 1-3 dimensions. 
+	// Index array elements with square brackets: [ ]. 
+	// CFML arrays expand dynamically as data is added.
+	// ArrayNew(dimension [, isSynchronized]) → returns array
+	// In PHP you don't have to initialize multi dimentional arrays. $dimension=ignored.
+	// Example of $ValuesString1D: <cfset x=ArrayNew("1,4,55,'zz'")>
+	
+	//$ValuesString1D=trim(RemoveSurroundingQuotes($ValuesString1D));
+	//if($ValuesString1D!==""){
+		// Adding an empty 0-base element to push the first item in the string to CFML index 1.
+		// This might give problems later on.
+	//	$ValuesString1D="null,".$ValuesString1D;
+	//}
+	//$temp=array($ValuesString1D); 
+	
+	$MDVariables=explode(",",$ValuesString1D); $n=1;
+	if(!ArrayIsEmpty($MDVariables)){
+		foreach($MDVariables as &$MD) {
+			$MD=trim($MD,"\""); $MD=trim($MD,"'"); $MD=trim($MD); 
+			//echo "[$MD]";
+			if(IsNumeric($MD)) $temp[$n]=$MD;
+			else $temp[$n]="'".$MD."'";
+			$n++;
+		}
+	}
+	
+	return $temp;
+}
 
 function ArrayLen(&$array){
 	// Which one is better? ...
 	//if(count($array)>0) return count(reset($array));
-	if(!empty($array)) return sizeof($array)-1;
+	if(!empty($array)) return sizeof($array);
 	else return 0;
 }
 
 function ArrayIsEmpty(&$array){
-	return empty($array);
+	if(empty($array)) return true; else return false;
+}
+
+function ArrayDelete(&$array,$value){
+	// Deletes the first element in an array that matches the value of value.
+	// The search is case-sensitive.
+	// Returns true if the element was found and removed.
+	// The array will be resized, so that the deleted element doesn't leave a gap.
+	// ArrayDelete(array, value) → returns boolean
+	$value=trim(RemoveSurroundingQuotes($value));
+		//if (($key = array_search($value, $array)) !== false) {
+		//	unset($array[$key]);
+		//	return true;
+		//} else return false;
+	/*
+		Alternative ...
+		$arr = array('nice_item', 'remove_me', 'another_liked_item', 'remove_me_also');
+		$arr = array_diff($arr, array('remove_me', 'remove_me_also'));
+		Results in ... array('nice_item', 'another_liked_item')
+	*/
+	try{
+		$n=0; $found=0;
+		foreach($array as $key => &$val){
+			if(IsNumeric($val)){
+				$val=trim(RemoveSurroundingQuotes($val));
+				if($val==$value){
+					$found=$n; unset($array[$key]); break;
+				}
+			} else {
+				if($val===$value){
+					$found=$n; unset($array[$key]); break;
+				}
+			}
+			$n++;
+		}
+		if($found>0) return true;
+		else return false;
+	} catch ( \Exception $e ) {
+		return false;
+	}
 }
 
 function ArrayDeleteLast(&$array){
@@ -106,6 +174,7 @@ function ArrayMax(&$array){
 	try{
 		$Largest=0;
 		foreach($array as &$val){
+			//echo "[$val]";
 			if(IsNumeric($val)){
 				if($val>$Largest) $Largest=$val;
 			}
@@ -151,7 +220,26 @@ function ArraySum(&$array){
 	}
 }
 
-
-
+function ArrayMedian(&$array){
+	//Calculates the Median value of items in an array. 
+	// All elements in the array must contain values that can be converted to numeric.
+	// ArrayMedian(array) → returns numeric
+	try{
+		$numbers = array();
+		foreach($array as &$value){
+			if(IsNumeric($value)){
+				ArrayAppend($numbers,$value);
+			}
+		}
+		sort($numbers);
+		if(ArrayLen($numbers)%2==0){
+			return ($numbers[(ArrayLen($numbers)/2)-1] + $numbers[(ArrayLen($numbers)/2)+0]) / 2;
+		} else {
+			return $numbers[ArrayLen($numbers)/2];
+		}
+	} catch ( \Exception $e ) {
+		return 0;
+	}
+}
 
 ?>

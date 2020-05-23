@@ -124,16 +124,19 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 	} else if($cp_debugMode and ($cp_UserIpAddress==="::1" or $cp_UserIpAddress==="127.0.0.1" or $cp_UserIpAddress===$cp_DebuggerRemoteIpAddress) ){
 		// ToDo ... backup previous cfml and final-php files to an non-web-accessible folder ...
 		
-		$cp_PHPcode=cfphpParser($cp_CFfile); // echo $cp_PHPcode;
+		$cp_PHPcode=cfphpParser($cp_CFfile);  //echo "cfphpParser_1<br>\n";
 		$cp_CFcode=ReadFileTXT($cp_CFfile);
 		
 		if( isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==10 ){
 			// Add a new CFML page to the server ...
 			if( isset($_POST["NewCFMLpage"]) and trim($_POST["NewCFMLpage"])!==""){
 				
-				echo "[".$_POST["NewCFMLpage"]."]";
+				//echo "[".$_POST["NewCFMLpage"]."]";
 				$cf_fileNameName=$_POST["NewCFMLpage"];
-				$cf_fileNameName=ListLast($cf_fileNameName,"/"); $cf_fileNameName=ListLast($cf_fileNameName,"\\"); // Making sure a new file is not stored in another directory
+				$cf_fileNameName=ListLast($cf_fileNameName,"/"); 
+				//echo "[".$cf_fileNameName."]";
+				$cf_fileNameName=ListLast($cf_fileNameName,"\\"); // Making sure a new file is not stored in another directory
+				//echo "[".$cf_fileNameName."]";
 				$cf_fileNameExt=ListLast($cf_fileNameName,".");
 				$cf_fileNameName=Replace($cf_fileNameName,".$cf_fileNameExt","");
 				
@@ -171,7 +174,7 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 				$exportFile = fopen($cp_PHPfile_t, "w") or die("Unable to write to CFML file!");
 				fwrite($exportFile,trim($_POST["PHPcode"])); fclose($exportFile);
 			}
-			$cp_PHPcode=cfphpParser($cp_CFfile);
+			$cp_PHPcode=cfphpParser($cp_CFfile); //echo "cfphpParser_2<br>\n";
 			$cp_CFcode=$_POST["CFMcode"];
 		}
 		
@@ -197,7 +200,7 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 			}
 			
 			if( !isset($_POST["PHPcode"]) or trim($_POST["PHPcode"])===""){
-				$cp_PHPcode=cfphpParser($cp_CFfile);
+				$cp_PHPcode=cfphpParser($cp_CFfile); //echo "cfphpParser_3<br>\n";
 			}
 			
 		}
@@ -231,7 +234,7 @@ if(UCASE($cf_fileNameExt)==="CFML" or UCASE($cf_fileNameExt)==="CFM" or UCASE($c
 		}
 		
 		if( !isset($_POST["SaveWhat"]) or (isset($_POST["SaveWhat"]) and $_POST["SaveWhat"]==0) ){
-			$cp_PHPcode=cfphpParser($cp_CFfile); // echo $cp_PHPcode;
+			$cp_PHPcode=cfphpParser($cp_CFfile); //echo "cfphpParser_4<br>\n";
 			$cp_CFcode=ReadFileTXT($cp_CFfile);
 		}
 		

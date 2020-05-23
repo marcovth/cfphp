@@ -4,8 +4,8 @@
 
 
 function ParseCFscript($AttributeLine,&$toPHPtranslation){
-
-	$toPHPtranslation.="[CFSCRIPT $AttributeLine]";
+	//$toPHPtranslation.="[CFSCRIPT $AttributeLine]";
+	$toPHPtranslation.="<?php //CFSCRIPT ";
 
 }
 
