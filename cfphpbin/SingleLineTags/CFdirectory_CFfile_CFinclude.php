@@ -26,13 +26,16 @@ function ParseCFdirectory($AttributeLine,&$toPHPtranslation){
 		if(trim($cf_5)!=="" and ( UCASE(trim($cf_5))==="TRUE" or UCASE(trim($cf_5))==="YES" ) ) $recurse=1;
 		else $recurse=0;
 		
+		//echo $cf_2." 0<br>\n";
 		$path=DetectVariables($cf_2,false);
+		$path=Replace($path,"'","","ALL");
+		//echo $path." 1<br>\n";
 		$path=addslashes($path);
-		//echo $path."<br>\n";
+		//echo $path." 2<br>\n";
 		//$path=evaluate($path);
-		//echo $path."<br>\n";
+		//echo $path." 3<br>\n";
 		//$path=expandPath("./");
-		//echo $path."<br>\n";
+		//echo $path." 4<br>\n";
 		$out="<?php \$$cf_3=ListDirectory(\"".$cf_3."\",evaluate(\"".$path."\"),\"".$cf_4."\",\"name\",\"ASC\",$recurse); //CFDIRECTORY ?>";
 	}
 	$toPHPtranslation.=$out;

@@ -26,7 +26,7 @@ function DetectVariables($string,$Addtags){
 	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $InHTMLcommendOut=false; $InStructureVar=false;
 	for($i=0; $i<strlen($string); $i++){																	//echo "$string[$i]";
 		$c=$string[$i];	
-		// echo "[$c]";
+		//echo "[$c]";
 		$cf_codon="@@@"; if(($i+2)<strlen($string)) $cf_codon=$string[$i].$string[$i+1].$string[$i+2];		//echo "[$cf_codon]";
 		if($cf_codon==="<!-"){
 			$InHTMLcommendOut=true;
@@ -149,8 +149,8 @@ function DetectVariables($string,$Addtags){
 					//DebugLine("word",$word);
 					$word.=",";	// copy over the comma
 				}
-			} else if($c===")" or $c==="]" or $c==="+" or $c==="-" or $c==="*" or $c==="<"){
-				// DebugLine("*)",$word);
+			} else if($c===")" or $c==="]" or $c==="+" or $c==="-" or $c==="*"){ // or $c==="<"){
+				//DebugLine("<",$word);
 				if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 					if($c===")"){
 						// It's the end of a function ... print word
@@ -164,7 +164,7 @@ function DetectVariables($string,$Addtags){
 						} else if(!ArrayIsEmpty($MDVariables)){
 							foreach($MDVariables as &$MD) {
 								$MD=trim($MD,"\""); $MD=trim($MD,"'"); $MD=trim($MD); 
-								//echo "[$MD]";
+								//echo "[%$MD]<br>";
 								if(IsNumeric($MD) or Mid($MD,1,1)==="$") $MDVariablesTXT.=$MD.",";
 								else $MDVariablesTXT.="'".$MD."',";
 							}
