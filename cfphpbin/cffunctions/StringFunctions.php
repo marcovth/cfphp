@@ -12,7 +12,7 @@ function Mid($string,$offset,$len){
 
 
 function Len($string){
-	return strlen($list);
+	return strlen($string);
 }
 
 function Find($find,$string,$start=NULL){

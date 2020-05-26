@@ -7,7 +7,7 @@ $numbers = array (
 );
 </cfscript> 
 
-<li>ArrayMedian=#ArrayMedian($numbers)#</li><cfcommend "expected 43.5">
+<li>ArrayMedian=#ArrayMedian(#numbers#)#</li><cfcommend "expected 43.5">
 <li>ArraySum=#ArraySum($numbers)#</li>
 <li>ArrayMin=#ArrayMin($numbers)#</li>
 <li>ArrayMax=#ArrayMax($numbers)#</li>

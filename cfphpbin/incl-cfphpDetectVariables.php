@@ -26,7 +26,7 @@ function DetectVariables($string,$Addtags){
 	$InAttributeValDQuote=false; $InAttributeValSQuote=false; $InHTMLcommendOut=false; $InStructureVar=false;
 	for($i=0; $i<strlen($string); $i++){																	//echo "$string[$i]";
 		$c=$string[$i];	
-		//echo "[$c]";
+		// echo "[$c]";
 		$cf_codon="@@@"; if(($i+2)<strlen($string)) $cf_codon=$string[$i].$string[$i+1].$string[$i+2];		//echo "[$cf_codon]";
 		if($cf_codon==="<!-"){
 			$InHTMLcommendOut=true;
@@ -47,7 +47,7 @@ function DetectVariables($string,$Addtags){
 				} else {
 					if($InAttributeValDQuote){ // In Double
 						// Ending double quote ... print text from in between double quotes ...
-						DebugLine("*\"",$word);
+						//DebugLine("*\"",$word);
 						$out.=$word; $word=""; // print word, start a new word
 						$out.=$c;	// print double quote
 						$InAttributeValDQuote=false;													//echo "(OutDQ)";
@@ -85,8 +85,8 @@ function DetectVariables($string,$Addtags){
 					}
 				}
 			} else if($c==="#"){
-				//echo "[@$c$InVariablePound]";
-				//if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
+				// echo "[@$c$InVariablePound]";
+				if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 					if(!$InVariablePound){
 						if(trim($word)!=="") $out.=$word; // print previous word
 						$word="";   // start new word and replace first # for $
@@ -94,15 +94,28 @@ function DetectVariables($string,$Addtags){
 					} else {
 						// Ending pound-sign ... print variable, remove last #
 						if($InStructureVar){ $word.="']"; $InStructureVar=false; }
+						if(!$InFunction){
+							if(trim($word)!==""){
+								if($Addtags==="yes"){
+									if($InVariableDollar) 	$out.="<?php echo ".$word."; ?>"; 	// Dollar sign is already present.
+									else 					$out.="<?php echo $".$word."; ?>";
+								} else {					
+									if($InVariableDollar) 	$out.=$word; 						// Dollar sign is already present.
+									else 					$out.="$".$word;
+								}
+								$word="";	// start a new word
+							} else $out.="#"; // Special-case ... In CFML ## is used to print a single # for html/javascript: Example ##leftslider { width:100%; } -> #leftslider { width:100%; }
+							$word="";
+							$InVariablePound=false; $InVariableDollar=false;					//echo "(Out#)";
+						} else {
+							//echo "[$word#F]<br>\n";
+							$word="$".$word;
+							
+							$InVariableDollar=true;
+						}
 						
-						if(trim($word)!==""){
-							if($Addtags==="yes") 	$out.="<?php echo \$".$word."; ?>"; 
-							else  					$out.="\$".$word; 
-							$word="";	// start a new word
-						} else $out.="#"; // Special-case ... In CFML ## is used to print a single # for html/javascript: Example ##leftslider { width:100%; } -> #leftslider { width:100%; }
-						$InVariablePound=false; $InVariableDollar=false; $word="";					//echo "(Out#)";
 					}
-				//} else $out.="#"; // #-sign inside a quoted text string
+				} else $out.="#"; // #-sign inside a quoted text string
 			} else if($c==="$"){
 				//if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 					if(!$InVariableDollar){  // PHP-style $variable used in CFML code.
@@ -137,24 +150,27 @@ function DetectVariables($string,$Addtags){
 					$word.=",";	// copy over the comma
 				}
 			} else if($c===")" or $c==="]" or $c==="+" or $c==="-" or $c==="*" or $c==="<"){
-				//DebugLine("*)",$word);
+				// DebugLine("*)",$word);
 				if(!($InAttributeValDQuote or $InAttributeValSQuote) ){
 					if($c===")"){
 						// It's the end of a function ... print word
 						
 						$MDVariablesTXT="";
 						$MDVariables=explode(",",$word);
-						if(!ArrayIsEmpty($MDVariables) and Mid($word,1,1)!=="$"){
+						if(Mid($word,1,1)==="$"){
+							//DebugLine("$FunctionName",$word);
+							if(Mid($word,1,2)==="$$") $word=Mid($word,2,Len($word));
+							$word=$FunctionName."(".$word."";
+						} else if(!ArrayIsEmpty($MDVariables)){
 							foreach($MDVariables as &$MD) {
 								$MD=trim($MD,"\""); $MD=trim($MD,"'"); $MD=trim($MD); 
 								//echo "[$MD]";
-								if(IsNumeric($MD)) $MDVariablesTXT.=$MD.",";
+								if(IsNumeric($MD) or Mid($MD,1,1)==="$") $MDVariablesTXT.=$MD.",";
 								else $MDVariablesTXT.="'".$MD."',";
 							}
 							$MDVariablesTXT=rtrim($MDVariablesTXT,",");
 							$word=$FunctionName."(\"".$MDVariablesTXT."\"";
-						} else $word=$FunctionName."(".$word."";
-						
+						}
 						if($Addtags==="yes"){
 							$out.="<?php echo ".$word.$c."; ?>";
 						} else {					
