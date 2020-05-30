@@ -75,20 +75,75 @@ function ParseCFset($AttributeLine,&$toPHPtranslation){
 		$out="<?php ";
 		$out.="\$".$param."=StructNew(\"$param\")";
 		$toPHPtranslation.=$out.";//cfset ?>";
-	//} else if($FunctionFound){
-	//	// Find all the other known (cf)Functions ...
-	//	echo "CFSET Function in $AttributeLine<br>\n";
+	/* } else if($FunctionFound){
+		// Find all the other known (cf)Functions ...
+		echo "CFSET Function in $AttributeLine<br>\n";
+		$out="<?php "; 
+		$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";
+		$AttributeLine=Replace($AttributeLine,"$param=",""); 						//echo "2) $AttributeLine<br>";
+		if($param===$AttributeLine){
+			$AttributeLine="";
+			//$out.="param"; 
+		} else {
+			//$out.="param=Attributes";
+		}
+		$FunctionFoundInParam=array(); $nFunctionFoundInParam=0;
+		$FunctionFoundInAttributes=array(); $nFunctionFoundInAttributes=0;
+		$words=ListToArray($GLOBALS['cf_FunctionNames'],","); //print_r($words);
+		foreach($words as &$word) {
+			if(trim($word)!==""){
+				$found=FindNoCase($word."(",$param);
+				if($found>0){
+					$nFunctionFoundInParam++;
+					$FunctionFoundInParam[$found]=$word;
+				}
+				$found=FindNoCase($word."(",$AttributeLine);
+				if($found>0){
+					$nFunctionFoundInAttributes++;
+					$FunctionFoundInAttributes[$found]=$word;
+				}
+			}
+		}
+		if(ArrayLen($FunctionFoundInParam)>1){
+			ArraySort($FunctionFoundInParam,"STRUCTSORTKEY","DESC");
+			foreach($FunctionFoundInParam as $key => $value) {
+				echo "Key=" . $key . ", Value=" . $value."<br>\n";
+				$fparams=Mid($param,$key+Len($value)+1,1000);
+				$fparams=ListFirst($fparams,")");
+				echo "<li>$fparams<br>\n";
+			}
+		}
+		if(ArrayLen($FunctionFoundInAttributes)>1) ArraySort($FunctionFoundInAttributes,"STRUCTSORTKEY","DESC");
+		echo "InParam-Functions=".ArrayLen($FunctionFoundInParam)."<br>\n";
+		echo "InAttributes-Functions=".ArrayLen($FunctionFoundInAttributes)."<br>\n";
+		//print_r($FunctionFoundInParam);
+		//print_r($FunctionFoundInAttributes);
+		
+		
+		//$param=DetectVariables($param,"NO"); 										//echo "3) $param<br>";
+		//$AttributeLine=DetectVariables($AttributeLine,"NO");						//echo "4) $AttributeLine<br>";
+																					//echo "[".Mid($param,1,1)."][$param]";
+		//if(Mid($param,1,1)!=="$"){
+		//	if(Find("\(",$param)>0) $out.=$param." = ".$AttributeLine; // function call
+		//	else $out.="$".$param." = ".$AttributeLine; 				// parameter
+		//} else $out.=$param." = ".$AttributeLine;
+		
+		$toPHPtranslation.=$out.";//cfset ?>";
+		 */
 	} else {
 		//echo "CFSET else $AttributeLine<br>\n";
 		$out="<?php "; 
 		$param=ListFirst($AttributeLine,"="); 										//echo "1) $param<br>";
 		$AttributeLine=Replace($AttributeLine,"$param=",""); 						//echo "2) $AttributeLine<br>";
+		if($param===$AttributeLine) $AttributeLine="";
 		$param=DetectVariables($param,"NO"); 										//echo "3) $param<br>";
 		$AttributeLine=DetectVariables($AttributeLine,"NO");						//echo "4) $AttributeLine<br>";
 																					//echo "[".Mid($param,1,1)."][$param]";
 		if(Mid($param,1,1)!=="$"){
-			if(Find("\(",$param)>0) $out.=$param." = ".$AttributeLine; // function call
-			else $out.="$".$param." = ".$AttributeLine; 				// parameter
+			if(Find("(",$param)>0){// function call
+				$out.=$param;
+				if(trim($AttributeLine)!=="") $out." = ".$AttributeLine; 
+			} else $out.="$".$param." = ".$AttributeLine; 				// parameter
 		} else $out.=$param." = ".$AttributeLine;
 		
 		$toPHPtranslation.=$out.";//cfset ?>";

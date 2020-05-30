@@ -87,7 +87,7 @@ foreach($cfunctions as $funcFile){
 	fclose($ffile);
 	include $GLOBALS["cf_webRootDir"]."/cfphpbin/CustomTags/functions/".$funcFile;
 }
-$PHPfunctions="array";
+$PHPfunctions="array,trim";
 $GLOBALS["cf_FunctionNames"].=$PHPfunctions;
 //echo $GLOBALS["cf_FunctionNames"]."<br>\n";
 

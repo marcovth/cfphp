@@ -1,5 +1,14 @@
 <?php
 
+function PrintArray(&$array){
+	foreach($array as $key => &$val){
+		echo "<li>[$key]=$val</li>\n";
+	}
+}
+
+// Trick to initialize 1-based arrays ... $alphabet = array(1=> 'a', 'b', 'c', 'd');
+
+
 function ArrayNew($ValuesString1D=""){
 	// Creates an array of 1-3 dimensions. 
 	// Index array elements with square brackets: [ ]. 
@@ -16,7 +25,7 @@ function ArrayNew($ValuesString1D=""){
 	//}
 	//$temp=array($ValuesString1D); 
 	
-	$MDVariables=explode(",",$ValuesString1D); $n=1;
+	$MDVariables=explode(",",$ValuesString1D); $n=1; // CFML is 1-based
 	if(!ArrayIsEmpty($MDVariables)){
 		foreach($MDVariables as &$MD) {
 			$MD=trim($MD,"\""); $MD=trim($MD,"'"); $MD=trim($MD); 
@@ -80,13 +89,29 @@ function ArrayDelete(&$array,$value){
 	}
 }
 
+function ArrayLast(&$array){
+	// Returns the last item from an array. Throws an error if the array is empty.
+	// ArrayLast(array) → returns any
+	printArray($array);
+	if(!ArrayIsEmpty($array) and ArrayLen($array)>=0){
+		return $array[ArrayLen($array)]; // PHP 0-based
+	} else return false;
+}
+function ArrayFirst(&$array){
+	// Returns the first item from an array. Throws an error if the array is empty.
+	// ArrayFirst(array) → returns any
+	if(!ArrayIsEmpty($array) and ArrayLen($array)>=0){
+		return $array[1]; // PHP 0-based
+	} else return false;
+}
+
 function ArrayDeleteLast(&$array){
 	// New, cfPHP specific
 	// Deletes the last element from an array
 	// The array will be resized.
 	// ArrayDeleteLast(array) → returns boolean
 	try{
-		if(!empty($array) and sizeof($array)-1 >=0){
+		if(!ArrayIsEmpty($array) and sizeof($array)-1 >=0){
 			//echo "Delete=[".$array[sizeof($array)-1]."]<br>\n";
 			unset($array[sizeof($array)-1]); // PHP 0-based
 			return true;
@@ -102,8 +127,8 @@ function ArrayDeleteFirst(&$array){
 	// The array will be resized.
 	// ArrayDeleteFirst(array) → returns boolean
 	try{
-		if(!empty($array)){
-			unset($array[0]);  // PHP 0-based
+		if(!ArrayIsEmpty($array)){
+			unset($array[1]);  // PHP 0-based, CFML 1-based
 			return true;
 		} else return false;
 	} catch ( \Exception $e ) {
@@ -116,8 +141,8 @@ function ArrayDeleteAt(&$array,$index){
 	// The array will be resized, so that the deleted element doesn't leave a gap.
 	// ArrayDeleteAt(array, index) → returns boolean
 	try{
-		if(!empty($array) and IsNumeric($index) and $index<sizeof($array)){
-			unset($array[$index-1]);  // Index = CFML 1-based, and not PHP 0-based
+		if(!ArrayIsEmpty($array) and IsNumeric($index) and $index<=ArrayLen($array)){
+			unset($array[$index]);  // Index = CFML 1-based, and not PHP 0-based
 			return true;
 		} else return false;
 	} catch ( \Exception $e ) {
@@ -125,11 +150,46 @@ function ArrayDeleteAt(&$array,$index){
 	}
 }
 
+function ArrayInsertAt(&$array,$index,$value){
+	// Inserts a value at the specified position in the array. 
+	// If the element is inserted before the end of the array, 
+	// ColdFusion shifts the positions of all elements with a higher index to make room.
+	// ArrayInsertAt(array, position, value) → returns boolean
+	//try{
+	//	if(!empty($array) and IsNumeric($index) and $index<sizeof($array)){
+	//		unset($array[$index-1]);  // Index = CFML 1-based, and not PHP 0-based
+	//		return true;
+	//	} else return false;
+	//} catch ( \Exception $e ) {
+	//	return false;
+	//}
+	
+	if (is_int($index)) {
+        array_splice($array, $index, 0, $value);
+		return true;
+    } else {
+        $pos   = array_search($index, array_keys($array));
+        $array = array_merge(
+            array_slice($array, 0, $pos),
+            $value,
+            array_slice($array, $pos)
+        );
+		return true;
+    }
+	return false;
+	
+}
+
+
+
 function ArrayAppend(&$array,$value){
 	// Appends an element to the end of an array.
 	// ArrayAppend(array, value [, merge]) → returns boolean
+	$zeroAdded=false;
+	if(ArrayIsEmpty($array)){ $array[0]=""; $zeroAdded=true; }// Making sure array starts at [1]
 	try{
 		array_push($array,$value);
+		if($zeroAdded) unset($array[0]);
 		return true;
 	} catch ( \Exception $e ) {
 		return false;
@@ -137,10 +197,13 @@ function ArrayAppend(&$array,$value){
 }
 
 function ArrayPrepend(&$array,$value){
-	// Prepends an element to the end of an array.
+	// Prepends an element to the beginning of an array at [1].
 	// ArrayPrepend(array, value [, merge]) → returns boolean
+	$zeroAdded=false;
+	if(ArrayIsEmpty($array)){ $array[0]=""; $zeroAdded=true; }// Making sure array starts at [1]
 	try{
 		array_unshift($array,$value);
+		if($zeroAdded) unset($array[0]);
 		return true;
 	} catch ( \Exception $e ) {
 		return false;
@@ -241,5 +304,38 @@ function ArrayMedian(&$array){
 		return 0;
 	}
 }
+
+
+function ArraySort(&$array,$sortType="ArraySort",$sortOrder="ASC"){
+	// Sorts array elements.
+	// ArraySort(array, sortType [, sortOrder]) or ArraySort(array, callback) → returns boolean
+	
+	// ArraySortAsc 		sort() 	- sort arrays in ascending order
+	// ArraySortDesc 		rsort() - sort arrays in descending order
+	// StructSortAscVal		asort() - sort associative arrays in ascending order, according to the value
+	// StructSortAscKey		ksort() - sort associative arrays in ascending order, according to the key
+	// StructSortDescVal	arsort() - sort associative arrays in descending order, according to the value
+	// StructSortDescKey	krsort() - sort associative arrays in descending order, according to the key
+	
+	if(UCASE($sortType)==="ARRAYSORT" and UCASE($sortOrder)==="ASC"){
+		sort($array); return true;
+	} else if(UCASE($sortType)==="ARRAYSORT" and UCASE($sortOrder)==="DESC"){
+		rsort($array); return true;
+	} else if(UCASE($sortType)==="STRUCTSORTVAL" and UCASE($sortOrder)==="ASC"){
+		asort($array); return true;
+	} else if(UCASE($sortType)==="STRUCTSORTVAL" and UCASE($sortOrder)==="DESC"){
+		arsort($array); return true;
+	} else if(UCASE($sortType)==="STRUCTSORTKEY" and UCASE($sortOrder)==="ASC"){
+		ksort($array); return true;
+	} else if(UCASE($sortType)==="STRUCTSORTKEY" and UCASE($sortOrder)==="DESC"){
+		krsort($array); return true;
+	}
+	return false;
+}
+
+
+
+
+
 
 ?>
