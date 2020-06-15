@@ -3,7 +3,7 @@
 <cfoutput query="myList">
     <li>#name# | #size# | #type# | </li>
 </cfoutput>
-<li>#myList_Recordcount#</li>
+<li>#myList.Recordcount#</li>
 
 <cfquery name="myList2" dbtype="query">SELECT * FROM myList WHERE type='Dir'</cfquery>
 <hr>

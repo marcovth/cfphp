@@ -248,7 +248,8 @@ function DetectVariables($string,$Addtags){
 							$word.="['";
 						} else {
 							// Not sure yet what this means? Probably a dot in a number? ...
-							$word.=$c;
+							if(IsNumeric($word)) $word.=$c;
+							else $word.="_";
 						}
 					}
 				} else {

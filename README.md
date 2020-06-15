@@ -50,7 +50,6 @@ Why this project?
 * There is less CFML code than with PHP == less debugging. Just the combination cfquery-cfoutput (or with cfloop) alone saves a lot of time. The sucess of this project will, in particular, depend on whether we can make the cfquery tag work with all its many options.
 * Smarty is a great project, I have been playing with it for some months, but in the end, I realy mis my cfml. 
 Hopefully, php coders will start to appreciate cftags coding as well, and use this project to create their own tags to extend PHP directly inside PHP code (later on when this project develops).
-* [ This project is my personal "killing some Corona-time" while waiting for new bioinformatics data to come in later this year. ]
 
 I have 22 years experience with CFML, and about 6 months with PHP. If you want to improve my PHP coding, please join and make sure you teach me :) 
 
